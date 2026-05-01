@@ -1,0 +1,147 @@
+@import "@scss/components/propert-for-sale/property-links/index.scss";
+@import "@scss/components/propert-for-sale/map-view.scss";
+@import "@scss/components/propert-for-sale/pagination/index.scss";
+.menu-list {
+  margin-bottom: 24px;
+  ul {
+    li {
+      display: inline-block;
+      @media (max-width: ($mobile-devices-max-width)+px) {
+        display: block;
+      }
+      @media (min-width: $tablet-devices-min+px) {
+        &:not(:last-child) {
+          margin-right: 8px;
+        }
+      }
+      @media (min-width: ($tablet-devices-min)+px) and (max-width: $tablet-devices-max+px) {
+        &:last-child {
+          margin-top: 10px;
+        }
+      }
+    }
+  }
+}
+
+.add-position-absolute {
+  @media (max-width: ($mobile-devices-max-width)+px) {
+    // position: relative;
+    width: 92%;
+  }
+  position: absolute;
+  z-index: 11;
+  background: #fff;
+}
+
+.filter-container {
+  @media (max-width: ($mobile-devices-max-width)+px) {
+    margin-top: 0 !important;
+  }
+}
+
+// Mobile filter toggle button
+.mobile-filter-toggle-wrapper {
+  display: none;
+  @media (max-width: ($mobile-devices-max-width)+px) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+}
+
+.mobile-active-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.mobile-filter-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: #1a3c6e;
+  color: #fff;
+  border-radius: 20px;
+  padding: 2px 8px;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.4;
+
+  &__close {
+    cursor: pointer;
+    font-size: 13px;
+    line-height: 1;
+    margin-left: 2px;
+    opacity: 0.85;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+.mobile-filter-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  border: 1.5px solid #1a3c6e;
+  color: #1a3c6e;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+
+  .mobile-filter-icon-lines {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 3px;
+
+    span {
+      display: block;
+      width: 14px;
+      height: 2px;
+      background: #1a3c6e;
+      border-radius: 2px;
+
+      &:nth-child(2) {
+        width: 10px;
+      }
+
+      &:nth-child(3) {
+        width: 6px;
+      }
+    }
+  }
+
+  .mobile-filter-chevron {
+    font-size: 10px;
+  }
+}
+
+// Hide filters on mobile by default; show when toggled
+@media (max-width: ($mobile-devices-max-width)+px) {
+  .mobile-filters-hidden {
+    display: none !important;
+  }
+
+  .mobile-filters-visible {
+    display: block !important;
+    position: relative !important;
+    width: 100% !important;
+    z-index: 11;
+    background: #fff;
+  }
+
+  // Hide the desktop active-filter tags row on mobile (shown inline instead)
+  .filters-wrapper {
+    display: none !important;
+  }
+}

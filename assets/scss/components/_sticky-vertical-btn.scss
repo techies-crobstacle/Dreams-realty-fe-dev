@@ -1,0 +1,24 @@
+.sticky-vertical-btn {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%) rotate(-90deg);
+  z-index: 9999;
+  margin-right: -40px; /* Adjust as needed to pull button closer/further from edge */
+  display: flex;
+  align-items: center;
+}
+.sticky-vertical-btn button {
+  border-radius: 8px 8px 0 0;
+  padding: 12px 32px;
+  font-weight: bold;
+  background: #0070f3;
+  color: #fff;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.sticky-vertical-btn button:hover {
+  background: #005bb5;
+}

@@ -1,0 +1,995 @@
+    1: import React, { useEffect, useState, useRef } from "react";
+    2: import Layout from "@components/layout.js";
+    3: import SimpleReactValidator from "simple-react-validator";
+    4: import { sendPropertyListingEmail, prepareEmailData } from "@services/emailService";
+    5: 
+    6: import { getValue } from "@utils/lodash";
+    7: import { toast } from "react-toastify";
+    8: import router from "next/router";
+    9: import ProfileSVG from "@components/svg/profile-svg";
+   10: import AlbumSVG from "@components/svg/album-svg";
+   11: import { Button } from "reactstrap";
+   12: import PropertySVG from "@components/svg/property-svg";
+   13: import MapSVG from "@components/svg/map-svg";
+   14: import Tab1 from "./tab1";
+   15: import ListStepTab2 from "pages/list-step2";
+   16: import ListStepTab3 from "pages/list-step3";
+   17: import ListStepTab4 from "pages/list-step4";
+   18: import RouteLeavingGuard from "@common/promptPage";
+   19: import axios from "axios";
+   20: import { MockCountries } from "@common/contry";
+   21: import {
+   22:   fetchCreateSalePropertyByUser,
+   23:   fetchCreateRentPropertyByUser,
+   24:   fetchPropertyTypes,
+   25:   fetchLocationAreas,
+   26: } from "@services/APIs/common.service";
+   27: import { isValidPhoneNumber } from "libphonenumber-js";
+   28: import {
+   29:   fetchAmenities,
+   30:   fetchCities,
+   31:   fetchDevelopers,
+   32:   fetchLocations,
+   33:   fetchPropertyBhks,
+   34: } from "services/APIs/common.service";
+   35: 
+   36: export default function ListStep1(props) {
+   37:   const [isDirty, setIsDirty] = React.useState(true);
+   38: 
+   39:   const [activeTab, setActiveTab] = useState(1);
+   40: 
+   41:   const simpleValidator = useRef(new SimpleReactValidator());
+   42:   const [, forceUpdate] = useState(0);
+   43: 
+   44:   /* -------------------------------------------------------------------------- */
+   45:   /*                                   TAB1 Section                             */
+   46:   /* -------------------------------------------------------------------------- */
+   47: 
+   48:   const [isLoading, setIsLoading] = useState(false);
+   49:   const [propertyType, setPropertyType] = useState("sale");
+   50:   const [request, setRequest] = useState({
+   51:     full_name: "",
+   52:     email: "",
+   53:     phone: "",
+   54:   });
+   55:   const [countryCode, setCountryCode] = useState("+91 India");
+   56: 
+   57:   const handleCountryCode = (e) => {
+   58:     setCountryCode(e);
+   59:   };
+   60: 
+   61:   /* -------------------------------------------------------------------------- */
+   62:   /*                                   TAB2 Section                             */
+   63:   /* -------------------------------------------------------------------------- */
+   64: 
+   65:   const [loading, setLoading] = useState(false);
+   66:   const [isLoading1, setIsLoading1] = useState(false);
+   67:   const [propertyTypeList, setPropertyTypeList] = useState([]);
+   68:   const [property_type, setProperty_type] = useState("");
+   69: 
+   70:   /* -------------------------------------------------------------------------- */
+   71:   /*                                   TAB3 Section                             */
+   72:   /* -------------------------------------------------------------------------- */
+   73: 
+   74:   const [isLoading2, setIsLoading2] = useState(false);
+   75:   const [saleRequest, setSaleRequest] = useState({
+   76:     title: "",
+   77:     address: "",
+   78:     about: "",
+   79:     // balcony: "",
+   80:     bathrooms: "",
+   81: 
+   82:     logo: "", //-file
+   83:     action: "send_email",
+   84:     property_rera: "",
+   85:     total_units: "",
+   86:     development_size: "",
+   87:     price: "",
+   88:     video_url: "",
+   89: 
+   90:     plot_area: "",
+   91:     plot_area_max: "",
+   92:     plot_area_min: "",
+   93:     carpet_area: "",
+   94:     carpet_area_min: "",
+   95:     carpet_area_max: "",
+   96:     super_build_up_area: "",
+   97:     super_build_up_area_min: "",
+   98:     super_build_up_area_max: "",
+   99: 
+  100:     latitude: "",
+  101:     longitude: "",
+  102: 
+  103:     city: "", //--dropdown
+  104:     location: "", //--dropdown
+  105:     location_area: "", //--dropdown
+  106: 
+  107:     developer: "", //--dropdown
+  108: 
+  109:     // property_construction_status: "", //--dropdown
+  110:     furnishing: "", //--dropdown
+  111:     facing: "", //--dropdown
+  112:     property_bhks: [], //--dropdown
+  113:     amenities: [],
+  114:   });
+  115:   const [logoPreview, setLogoPreview] = useState("");
+  116:   const [image, setImage] = useState("");
+  117:   // const [property_type, setProperty_type] = useState("");
+  118:   const [rentRequest, setRentRequest] = useState({
+  119:     title: "",
+  120:     address: "",
+  121:     about: "",
+  122:     logo: "",
+  123:     action: "send_email",
+  124:     property_rera: "",
+  125:     total_units: "",
+  126:     development_size: "",
+  127:     price: "",
+  128:     video_url: "",
+  129:     bathrooms: "",
+  130:     balcony: "",
+  131: 
+  132:     plot_area: "",
+  133:     plot_area_max: "",
+  134:     plot_area_min: "",
+  135:     carpet_area: "",
+  136:     carpet_area_min: "",
+  137:     carpet_area_max: "",
+  138:     build_up_area: "",
+  139:     build_up_area_min: "",
+  140:     build_up_area_max: "",
+  141: 
+  142:     latitude: "",
+  143:     longitude: "",
+  144: 
+  145:     city: "", //--dropdown
+  146:     location: "", //--dropdown
+  147:     location_area: "", //--dropdown
+  148: 
+  149:     developer: "", //--dropdown
+  150: 
+  151:     furnishing: "", //--dropdown
+  152:     facing: "", //--dropdown
+  153:     property_bhks: [], //--dropdown
+  154:   });
+  155:   const [isLoading3, setIsLoading3] = useState(false);
+  156:   const [cityList, setCityList] = useState([]);
+  157:   const [locationList, setLocationList] = useState([]);
+  158:   const [locationAreaList, setLocationAreaList] = useState([]);
+  159:   const [propertyBHKList, setPropertyBHKList] = useState([]);
+  160:   const [developerList, setDeveloperList] = useState([]);
+  161:   const [amenitiesList, setAmenitiesList] = useState([]);
+  162:   const [furnishingList] = useState([
+  163:     { value: "furnished" },
+  164:     { value: "semi_furnished" },
+  165:     { value: "unfurnished" },
+  166:   ]);
+  167:   const [facingList] = useState([
+  168:     { value: "north" },
+  169:     { value: "south" },
+  170:     { value: "east" },
+  171:     { value: "west" },
+  172:     { value: "north_east" },
+  173:     { value: "north_west" },
+  174:     { value: "south_east" },
+  175:     { value: "south_west" },
+  176:   ]);
+  177: 
+  178:   /* -------------------------------------------------------------------------- */
+  179:   /*                                   TAB4 Section                             */
+  180:   /* -------------------------------------------------------------------------- */
+  181: 
+  182:   const [isLoading4, setIsLoading4] = useState(false);
+  183:   const [imageList, setImageList] = useState([]);
+  184: 
+  185:   /* -------------------------------------------------------------------------- */
+  186:   /*                               Use effect Section                           */
+  187:   /* -------------------------------------------------------------------------- */
+  188:   const [countryOption, setOption] = useState([]);
+  189: 
+  190:   useEffect(() => {
+  191:     // Add push state to intercept back button
+  192:     window.history.pushState(null, null, window.location.pathname);
+  193:     const handlePopState = () => {
+  194:       router.replace("/");
+  195:     };
+  196:     window.addEventListener("popstate", handlePopState);
+  197: 
+  198:     // tab2
+  199:     getPropertyTypeList();
+  200:     // tab3
+  201:     getPropertyBHKs();
+  202:     getDevelopers();
+  203:     getCities();
+  204:     getAmenities();
+  205:     // country code
+  206:     let countryOptions = [];
+  207:     MockCountries.map((item) => {
+  208:       countryOptions.push({
+  209:         id: item.id,
+  210:         country: item.code,
+  211:         label: (
+  212:           <>
+  213:             {/* <Flag code={item.code} height="16" />{" "} */}
+  214:             {item.dial_code + " " + item.name}
+  215:           </>
+  216:         ),
+  217:         value: item.dial_code + " " + item.name,
+  218:       });
+  219:     });
+  220:     setOption(countryOptions);
+  221: 
+  222:     return () => {
+  223:       window.removeEventListener("popstate", handlePopState);
+  224:     };
+  225:   }, []);
+  226: 
+  227:   /* -------------------------------------------------------------------------- */
+  228:   /*                               API Section                                  */
+  229:   /* -------------------------------------------------------------------------- */
+  230: 
+  231:   // tab2
+  232:   const getPropertyTypeList = async () => {
+  233:     try {
+  234:       setLoading(true);
+  235:       let resp = await fetchPropertyTypes();
+  236:       if (resp) {
+  237:         setPropertyTypeList(getValue(resp, `data`, []));
+  238:         setLoading(false);
+  239:       } else {
+  240:         setLoading(false);
+  241:       }
+  242:     } catch (error) {
+  243:       setLoading(false);
+  244:     }
+  245:   };
+  246: 
+  247:   // tab3
+  248:   const getPropertyBHKs = async () => {
+  249:     try {
+  250:       let resp = await fetchPropertyBhks();
+  251:       if (resp) {
+  252:         setPropertyBHKList(getValue(resp, "data", []));
+  253:       }
+  254:     } catch (error) { }
+  255:   };
+  256:   const getDevelopers = async () => {
+  257:     try {
+  258:       let resp = await fetchDevelopers();
+  259:       if (resp) {
+  260:         setDeveloperList(getValue(resp, `data`, []));
+  261:       }
+  262:     } catch (error) { }
+  263:   };
+  264:   const getAmenities = async () => {
+  265:     try {
+  266:       let resp = await fetchAmenities();
+  267:       if (resp) {
+  268:         setAmenitiesList(
+  269:           getValue(resp, `data`, []).map((item) => ({
+  270:             value: item.title,
+  271:             label: item.title,
+  272:             id: item.id,
+  273:           }))
+  274:         );
+  275:       }
+  276:     } catch (error) { }
+  277:   };
+  278:   const getCities = async () => {
+  279:     if (cityList.length > 0) return; // Skip if we already have cities
+  280: 
+  281:     try {
+  282:       let resp = await fetchCities();
+  283:       if (resp) {
+  284:         const cities = getValue(resp, "data", []);
+  285:         setCityList(cities);
+  286:         // Only get locations if we have cities
+  287:         if (cities.length > 0) {
+  288:           await getLocations(cities[0].id);
+  289:         }
+  290:       }
+  291:     } catch (error) {
+  292:       console.error("Error fetching cities:", error);
+  293:     }
+  294:   };
+  295:   const getLocations = async (id) => {
+  296:     let where = {
+  297:       city: id,
+  298:     };
+  299:     try {
+  300:       let resp = await fetchLocations(where);
+  301:       if (resp) {
+  302:         const locations = getValue(resp, "data", []);
+  303:         setLocationList(locations);
+  304:         // Only get location areas if we have locations and haven't loaded them yet
+  305:         if (locations.length > 0 && locationAreaList.length === 0) {
+  306:           await getLocationArea(locations[0].id);
+  307:         }
+  308:       }
+  309:     } catch (error) {
+  310:       console.error("Error fetching locations:", error);
+  311:     }
+  312:   };
+  313:   const getLocationArea = async (id) => {
+  314:     try {
+  315:       let where = {
+  316:         where: {
+  317:           location: id,
+  318:         },
+  319:       };
+  320:       let resp = await fetchLocationAreas(where);
+  321:       if (resp) {
+  322:         setLocationAreaList(getValue(resp, "data", []));
+  323:       }
+  324:     } catch (error) { }
+  325:   };
+  326:   const uploadImage = async (e, path, state, name) => {
+  327:     if (e.target.files[0]) {
+  328:       setLogoPreview(URL.createObjectURL(e.target.files[0]));
+  329:       const formData = new FormData();
+  330:       Array.from(e.target.files).forEach((image) => {
+  331:         formData.append("files", image);
+  332:       });
+  333:       axios
+  334:         .post(`${process.env.NEXT_PUBLIC_API_URL}/api/upload`, formData, {
+  335:           headers: {
+  336:             "Content-Type": "multipart/form-data",
+  337:             // Authorization: "Bearer " + authToken,
+  338:           },
+  339:         })
+  340:         .then(async (res) => {
+  341:           setImageList(getValue(res, `data`, []));
+  342:           path({
+  343:             ...state,
+  344:             [name]: getValue(res, `data[${0}].id`, ""),
+  345:           });
+  346:         })
+  347:         .catch((err) => { });
+  348:     }
+  349:   };
+  350: 
+  351:   /* -------------------------------------------------------------------------- */
+  352:   /*                               Onchange Section                             */
+  353:   /* -------------------------------------------------------------------------- */
+  354: 
+  355:   const handleChangeRequest = (e) => {
+  356:     const { name, value } = e.target;
+  357:     setRequest({
+  358:       ...request,
+  359:       [name]: value,
+  360:     });
+  361:   };
+  362: 
+  363:   // tab2
+  364:   const handleRequest = (id) => {
+  365:     setProperty_type(id);
+  366:   };
+  367:   // tab3
+  368:   const handleChangeSaleRequest = (e) => {
+  369:     const { name, value } = e.target;
+  370:     setSaleRequest({
+  371:       ...saleRequest,
+  372:       [name]: value,
+  373:     });
+  374:   };
+  375: 
+  376:   const handleChangeRentRequest = (e) => {
+  377:     const { name, value } = e.target;
+  378:     setRentRequest({
+  379:       ...rentRequest,
+  380:       [name]: value,
+  381:     });
+  382:   };
+  383: 
+  384:   const handleChangeSelectId = (e, path, state, name) => {
+  385:     const { value } = e.target;
+  386:     path({
+  387:       ...state,
+  388:       [name]: value,
+  389:     });
+  390:   };
+  391: 
+  392:   const handleChangePushArray = (value, path, state) => {
+  393:     let indexOf = getValue(state, `property_bhks`, []).includes(value);
+  394:     if (indexOf) {
+  395:       let filtered = getValue(state, `property_bhks`, []).filter(
+  396:         (item) => item !== value
+  397:       );
+  398:       state.property_bhks = filtered;
+  399:       path({ ...state });
+  400:     } else {
+  401:       state.property_bhks.push(value);
+  402:       path({ ...state });
+  403:     }
+  404:   };
+  405: 
+  406:   const handleChangeSelect = (e, path, state) => {
+  407:     state.amenities = e;
+  408:     path({ ...state });
+  409:   };
+  410: 
+  411:   const handleRemoveImages = (index) => {
+  412:     let filteredImages = imageList.filter((item, ind) => ind !== index);
+  413:     setImageList(filteredImages);
+  414:   };
+  415: 
+  416:   /* -------------------------------------------------------------------------- */
+  417:   /*                               Submit Section                               */
+  418:   /* -------------------------------------------------------------------------- */
+  419: 
+  420:   // submit/create-thankyou
+  421:   // const handleSubmit = async () => {
+  422:   //   const formValid = simpleValidator.current.allValid();
+  423:   //   if (!formValid) {
+  424:   //     simpleValidator.current.showMessages();
+  425:   //     forceUpdate(1);
+  426:   //   } else {
+  427:   //     try {
+  428:   //       let requestInfo = JSON.parse(JSON.stringify(request));
+  429:   //       requestInfo.phone =
+  430:   //         (countryCode ? countryCode.split(" ")[0] : "+91") + requestInfo.phone;
+  431:   //       setIsLoading(true);
+  432: 
+  433:   //       const prepareSaleData = (data) => {
+  434:   //         return {
+  435:   //           ...data,
+  436:   //           bathrooms: data.bathrooms ? parseFloat(data.bathrooms) : 0,
+  437:   //           total_units: data.total_units ? parseFloat(data.total_units) : 0,
+  438:   //           development_size: data.development_size
+  439:   //             ? parseFloat(data.development_size)
+  440:   //             : 0,
+  441:   //           price: data.price ? parseFloat(data.price) : 0,
+  442:   //           plot_area: data.plot_area ? parseFloat(data.plot_area) : 0,
+  443:   //           plot_area_max: data.plot_area_max
+  444:   //             ? parseFloat(data.plot_area_max)
+  445:   //             : 0,
+  446:   //           plot_area_min: data.plot_area_min
+  447:   //             ? parseFloat(data.plot_area_min)
+  448:   //             : 0,
+  449:   //           carpet_area: data.carpet_area ? parseFloat(data.carpet_area) : 0,
+  450:   //           carpet_area_min: data.carpet_area_min
+  451:   //             ? parseFloat(data.carpet_area_min)
+  452:   //             : 0,
+  453:   //           carpet_area_max: data.carpet_area_max
+  454:   //             ? parseFloat(data.carpet_area_max)
+  455:   //             : 0,
+  456:   //           super_build_up_area: data.super_build_up_area
+  457:   //             ? parseFloat(data.super_build_up_area)
+  458:   //             : 0,
+  459:   //           super_build_up_area_min: data.super_build_up_area_min
+  460:   //             ? parseFloat(data.super_build_up_area_min)
+  461:   //             : 0,
+  462:   //           super_build_up_area_max: data.super_build_up_area_max
+  463:   //             ? parseFloat(data.super_build_up_area_max)
+  464:   //             : 0,
+  465:   //           amenities: Array.isArray(data.amenities)
+  466:   //             ? data.amenities.map((item) => item.id)
+  467:   //             : [],
+  468:   //           images: Array.isArray(imageList)
+  469:   //             ? imageList.map((item) => item.id)
+  470:   //             : [],
+  471:   //           locale: "en",
+  472:   //         };
+  473:   //       };
+  474: 
+  475:   //       const prepareRentData = (data) => {
+  476:   //         return {
+  477:   //           ...data,
+  478:   //           balcony: data.balcony ? parseFloat(data.balcony) : 0,
+  479:   //           bathrooms: data.bathrooms ? parseFloat(data.bathrooms) : 0,
+  480:   //           development_size: data.development_size
+  481:   //             ? parseFloat(data.development_size)
+  482:   //             : 0,
+  483:   //           price: data.price ? parseFloat(data.price) : 0,
+  484:   //           plot_area: data.plot_area ? parseFloat(data.plot_area) : 0,
+  485:   //           plot_area_max: data.plot_area_max
+  486:   //             ? parseFloat(data.plot_area_max)
+  487:   //             : 0,
+  488:   //           plot_area_min: data.plot_area_min
+  489:   //             ? parseFloat(data.plot_area_min)
+  490:   //             : 0,
+  491:   //           carpet_area: data.carpet_area ? parseFloat(data.carpet_area) : 0,
+  492:   //           carpet_area_min: data.carpet_area_min
+  493:   //             ? parseFloat(data.carpet_area_min)
+  494:   //             : 0,
+  495:   //           carpet_area_max: data.carpet_area_max
+  496:   //             ? parseFloat(data.carpet_area_max)
+  497:   //             : 0,
+  498:   //           build_up_area: data.build_up_area
+  499:   //             ? parseFloat(data.build_up_area)
+  500:   //             : 0,
+  501:   //           build_up_area_min: data.build_up_area_min
+  502:   //             ? parseFloat(data.build_up_area_min)
+  503:   //             : 0,
+  504:   //           build_up_area_max: data.build_up_area_max
+  505:   //             ? parseFloat(data.build_up_area_max)
+  506:   //             : 0,
+  507:   //           amenities: Array.isArray(data.amenities)
+  508:   //             ? data.amenities.map((item) => item.id)
+  509:   //             : [],
+  510:   //           images: Array.isArray(imageList)
+  511:   //             ? imageList.map((item) => item.id)
+  512:   //             : [],
+  513:   //           locale: "en",
+  514:   //         };
+  515:   //       };
+  516: 
+  517:   //       let data;
+  518:   //       if (propertyType === "sale") {
+  519:   //         let saleReq = prepareSaleData(saleRequest);
+  520:   //         data = {
+  521:   //           data: {
+  522:   //             ...saleReq,
+  523:   //             property_type: property_type,
+  524:   //             // Add user details here
+  525:   //             // full_name: request.full_name,
+  526:   //             // email: request.email,
+  527:   //             // phone: requestInfo.phone,
+  528:   //           },
+  529:   //         };
+  530:   //       } else {
+  531:   //         let rentReq = prepareRentData(rentRequest);
+  532:   //         data = {
+  533:   //           data: {
+  534:   //             ...rentReq,
+  535:   //             property_type: property_type,
+  536:   //             // Add user details here
+  537:   //     // full_name: request.full_name,
+  538:   //     // email: request.email,
+  539:   //     // phone: requestInfo.phone,
+  540:   //           },
+  541:   //         };
+  542:   //       }
+  543: 
+  544:   //       // Ensure no unnecessary fields are included
+  545:   //       Object.keys(data.data).forEach((key) => {
+  546:   //         const val = data.data[key];
+  547:   //         const isEmptyArray = Array.isArray(val) && val.length === 0;
+  548: 
+  549:   //         // Keep only price = 0 (for validation check), remove other zero fields
+  550:   //         if (
+  551:   //           val === undefined ||
+  552:   //           val === null ||
+  553:   //           val === "" ||
+  554:   //           val === false ||
+  555:   //           isEmptyArray ||
+  556:   //           (val === 0 && key !== "price")
+  557:   //         ) {
+  558:   //           delete data.data[key];
+  559:   //         }
+  560:   //       });
+  561: 
+  562:   //       if (data.data.price !== 0) {
+  563:   //         let resp =
+  564:   //           propertyType === "sale"
+  565:   //             ? await fetchCreateSalePropertyByUser(data)
+  566:   //             : await fetchCreateRentPropertyByUser(data);
+  567: 
+  568:   //         if (resp) {
+  569:   //           toast.success("Created successfully");
+  570:   //           router.push(`/create-thankyou`);
+  571:   //           setIsLoading(false);
+  572:   //         } else {
+  573:   //           setIsLoading(false);
+  574:   //         }
+  575:   //       } else {
+  576:   //         toast.error("Please add price to continue");
+  577:   //       }
+  578:   //     } catch (error) {
+  579:   //       setIsLoading(false);
+  580:   //       console.error("Error during submission:", error);
+  581:   //     }
+  582:   //   }
+  583:   // };
+  584: 
+  585:   const handleSubmit = async () => {
+  586:   const formValid = simpleValidator.current.allValid();
+  587:   if (!formValid) {
+  588:     simpleValidator.current.showMessages();
+  589:     forceUpdate(1);
+  590:     return;
+  591:   }
+  592: 
+  593:   try {
+  594:     let requestInfo = JSON.parse(JSON.stringify(request));
+  595:     requestInfo.phone =
+  596:       (countryCode ? countryCode.split(" ")[0] : "+91") + requestInfo.phone;
+  597:     setIsLoading(true);
+  598: 
+  599:     const prepareSaleData = (data) => {
+  600:       return {
+  601:         ...data,
+  602:         bathrooms: data.bathrooms ? parseFloat(data.bathrooms) : 0,
+  603:         total_units: data.total_units ? parseFloat(data.total_units) : 0,
+  604:         development_size: data.development_size
+  605:           ? parseFloat(data.development_size)
+  606:           : 0,
+  607:         price: data.price ? parseFloat(data.price) : 0,
+  608:         plot_area: data.plot_area ? parseFloat(data.plot_area) : 0,
+  609:         plot_area_max: data.plot_area_max
+  610:           ? parseFloat(data.plot_area_max)
+  611:           : 0,
+  612:         plot_area_min: data.plot_area_min
+  613:           ? parseFloat(data.plot_area_min)
+  614:           : 0,
+  615:         carpet_area: data.carpet_area ? parseFloat(data.carpet_area) : 0,
+  616:         carpet_area_min: data.carpet_area_min
+  617:           ? parseFloat(data.carpet_area_min)
+  618:           : 0,
+  619:         carpet_area_max: data.carpet_area_max
+  620:           ? parseFloat(data.carpet_area_max)
+  621:           : 0,
+  622:         super_build_up_area: data.super_build_up_area
+  623:           ? parseFloat(data.super_build_up_area)
+  624:           : 0,
+  625:         super_build_up_area_min: data.super_build_up_area_min
+  626:           ? parseFloat(data.super_build_up_area_min)
+  627:           : 0,
+  628:         super_build_up_area_max: data.super_build_up_area_max
+  629:           ? parseFloat(data.super_build_up_area_max)
+  630:           : 0,
+  631:         amenities: Array.isArray(data.amenities)
+  632:           ? data.amenities.map((item) => item.id)
+  633:           : [],
+  634:         images: Array.isArray(imageList)
+  635:           ? imageList.map((item) => item.id)
+  636:           : [],
+  637:         locale: "en",
+  638:       };
+  639:     };
+  640: 
+  641:     const prepareRentData = (data) => {
+  642:       return {
+  643:         ...data,
+  644:         balcony: data.balcony ? parseFloat(data.balcony) : 0,
+  645:         bathrooms: data.bathrooms ? parseFloat(data.bathrooms) : 0,
+  646:         development_size: data.development_size
+  647:           ? parseFloat(data.development_size)
+  648:           : 0,
+  649:         price: data.price ? parseFloat(data.price) : 0,
+  650:         plot_area: data.plot_area ? parseFloat(data.plot_area) : 0,
+  651:         plot_area_max: data.plot_area_max
+  652:           ? parseFloat(data.plot_area_max)
+  653:           : 0,
+  654:         plot_area_min: data.plot_area_min
+  655:           ? parseFloat(data.plot_area_min)
+  656:           : 0,
+  657:         carpet_area: data.carpet_area ? parseFloat(data.carpet_area) : 0,
+  658:         carpet_area_min: data.carpet_area_min
+  659:           ? parseFloat(data.carpet_area_min)
+  660:           : 0,
+  661:         carpet_area_max: data.carpet_area_max
+  662:           ? parseFloat(data.carpet_area_max)
+  663:           : 0,
+  664:         build_up_area: data.build_up_area
+  665:           ? parseFloat(data.build_up_area)
+  666:           : 0,
+  667:         build_up_area_min: data.build_up_area_min
+  668:           ? parseFloat(data.build_up_area_min)
+  669:           : 0,
+  670:         build_up_area_max: data.build_up_area_max
+  671:           ? parseFloat(data.build_up_area_max)
+  672:           : 0,
+  673:         amenities: Array.isArray(data.amenities)
+  674:           ? data.amenities.map((item) => item.id)
+  675:           : [],
+  676:         images: Array.isArray(imageList)
+  677:           ? imageList.map((item) => item.id)
+  678:           : [],
+  679:         locale: "en",
+  680:       };
+  681:     };
+  682: 
+  683:     let data;
+  684:     if (propertyType === "sale") {
+  685:       let saleReq = prepareSaleData(saleRequest);
+  686:       data = {
+  687:         data: {
+  688:           ...saleReq,
+  689:           property_type: property_type,
+  690:         },
+  691:       };
+  692:     } else {
+  693:       let rentReq = prepareRentData(rentRequest);
+  694:       data = {
+  695:         data: {
+  696:           ...rentReq,
+  697:           property_type: property_type,
+  698:         },
+  699:       };
+  700:     }
+  701: 
+  702:     // Ensure no unnecessary fields are included
+  703:     Object.keys(data.data).forEach((key) => {
+  704:       const val = data.data[key];
+  705:       const isEmptyArray = Array.isArray(val) && val.length === 0;
+  706: 
+  707:       // Keep only price = 0 (for validation check), remove other zero fields
+  708:       if (
+  709:         val === undefined ||
+  710:         val === null ||
+  711:         val === "" ||
+  712:         val === false ||
+  713:         isEmptyArray ||
+  714:         (val === 0 && key !== "price")
+  715:       ) {
+  716:         delete data.data[key];
+  717:       }
+  718:     });
+  719: 
+  720:     if (data.data.price !== 0) {
+  721:       // ============================================
+  722:       // EXISTING API CALL - Keep as is
+  723:       // ============================================
+  724:       let resp =
+  725:         propertyType === "sale"
+  726:           ? await fetchCreateSalePropertyByUser(data)
+  727:           : await fetchCreateRentPropertyByUser(data);
+  728: 
+  729:       if (resp) {
+  730:         // ============================================
+  731:         // ⭐ NEW: EMAIL NOTIFICATION (Added)
+  732:         // ============================================
+  733:         try {
+  734:           // Prepare email data
+  735:           const emailData = prepareEmailData({
+  736:             request,
+  737:             saleRequest,
+  738:             rentRequest,
+  739:             propertyType,
+  740:             property_type,
+  741:             imageList,
+  742:             cityList,
+  743:             locationList,
+  744:             locationAreaList,
+  745:             developerList,
+  746:             propertyTypeList,
+  747:             propertyBHKList,
+  748:           });
+  749: 
+  750:           // Send email (non-blocking - don't fail if email fails)
+  751:           const emailResult = await sendPropertyListingEmail(emailData);
+  752:           
+  753:           if (emailResult.success) {
+  754:             console.log('✅ Email notification sent successfully');
+  755:           } else {
+  756:             console.warn('⚠️ Email notification failed:', emailResult.message);
+  757:             // Don't show error to user - property is already saved
+  758:           }
+  759:         } catch (emailError) {
+  760:           console.error('⚠️ Email sending error (non-critical):', emailError);
+  761:           // Continue with success flow even if email fails
+  762:         }
+  763:         // ============================================
+  764:         // END OF EMAIL NOTIFICATION
+  765:         // ============================================
+  766: 
+  767:         toast.success("Property listing created successfully!");
+  768:         router.push(`/create-thankyou`);
+  769:         setIsLoading(false);
+  770:       } else {
+  771:         setIsLoading(false);
+  772:         toast.error("Failed to create property listing");
+  773:       }
+  774:     } else {
+  775:       toast.error("Please add price to continue");
+  776:       setIsLoading(false);
+  777:     }
+  778:   } catch (error) {
+  779:     setIsLoading(false);
+  780:     console.error("Error during submission:", error);
+  781:     toast.error("An error occurred. Please try again.");
+  782:   }
+  783: };
+  784: 
+  785:   const [phoneError, setPhoneError] = useState("");
+  786: 
+  787:   const handleSubmitTab = (tab, error) => {
+  788:     if (error === "tab2") {
+  789:       let isPhoneValid = true;
+  790: 
+  791:       if (request.phone) {
+  792:         try {
+  793:           isPhoneValid = isValidPhoneNumber(request.phone);
+  794:           if (!isPhoneValid) {
+  795:             setPhoneError("Please enter a valid phone number");
+  796:           }
+  797:         } catch (error) {
+  798:           isPhoneValid = false;
+  799:           setPhoneError("Please enter a valid phone number");
+  800:         }
+  801:       } else {
+  802:         isPhoneValid = false;
+  803:         setPhoneError("Phone number is required");
+  804:       }
+  805: 
+  806:       const formValid = simpleValidator.current.allValid();
+  807: 
+  808:       if (!formValid) {
+  809:         simpleValidator.current.showMessages();
+  810:         forceUpdate(1);
+  811:       }
+  812: 
+  813:       if (isPhoneValid && formValid) {
+  814:         setPhoneError("");
+  815:         setActiveTab(tab);
+  816:       }
+  817:     } else if (error === "tab3") {
+  818:       if (property_type) {
+  819:         setActiveTab(tab);
+  820:       } else {
+  821:         toast.error("Please select property type");
+  822:       }
+  823:     } else if (error === "tab4") {
+  824:       const formValid = simpleValidator.current.allValid();
+  825:       if (!formValid) {
+  826:         simpleValidator.current.showMessages();
+  827:         forceUpdate(1);
+  828:       } else {
+  829:         setActiveTab(tab);
+  830:       }
+  831:     } else {
+  832:       setActiveTab(tab);
+  833:     }
+  834:   };
+  835: 
+  836:   return (
+  837:     <Layout>
+  838:       <div className="position-relative">
+  839:         <ul className="flight-tabs-ul">
+  840:           <li
+  841:             className={activeTab == 1 ? "active" : ""}
+  842:             onClick={() => setActiveTab(1)}
+  843:           >
+  844:             <Button color="nothing">
+  845:               <span className="flight-tabs-icon">
+  846:                 <ProfileSVG />
+  847:               </span>
+  848:               <span className="flight-tabs-text">Your Details</span>
+  849:             </Button>
+  850:           </li>
+  851:           <li
+  852:             className={activeTab == 2 ? "active" : ""}
+  853:             onClick={() => setActiveTab(2)}
+  854:           >
+  855:             <Button color="nothing">
+  856:               <span className="flight-tabs-icon">
+  857:                 <PropertySVG />
+  858:               </span>
+  859:               <span className="flight-tabs-text">Property Listing/Type</span>
+  860:             </Button>
+  861:           </li>
+  862:           <li
+  863:             className={activeTab == 3 ? "active" : ""}
+  864:             onClick={() => setActiveTab(3)}
+  865:           >
+  866:             <Button color="nothing">
+  867:               <span className="flight-tabs-icon">
+  868:                 <MapSVG />
+  869:               </span>
+  870:               <span className="flight-tabs-text">Property Details</span>
+  871:             </Button>
+  872:           </li>
+  873:           <li
+  874:             className={activeTab == 4 ? "active" : ""}
+  875:             onClick={() => setActiveTab(4)}
+  876:           >
+  877:             <Button color="nothing">
+  878:               <span className="flight-tabs-icon">
+  879:                 <AlbumSVG />
+  880:               </span>
+  881:               <span className="flight-tabs-text">Property Photos</span>
+  882:             </Button>
+  883:           </li>
+  884:         </ul>
+  885:         <section className="list-step1">
+  886:           <div className="custom-container">
+  887:             <div className="row">
+  888:               <div
+  889:                 className={`col-lg-10 mx-auto ${activeTab === 1
+  890:                     ? "medium-padding"
+  891:                     : activeTab === 3
+  892:                       ? "large-padding"
+  893:                       : ""
+  894:                   }`}
+  895:               >
+  896:                 {activeTab == 1 && (
+  897:                   <Tab1
+  898:                     {...props}
+  899:                     propertyType={propertyType}
+  900:                     setPropertyType={setPropertyType}
+  901:                     handleChangeRequest={handleChangeRequest}
+  902:                     simpleValidator={simpleValidator}
+  903:                     request={request}
+  904:                     handleSubmit={handleSubmitTab}
+  905:                     countryOption={countryOption}
+  906:                     countryCode={countryCode}
+  907:                     handleCountryCode={handleCountryCode}
+  908:                     setRequest={setRequest}
+  909:                     phoneError={phoneError}
+  910:                     setPhoneError={setPhoneError}
+  911:                     isValidPhoneNumber={isValidPhoneNumber}
+  912:                   />
+  913:                 )}
+  914:                 {activeTab == 2 && (
+  915:                   <ListStepTab2
+  916:                     {...props}
+  917:                     handleRequest={handleRequest}
+  918:                     loading={loading}
+  919:                     propertyTypeList={propertyTypeList}
+  920:                     property_type={property_type}
+  921:                     handleSubmit={handleSubmitTab}
+  922:                   />
+  923:                 )}
+  924: 
+  925:                 {activeTab == 3 && (
+  926:                   <ListStepTab3
+  927:                     {...props}
+  928:                     type={propertyType}
+  929:                     image={image}
+  930:                     saleRequest={saleRequest}
+  931:                     setSaleRequest={setSaleRequest}
+  932:                     handleChangeSaleRequest={handleChangeSaleRequest}
+  933:                     rentRequest={rentRequest}
+  934:                     setRentRequest={setRentRequest}
+  935:                     handleChangeRentRequest={handleChangeRentRequest}
+  936:                     handleChangeSelectId={handleChangeSelectId}
+  937:                     handleChangePushArray={handleChangePushArray}
+  938:                     cityList={cityList}
+  939:                     locationList={locationList}
+  940:                     locationAreaList={locationAreaList}
+  941:                     propertyBHKList={propertyBHKList}
+  942:                     developerList={developerList}
+  943:                     furnishingList={furnishingList}
+  944:                     facingList={facingList}
+  945:                     simpleValidator={simpleValidator}
+  946:                     amenitiesList={amenitiesList}
+  947:                     handleChangeSelect={handleChangeSelect}
+  948:                     logoPreview={logoPreview}
+  949:                     uploadImage={uploadImage}
+  950:                     property_type={property_type}
+  951:                     handleSubmit={handleSubmitTab}
+  952:                   />
+  953:                 )}
+  954: 
+  955:                 {activeTab == 4 && (
+  956:                   <ListStepTab4
+  957:                     {...props}
+  958:                     imageList={imageList}
+  959:                     isLoading={isLoading}
+  960:                     uploadImage={uploadImage}
+  961:                     handleSubmit={handleSubmit}
+  962:                     handleSubmitTab={handleSubmitTab}
+  963:                     handleRemoveImages={handleRemoveImages}
+  964:                   />
+  965:                 )}
+  966:               </div>
+  967:             </div>
+  968:           </div>
+  969:         </section>
+  970:       </div>
+  971:       <RouteLeavingGuard
+  972:         // When should shouldBlockNavigation be invoked,
+  973:         // simply passing a boolean
+  974:         // (same as "when" prop of Prompt of React-Router)
+  975:         when={isDirty}
+  976:         // Navigate function
+  977:         navigate={(path) => history.push(path)}
+  978:         // Use as "message" prop of Prompt of React-Router
+  979:         shouldBlockNavigation={(location) => {
+  980:           // This case it blocks the navigation when:
+  981:           // 1. the login form is dirty, and
+  982:           // 2. the user is going to 'sign-up' scene.
+  983:           //    (Just an example, in real case you might
+  984:           //     need to block all location regarding this case)
+  985:           if (isDirty) {
+  986:             if (location.pathname === "/list-step1") {
+  987:               return true;
+  988:             }
+  989:           }
+  990:           return false;
+  991:         }}
+  992:       />
+  993:     </Layout>
+  994:   );
+  995: }

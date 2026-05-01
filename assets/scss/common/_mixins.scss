@@ -1,0 +1,20 @@
+@mixin transform($value) {
+    transform: $value;
+    -webkit-transform: $value;
+    -moz-transform: $value;
+    -o-transform: $value;
+    -ms-transform: $value;
+}
+
+@mixin transition($value) {
+    transition: all $value ease-in-out;
+    -webkit-transition: all $value ease-in-out;
+    -moz-transition: all $value ease-in-out;
+    -ms-transition: all $value ease-in-out;
+    -o-transition: all $value ease-in-out;
+}
+
+@mixin boxShadow($boxArea, $color) {
+    box-shadow: $boxArea $color; 
+    -webkit-box-shadow: $boxArea $color;
+}

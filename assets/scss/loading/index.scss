@@ -1,0 +1,69 @@
+.shimmer-circle {
+    width: 32px;
+    height: 32px;
+    display: inline-block;
+    border-radius: 50%;
+}
+.shimmer-button {
+    width: 90px;
+    height: 40px;
+    display: inline-block;
+    border-radius: $base-border-radius;
+}
+.animate-loader {
+    animation: shimmer 3s infinite;
+    background: linear-gradient(to right, #eff1f3 4%, #e2e2e2 25%, #eff1f3 36%);
+    background-size: 1000px 100%;
+}
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+.loading-banner-wrapper {
+    &--banner-heading {
+        margin: 30px auto;
+        height: 50px;
+        width: 80%;
+        border-radius: 2*$base-border-radius;
+        &.no-margin {
+            margin: 10px auto;
+        }
+    }
+    &__search-box-wrapper {
+        max-width: 45%;
+        height: 64px;
+        width: 100%;
+        background-color: #dedede;
+        opacity: 0.75;
+        padding: 10px;
+        margin: 0 auto;
+        border-radius: $base-border-radius;
+    }
+    &__banner-caption {
+        max-width: 80%;
+        height: 200px;
+        background-color: #dedede;
+        opacity: 0.75;
+        padding: 10px;
+        margin: 30px auto 0;
+        border-radius: $base-border-radius;
+    }
+}
+.loading-banner-wrapper__banner {
+    height: 550px;
+    @media (max-width: $mobile-devices-max-width+px) {
+        height: 400px;
+    }
+}
+.header-loading-wrapper__menu-wrapper {
+    li {
+        display: inline-block;
+        width: 100px;
+        height: 30px;
+        border-radius: 2*$base-border-radius;
+    }
+}

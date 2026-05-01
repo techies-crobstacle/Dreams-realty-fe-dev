@@ -1,0 +1,76 @@
+.popup-wrapper {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: $white-color;
+  z-index: 12;
+  display: flex;
+  visibility: hidden;
+  opacity: 0;
+  @extend %transition;
+  &--active {
+    visibility: visible;
+    opacity: 1;
+  }
+  &__popup {
+    margin: auto;
+    padding: 32px;
+    border-radius: 8px;
+    box-shadow: 2px 4px 10px rgb(0, 0, 0, 0.29);
+    max-width: 534px;
+    width: 100%;
+  }
+  &__popup-border {
+    border-bottom: 1px solid $theme-border-color;
+  }
+  &__title {
+    font-size: (23 / $base-font-size) + rem;
+    font-weight: $normal-font-weight;
+  }
+  &__text {
+    font-size: (13 / $base-font-size) + rem;
+    font-weight: $light-font-weight;
+    padding-bottom: 8px;
+  }
+  &__form {
+    padding-top: 16px;
+  }
+  &__label {
+    margin-bottom: 3px;
+    margin-left: 4px;
+    color: #423f3f;
+    font-size: (13 / $base-font-size) + rem;
+    font-weight: $light-font-weight;
+  }
+  &__input {
+    height: 44px;
+    &::placeholder {
+      font-size: (15 / $base-font-size) + rem;
+      color: #9d9d9d;
+    }
+  }
+  &__form-group {
+    margin-bottom: 16px;
+  }
+  &__button {
+    background-color: $theme-primary-color;
+    color: $white-color;
+    border: 1px solid transparent;
+    margin: 16px 0 0;
+    padding: 12px 205px;
+    border-radius: $base-border-radius;
+    @extend %transition;
+    display: inline;
+    @media (max-width: $mobile-devices-max-width+px) {
+      padding: 12px 0px;
+      width: 100%;
+    }
+    &:hover {
+      color: $theme-primary-color;
+      background-color: $white-color;
+      border-color: $theme-primary-color;
+    }
+  }
+}

@@ -1,0 +1,85 @@
+    1: import React, { useEffect, useState } from "react";
+    2: import Link from "next/link";
+    3: import { getValue } from "/utils/lodash";
+    4: 
+    5: export default function ListStepTab2(props) {
+    6:   const {
+    7:     loading,
+    8:     propertyTypeList,
+    9:     handleRequest,
+   10:     property_type,
+   11:     isLoading,
+   12:     handleSubmit,
+   13:   } = props;
+   14:   return (
+   15:     <div className="row">
+   16:       <div className="col-lg-10 mx-auto">
+   17:         <h3>
+   18:           Select Your Listing and Property Type{" "}
+   19:           <span style={{ color: "red" }}>*</span>
+   20:         </h3>
+   21:         <div className="form-container mt-3">
+   22:           {loading ? (
+   23:             <p className="text-center mt-2">Please wait...</p>
+   24:           ) : (
+   25:             <div className="row">
+   26:               {getValue(props, `propertyTypeList`, []).map((item, index) => {
+   27:                 return (
+   28:                   <div className="col-md-4" key={index}>
+   29:                     <div className="form-group">
+   30:                       <label
+   31:                         className={`radio-css ${
+   32:                           item.id === property_type ? "active" : ""
+   33:                         }`}
+   34:                         htmlFor={getValue(item, "title", "")}
+   35:                       >
+   36:                         <div
+   37:                           className="cursor-pointer"
+   38:                           onClick={() => handleRequest(item.id)}
+   39:                         >
+   40:                           <h4>{getValue(item, "title", "")}</h4>
+   41:                         </div>
+   42:                         <input
+   43:                           type="radio"
+   44:                           id={getValue(item, "title", "")}
+   45:                           name="checked"
+   46:                           checked={item.id === property_type}
+   47:                           onChange={() => handleRequest(item.id)}
+   48:                         />
+   49:                       </label>
+   50:                     </div>
+   51:                   </div>
+   52:                 );
+   53:               })}
+   54:             </div>
+   55:           )}
+   56:           <div className="mt-4 mb-5 d-flex gap-3 flex-wrap">
+   57:             <button
+   58:               className="theme-button theme-secondary-btn mr-3"
+   59:               onClick={() => handleSubmit(1)}
+   60:             >
+   61:               Back
+   62:             </button>
+   63:             {isLoading ? (
+   64:               <button className="theme-button theme-primary-btn mr-3">
+   65:                 Please wait...
+   66:               </button>
+   67:             ) : (
+   68:               <button
+   69:                 className="theme-button theme-primary-btn mr-3"
+   70:                 onClick={() => handleSubmit(3, "tab3")}
+   71:               >
+   72:                 Next
+   73:               </button>
+   74:             )}
+   75:             <Link href="/">
+   76:               <button className="theme-button theme-secondary-btn mr-0">
+   77:                 Cancel
+   78:               </button>
+   79:             </Link>
+   80:           </div>
+   81:         </div>
+   82:       </div>
+   83:     </div>
+   84:   );
+   85: }

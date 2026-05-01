@@ -1,0 +1,14 @@
+<svg id="maps_home_work_black_24dp" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <g id="Group_8426" data-name="Group 8426">
+    <path id="Path_37451" data-name="Path 37451" d="M0,0H24V24H0Z" fill="none"/>
+  </g>
+  <g id="Group_8428" data-name="Group 8428">
+    <g id="Group_8427" data-name="Group 8427">
+      <rect id="Rectangle_9627" data-name="Rectangle 9627" width="2" height="2" transform="translate(17 7)" fill="#5f6368"/>
+      <rect id="Rectangle_9628" data-name="Rectangle 9628" width="2" height="2" transform="translate(17 11)" fill="#5f6368"/>
+      <rect id="Rectangle_9629" data-name="Rectangle 9629" width="2" height="2" transform="translate(17 15)" fill="#5f6368"/>
+      <path id="Path_37452" data-name="Path 37452" d="M1,11V21H7V16H9v5h6V11L8,6Zm12,8H11V14H5v5H3V12L8,8.5,13,12Z" fill="#5f6368"/>
+      <path id="Path_37453" data-name="Path 37453" d="M10,3V4.97L12,6.4V5h9V19H17v2h6V3Z" fill="#5f6368"/>
+    </g>
+  </g>
+</svg>

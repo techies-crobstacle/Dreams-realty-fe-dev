@@ -1,0 +1,580 @@
+    1: "use client";
+    2: 
+    3: import React, { useEffect, useState, useRef } from "react";
+    4: import dynamic from "next/dynamic";
+    5: import { getValue } from "/utils/lodash";
+    6: import SimpleReactValidator from "simple-react-validator";
+    7: import Router from "next/router";
+    8: import { toast } from "react-toastify";
+    9: import { isValidPhoneNumber } from "libphonenumber-js";
+   10: 
+   11: const Banner = dynamic(() => import("@components/home/banner/banner.js"));
+   12: const PropertyListed = dynamic(() =>
+   13:   import("@components/home/property-listed/index.js")
+   14: );
+   15: const Testimonials = dynamic(() =>
+   16:   import("@components/home/testimonials/index.js")
+   17: );
+   18: const FeaturedPropertyBuy = dynamic(() =>
+   19:   import("@components/home/featured-property-buy/index.js")
+   20: );
+   21: const FeaturedPropertyRent = dynamic(() =>
+   22:   import("@components/home/featured-property-rent/index.js")
+   23: );
+   24: const Partners = dynamic(() =>
+   25:   import("@components/home/our-partners/index.js")
+   26: );
+   27: const Bank = dynamic(() => import("@components/home/our-bank/index.js"));
+   28: const Search = dynamic(() =>
+   29:   import("@components/home/unique-properties/index.js")
+   30: );
+   31: const CustomerReview = dynamic(() =>
+   32:   import("@components/home/reviews/index.js")
+   33: );
+   34: const Layout = dynamic(() => import("@components/layout.js"));
+   35: const PropertiesByLocation = dynamic(() =>
+   36:   import("@components/home/properties-by-location")
+   37: );
+   38: const PropertySocialShare = dynamic(() =>
+   39:   import("@components/home/share-property/PropertySocialShare")
+   40: );
+   41: const HomeCTA = dynamic(() => import("@components/home/cta/HomeCTA"));
+   42: 
+   43: import {
+   44:   fetchBanners,
+   45:   fetchOurPartners,
+   46:   fetchOurBank,
+   47:   fetchSaleProperties,
+   48:   fetchRentProperties,
+   49:   fetchPropertyTypes,
+   50:   postCreatePropertyEnquiry,
+   51:   fetchCities,
+   52:   fetchLocationAreas,
+   53: } from "@services/APIs/common.service";
+   54: import Review from "@components/home/reviews/index.js";
+   55: import Meta from "../seo-meta";
+   56: 
+   57: const HomePage = ({ reviews }) => {
+   58:   const [rentPropertiesList, setRentPropertiesList] = useState([]);
+   59:   const [salePropertiesList, setSalePropertiesList] = useState([]);
+   60:   const [propertyTypeList, setPropertyTypeList] = useState([]);
+   61:   const [isContactLoading, setContactLoading] = useState(false);
+   62:   const [showWelcomePopup, setShowWelcomePopup] = useState(true);
+   63:   //   const [reviews, setReviews] = useState([]);
+   64: 
+   65:   // banner search
+   66:   const [banners, setBanners] = useState([]);
+   67:   const [activeTab, setActiveTab] = useState("1");
+   68:   const [mainSearchInput, setMainSearchInput] = useState("");
+   69:   const [mainSearchLoading, setMainSearchLoading] = useState(false);
+   70:   const [mainSearchSuggestionList, setMainSearchSuggestionList] = useState([]);
+   71:   const [partnersList, setPartnersList] = useState([]);
+   72:   const [banksList, setBanksList] = useState([]);
+   73:   const simpleValidator = useRef(new SimpleReactValidator());
+   74:   const [, forceUpdate] = useState(0);
+   75:   const [isBannerLoading, setBannerLoading] = useState(false);
+   76: 
+   77:   //location search
+   78:   const [cities, setCities] = useState([]);
+   79:   const [citiesLoading, setCitiesLoading] = useState("");
+   80:   const [selectedCity, setSelectedCity] = useState("");
+   81: 
+   82:   //Location areas
+   83:   const [locationArea, getLocationArea] = useState([]);
+   84:   const [isLocationAreaLoading, setIsLocationAreaLoading] = useState("");
+   85: 
+   86:   //property types
+   87:   const [selectedPropertyType, setSelectedPropertyType] = useState("");
+   88: 
+   89:   const [propertySlug, setPropertySlug] = useState("");
+   90:   const [modal, setModal] = useState(false);
+   91:   const toggle = (slug) => {
+   92:     setModal(!modal);
+   93:     setPropertySlug(slug);
+   94:   };
+   95: 
+   96:   const [showCta, setShowCta] = useState(false);
+   97:   const [ctaPropType, setCtaPropType] = useState("");
+   98:   const [ctaPropId, setCtaPropId] = useState("");
+   99:   const [selectedPropertyName, setSelectedPropertyName] = useState("");
+  100: const [selectedPropertyCategory, setSelectedPropertyCategory] = useState("");
+  101:   // const toggleCta = (type, id) => {
+  102:   //   setShowCta(!showCta);
+  103:   //   setCtaPropType(type);
+  104:   //   setCtaPropId(id);
+  105:   // };
+  106: 
+  107:   const toggleCta = (type, id, propertyName, propertyCategory) => {
+  108:   setShowCta(!showCta);
+  109:   setCtaPropType(type);
+  110:   setCtaPropId(id);
+  111:   setSelectedPropertyName(propertyName || "");
+  112:   setSelectedPropertyCategory(propertyCategory || "");
+  113: };
+  114: 
+  115: 
+  116:   const [request, setRequest] = useState({
+  117:     name: "",
+  118:     phone: "",
+  119:   });
+  120: 
+  121:   const [activeTabHome, setActiveTabHome] = useState("1");
+  122:   const handleChangeContact = (e) => {
+  123:     const { name, value } = e.target;
+  124:     setRequest({
+  125:       ...request,
+  126:       [name]: value,
+  127:     });
+  128:   };
+  129: 
+  130:   const validator = useRef(
+  131:     new SimpleReactValidator({
+  132:       validators: {
+  133:         phone: {
+  134:           message: "Please enter a valid phone number",
+  135:           rule: (val, params, validator) => {
+  136:             try {
+  137:               if (!val) return false;
+  138:               // Remove spaces and any other non-digit characters except +
+  139:               const cleanedValue = val.replace(/[^\d+]/g, "");
+  140:               return isValidPhoneNumber(cleanedValue);
+  141:             } catch (error) {
+  142:               return false;
+  143:             }
+  144:           },
+  145:         },
+  146:       },
+  147:     })
+  148:   );
+  149: 
+  150:   // Add this function to validate phone independently
+  151:   const validatePhone = (phoneValue) => {
+  152:     if (!phoneValue) {
+  153:       setPhoneError("Phone number is required");
+  154:       return false;
+  155:     } else if (!isValidPhoneNumber(phoneValue)) {
+  156:       setPhoneError("Please enter a valid phone number");
+  157:       return false;
+  158:     } else {
+  159:       setPhoneError(""); // Clear error if valid
+  160:       return true;
+  161:     }
+  162:   };
+  163: 
+  164:   const [phoneError, setPhoneError] = useState("");
+  165: 
+  166:   const handleSubmit = async () => {
+  167:     // First, trigger validation for all fields
+  168:     const formValid = simpleValidator.current.allValid();
+  169: 
+  170:     // Explicitly validate phone (add this)
+  171:     const isPhoneValid = validatePhone(request.phone);
+  172: 
+  173:     if (!formValid || !isPhoneValid) {
+  174:       simpleValidator.current.showMessages();
+  175:       forceUpdate(1); // Ensure re-render for errors
+  176:       return;
+  177:     } else {
+  178:       try {
+  179:         setContactLoading(true);
+  180:         let data = {
+  181:           data: {
+  182:             name: request.name,
+  183:             phone: request.phone,
+  184:             // property: getValue(this.props, `propertyDetails.projectBySlug.id`, '')
+  185:           },
+  186:         };
+  187:         let resp = await postCreatePropertyEnquiry(data);
+  188:         if (resp) {
+  189:           toast.success(getValue(resp, "message", "Submitted successfully"));
+  190:           setContactLoading(false);
+  191:           setRequest({
+  192:             ...request,
+  193:             name: "",
+  194:             phone: "",
+  195:             comment: "",
+  196:           });
+  197:           setPhoneError("");
+  198:           simpleValidator.current.hideMessages();
+  199:           forceUpdate(0);
+  200:         } else {
+  201:           setContactLoading(false);
+  202:         }
+  203:       } catch (error) {
+  204:         setContactLoading(false);
+  205:       }
+  206:     }
+  207:   };
+  208: 
+  209:   useEffect(() => {
+  210:     getRentProperties();
+  211:     getSaleProperties();
+  212:     getPartners();
+  213:     getBanks();
+  214:     getPropertyTypes();
+  215:     getBannerImages();
+  216:     getCities();
+  217:     getLocationAreas();
+  218:     window.location !== "undefined" && localStorage.removeItem("path");
+  219:   }, []);
+  220: 
+  221:   useEffect(() => {
+  222:     if (propertyTypeList) {
+  223:       setSelectedPropertyType(getValue(propertyTypeList, "[0].id", ""));
+  224:     }
+  225:   }, [propertyTypeList]);
+  226: 
+  227:   const getBannerImages = async () => {
+  228:     setBannerLoading(true);
+  229:     try {
+  230:       let resp = await fetchBanners();
+  231:       if (resp) {
+  232:         setBanners(getValue(resp, "data", []));
+  233:         setBannerLoading(false);
+  234:       }
+  235:     } catch (error) {
+  236:       setBannerLoading(false);
+  237:     }
+  238:   };
+  239: 
+  240:   const getPartners = async () => {
+  241:     try {
+  242:       let resp = await fetchOurPartners();
+  243:       if (resp) {
+  244:         setPartnersList(getValue(resp, "data", []));
+  245:       }
+  246:     } catch (error) {}
+  247:   };
+  248: 
+  249:   const getBanks = async () => {
+  250:     try {
+  251:       let resp = await fetchOurBank();
+  252:       if (resp) {
+  253:         setBanksList(getValue(resp, "data", []));
+  254:       }
+  255:     } catch (error) {}
+  256:   };
+  257: 
+  258:   const getCities = async () => {
+  259:     setCitiesLoading(true);
+  260:     try {
+  261:       let resp = await fetchCities();
+  262:       if (resp) {
+  263:         setCities(getValue(resp, "data", []));
+  264:         setCitiesLoading(false);
+  265:       }
+  266:     } catch (error) {
+  267:       setCitiesLoading(false);
+  268:     }
+  269:   };
+  270: 
+  271:   const getLocationAreas = async () => {
+  272:     setIsLocationAreaLoading(true);
+  273:     try {
+  274:       let resp = await fetchLocationAreas();
+  275:       if (resp) {
+  276:         getLocationArea(getValue(resp, "data", []));
+  277:         setIsLocationAreaLoading(false);
+  278:       }
+  279:     } catch (error) {
+  280:       setIsLocationAreaLoading(false);
+  281:     }
+  282:   };
+  283: 
+  284:   const [rentLoading, setRentLoading] = useState(false);
+  285:   const getRentProperties = async () => {
+  286:     try {
+  287:       let where = {
+  288:         "filters[is_featured][$eq]": true,
+  289:         "filters[hide_in_list][$eq]": false,
+  290:       };
+  291:       setRentLoading(true);
+  292:       let resp = await fetchRentProperties(where);
+  293:       if (resp) {
+  294:         setRentPropertiesList(getValue(resp, "data", []));
+  295:         setRentLoading(false);
+  296:       } else {
+  297:         setRentLoading(false);
+  298:       }
+  299:     } catch (error) {
+  300:       setRentLoading(false);
+  301:     }
+  302:   };
+  303: 
+  304:   const [saleLoading, setSaleLoading] = useState(false);
+  305:   const getSaleProperties = async () => {
+  306:     try {
+  307:       let where = {
+  308:         "filters[is_featured][$eq]": true,
+  309:         "filters[hide_in_list][$eq]": false,
+  310:       };
+  311:       setSaleLoading(true);
+  312:       let resp = await fetchSaleProperties(where);
+  313:       if (resp) {
+  314:         setSalePropertiesList(getValue(resp, "data", []));
+  315:         setSaleLoading(false);
+  316:       } else {
+  317:         setSaleLoading(false);
+  318:       }
+  319:     } catch (error) {
+  320:       setSaleLoading(false);
+  321:     }
+  322:   };
+  323: 
+  324:   const [typeLoading, setTypeLoading] = useState(false);
+  325:   const getPropertyTypes = async () => {
+  326:     try {
+  327:       setTypeLoading(true);
+  328:       let resp = await fetchPropertyTypes();
+  329:       if (resp) {
+  330:         const order = [
+  331:           "villa-homes",
+  332:           "apartments",
+  333:           "plots",
+  334:           "farmland",
+  335:           "office-spaces",
+  336:         ];
+  337:         const sortedList = getValue(resp, "data", []).sort((a, b) => {
+  338:           return order.indexOf(a.slug) - order.indexOf(b.slug);
+  339:         });
+  340:         setTypeLoading(false);
+  341:         setPropertyTypeList(sortedList);
+  342:       } else {
+  343:         setTypeLoading(false);
+  344:       }
+  345:     } catch (error) {
+  346:       setTypeLoading(false);
+  347:     }
+  348:   };
+  349: 
+  350:   const handleNavigateSearch = () => {
+  351:     Router.push(`/search-properties?page=0&type=${activeTab}`);
+  352:   };
+  353: 
+  354:   const handleChangeTab = (value) => {
+  355:     setActiveTab(value);
+  356:     setMainSearchInput("");
+  357:     setMainSearchSuggestionList([]);
+  358:   };
+  359: 
+  360:   const [selectedOption, setSelectedOption] = useState("All");
+  361: 
+  362:   const handleChangeMainSearch = async (e) => {
+  363:     const { name, value } = e.target;
+  364:     if (value) {
+  365:       setMainSearchInput(value);
+  366:       let where = {
+  367:         "filters[title][$containsi]": value,
+  368:         "filters[hide_in_list][$eq]": false,
+  369:         ...(selectedOption !== "All" &&
+  370:           selectedOption !== "all" && {
+  371:             "filters[property_type][id][$eq]": selectedOption,
+  372:           }),
+  373:       };
+  374:       if (value) {
+  375:         if (activeTab === "1") {
+  376:           try {
+  377:             setMainSearchLoading(true);
+  378:             let resp = await fetchSaleProperties(where);
+  379:             if (resp) {
+  380:               setMainSearchLoading(false);
+  381:               setMainSearchSuggestionList(getValue(resp, "data", []));
+  382:             } else {
+  383:               setMainSearchLoading(false);
+  384:             }
+  385:           } catch (error) {
+  386:             setMainSearchLoading(false);
+  387:           }
+  388:         } else {
+  389:           try {
+  390:             setMainSearchLoading(true);
+  391:             let resp = await fetchRentProperties(where);
+  392:             if (resp) {
+  393:               setMainSearchLoading(false);
+  394:               setMainSearchSuggestionList(getValue(resp, "data", []));
+  395:             } else {
+  396:               setMainSearchLoading(false);
+  397:             }
+  398:           } catch (error) {
+  399:             setMainSearchLoading(false);
+  400:           }
+  401:         }
+  402:       }
+  403:     } else {
+  404:       setMainSearchInput(value);
+  405:       setMainSearchLoading(false);
+  406:     }
+  407:   };
+  408: 
+  409:   const mainSearchSubmit = () => {
+  410:     // If search is empty and no specific category selected
+  411:     if (!mainSearchInput && (selectedOption === "All" || selectedOption === "all")) {
+  412:       Router.push(`/property-for-${activeTab === "1" ? "sale" : "rent"}`);
+  413:       return;
+  414:     }
+  415: 
+  416:     Router.push({
+  417:       pathname: `property-for-${activeTab === "1" ? "sale" : "rent"}`,
+  418:       query: mainSearchInput
+  419:         ? {
+  420:             title_contains: mainSearchInput,
+  421:             page: 0,
+  422:             type: activeTab,
+  423:             ...(selectedOption !== "All" &&
+  424:               selectedOption !== "all" && {
+  425:                 property_type: selectedPropertyType,
+  426:               }),
+  427:           }
+  428:         : {
+  429:             page: 0,
+  430:             type: activeTab,
+  431:             ...(selectedOption !== "All" &&
+  432:               selectedOption !== "all" && {
+  433:                 property_type: selectedPropertyType,
+  434:               }),
+  435:           },
+  436:     });
+  437:   };
+  438: 
+  439:   const handleNavigate = (id) => {
+  440:     if (window.location !== "undefined") {
+  441:       localStorage.setItem("path", activeTabHome);
+  442:     }
+  443:     Router.push({
+  444:       pathname: `/search-properties`,
+  445:       query: {
+  446:         property_type: id,
+  447:         page: 0,
+  448:         type: activeTabHome,
+  449:       },
+  450:     });
+  451:   };
+  452: 
+  453:   const handleActiveTabHome = async (value) => {
+  454:     setActiveTabHome(value);
+  455:   };
+  456: 
+  457:   const handleCityChange = (event) => {
+  458:     setSelectedCity(event.target.value);
+  459:     setCities(selectedCity);
+  460:   };
+  461: 
+  462:   const handlePropertyTypeChange = (e) => {
+  463:     setSelectedPropertyType(e.target.value);
+  464:   };
+  465: 
+  466:   return (
+  467:     <Layout>
+  468:       <Meta
+  469:         title="Dreams Realty | Most Trusted Realtor in Bangalore"
+  470:         description="Buy or rent verified luxury properties in Bangalore with Dreams Realty, the most trusted realtor. Expert guidance to find your perfect home."
+  471:         keywords="Most trusted realtor in Bangalore | Trusted real estate consultant in Bangalore | Villas for sale in Whitefield Bangalore |Flats for sale in Bangalore | Apartments for sale in Bangalore"
+  472:       />
+  473:       <Banner
+  474:         banners={banners}
+  475:         handleNavigateSearch={handleNavigateSearch}
+  476:         activeTab={activeTab}
+  477:         handleChangeTab={handleChangeTab}
+  478:         isBannerLoading={isBannerLoading}
+  479:         // search
+  480:         mainSearchSubmit={mainSearchSubmit}
+  481:         mainSearchInput={mainSearchInput}
+  482:         mainSearchLoading={mainSearchLoading}
+  483:         mainSearchSuggestionList={mainSearchSuggestionList}
+  484:         handleChangeMainSearch={handleChangeMainSearch}
+  485:         selectedOption={selectedOption}
+  486:         setSelectedOption={setSelectedOption}
+  487:         //cities
+  488:         cities={cities}
+  489:         citiesLoading={citiesLoading}
+  490:         handleCityChange={handleCityChange}
+  491:         selectedCity={selectedCity}
+  492:         //property type
+  493:         propertyTypeList={propertyTypeList}
+  494:         handlePropertyTypeChange={handlePropertyTypeChange}
+  495:       />
+  496:       {/* {salePropertiesList.length > 0 && ( */}
+  497:       <FeaturedPropertyBuy
+  498:         saleLoading={saleLoading}
+  499:         salePropertiesList={salePropertiesList}
+  500:         toggle={toggle}
+  501:         toggleCta={toggleCta}
+  502:       />
+  503:       {/* )} */}
+  504:       {rentPropertiesList.length > 0 && (
+  505:         <FeaturedPropertyRent
+  506:           rentLoading={rentLoading}
+  507:           rentPropertiesList={rentPropertiesList}
+  508:           toggle={toggle}
+  509:           toggleCta={toggleCta}
+  510:         />
+  511:       )}
+  512:       <Search
+  513:         handleChange={handleChangeContact}
+  514:         request={request}
+  515:         setRequest={setRequest}
+  516:         handleSubmit={handleSubmit}
+  517:         isContactLoading={isContactLoading}
+  518:         validator={validator}
+  519:         simpleValidator={simpleValidator}
+  520:         phoneError={phoneError}
+  521:         setPhoneError={setPhoneError}
+  522:         validatePhone={validatePhone}
+  523:       />
+  524:       <Partners partnersList={partnersList} />
+  525:       <Bank banksList={banksList} />
+  526:       <PropertyListed
+  527:         typeLoading={typeLoading}
+  528:         propertyTypeList={propertyTypeList}
+  529:         handleNavigate={handleNavigate}
+  530:         activeTabHome={activeTabHome}
+  531:         handleActiveTabHome={handleActiveTabHome}
+  532:       />
+  533:       <Testimonials />
+  534:       <PropertiesByLocation
+  535:         locationArea={locationArea}
+  536:         isLocationAreaLoading={isLocationAreaLoading}
+  537:         propertyTypeList={propertyTypeList}
+  538:         handleNavigate={handleNavigate}
+  539:         activeTabHome={activeTabHome}
+  540:         handleActiveTabHome={handleActiveTabHome}
+  541:       />
+  542:       {/* {reviews.length > 0 ? <CustomerReview reviews={reviews} /> : ""} */}
+  543:       <div className="custom-container mb-5 mt-5">
+  544:         <p>©2025 Dreams Realty</p>
+  545:         <p>
+  546:           Dreams Realty Promoted by Authorised Affiliate Channel Sales Partner.
+  547:         </p>
+  548:         <h6 className="mt-4">Privacy Policy & Disclaimer :</h6>
+  549:         <span style={{ fontSize: "12px" }}>
+  550:           Any content mentioned in this website is sourced from the
+  551:           Developer/Builder for information purpose only and not to be
+  552:           considered as an official website. This Website belongs to Authorised
+  553:           Sales Partner of Dreams Realty and does not include Dreams Realty
+  554:           Sales Team. The details given here are sourced content from the
+  555:           builder but does not abide Dreams Realty to this website in any
+  556:           manner.
+  557:         </span>
+  558:       </div>
+  559:       {reviews?.length > 0 && <Review reviews={reviews} />}
+  560: 
+  561:       <PropertySocialShare
+  562:         modal={modal}
+  563:         toggle={toggle}
+  564:         propertySlug={propertySlug}
+  565:       />
+  566:       
+  567: 
+  568:       <HomeCTA
+  569:   modal={showCta}
+  570:   toggle={toggleCta}
+  571:   type={ctaPropType}
+  572:   id={ctaPropId}
+  573:   propertyName={selectedPropertyName}
+  574:   propertyCategory={selectedPropertyCategory}
+  575: />
+  576:     </Layout>
+  577:   );
+  578: };
+  579: 
+  580: export default HomePage;

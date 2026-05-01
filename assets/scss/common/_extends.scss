@@ -1,0 +1,219 @@
+
+/* Display Classes Starts Here */
+%display-inline-block {
+    display: inline-block;
+}
+
+%display-block {
+    display: block;
+}
+
+%display-inline {
+    display: inline-block;
+}
+
+%display-none {
+    display: none;
+}
+/* Display Classes Ends Here */
+
+/* Font Weights Starts Here */
+%bold-font {
+    font-weight:$bold-font-weight;
+}
+
+%medium-bold-font {
+    font-weight:$medium-font-weight;
+}
+
+%normal-font {
+    font-weight: $normal-font-weight;
+}
+
+%light-font {
+    font-weight: $light-font-weight;
+}
+/* Font Weights Ends Here */
+
+/* Reset Padding and Margin to 0px Starts Here*/
+
+%no-margin {
+    margin: 0;
+}
+
+%no-padding {
+    padding: 0;
+}
+
+%opacity-0 {
+    opacity: 0;
+}
+
+%margin-auto {
+    margin: auto;
+}
+
+%cursor-pointer {
+    cursor: pointer;
+}
+
+/* Reset Padding and Margin to 0px Ends Here*/
+
+
+%block {
+    float: left;
+    width: 100%;
+}
+
+/* ==========
+ Text alignment CSS Starts Here
+========== */
+%text-center{
+    text-align: center;
+}
+%text-left{
+    text-align: left;
+}
+%text-justify{
+    text-align: justify;
+}
+%text-right{
+    text-align: right;
+}
+%text-uppercase{
+    text-transform: uppercase;
+}
+%text-capitalize{
+    text-transform: capitalize;
+}
+
+%white-color {
+    color: $white-color;
+}
+
+%theme-secondary-text-color {
+    color: $theme-font-secondary-color;
+}
+/* ==========
+ Position related CSS Starts Here
+========== */
+%position-relative {
+    position: relative;
+}
+
+%position-absolute{
+    position: absolute;
+}
+
+%position-fixed{
+    position: fixed;
+}
+
+%display-flex {
+    display: flex;
+    display: -ms-flex;
+}
+
+%flex-2 {
+    flex: 2;
+    -ms-flex:2;
+}
+
+%flex-1 {
+    flex: 1;
+    -ms-flex:1;
+}
+%flex-align-center {
+    align-items: center;
+    -webkit-align-items: center;
+}
+
+%flex-align-bottom{
+    align-items: flex-end;
+    -webkit-align-items: flex-end;
+}
+
+%flex-justify-content-space-between {
+    justify-content: space-between;
+    -webkit-justify-content: space-between;
+}
+
+%flex-justify-content-space-around {
+    justify-content: space-around;
+    -webkit-justify-content: space-around;
+}
+
+%flex-justify-content-center {
+    justify-content: center;
+    -webkit-justify-content: center;
+}
+
+%flex-direction-column{
+    flex-direction: column;
+    -webkit-flex-direction: column;
+}
+
+@media(max-width:$mobile-devices-max-width+px){
+    %flex-direction-column-mobile{
+        flex-direction: column;
+        -webkit-flex-direction: column;
+    }
+    %flex-justify-content-center-mobile {
+        justify-content: center;
+        -webkit-justify-content: center;
+    }
+}
+
+%w-100 {
+  width: 100%;
+}
+
+//height 100% class
+%h-100 {
+    height: 100%;
+}
+
+%transition {
+  transition: 300ms all ease-in-out;
+  -webkit-transition: 300ms all ease-in-out;
+  -moz-transition: 300ms all ease-in-out;
+  -ms-transition: 300ms all ease-in-out;
+  -o-transition: 300ms all ease-in-out;
+}
+
+%placeholder {
+    color: $theme-font-secondary-color;
+    font-size: (14/$base-font-size)+rem;
+    font-family: $font-family;
+}
+
+@-webkit-keyframes shine {
+    0% {
+        background-position: -5000px 0;
+    }
+
+    100% {
+        background-position: 5000px 0;
+    }
+}
+
+@keyframes shine {
+    0% {
+        background-position: -5000px 0;
+    }
+
+    100% {
+        background-position: 5000px 0;
+    }
+}
+%not-visible {
+    opacity: 0;
+    visibility: hidden;
+}
+%visible {
+    opacity: 1;
+    visibility: visible;
+}
+%overflow-hidden {
+    overflow: hidden;
+}

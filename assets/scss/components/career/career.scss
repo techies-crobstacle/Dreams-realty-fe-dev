@@ -1,0 +1,107 @@
+.career-posts {
+  border: 1px solid #dadce0;
+  padding: 1.4rem;
+  border-radius: 8px;
+  margin: 1rem 0;
+
+  .smaller-font {
+    font-size: 14px;
+  }
+
+  .career-requirements {
+    color: $theme-font-heading-color;
+  }
+
+  .add-border-bottom {
+    border-bottom: 1px solid $theme-border-color;
+  }
+
+  .about-the-job p {
+    margin-bottom: 1rem;
+  }
+  
+  .about-the-job p:last-child {
+    margin-bottom: 0!important;
+  }
+  
+
+  .custom-list ol, ul {
+    padding: 0 !important;
+    margin-bottom: 0 !important;
+  
+    li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 3px;
+  
+      &::before {
+        content: url("/images/property-details/circle-chk.svg");
+      }
+    }
+  }
+}
+
+.career-banner {
+  background-image: url(/images/career/slide-banner.webp);
+  height: 400px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+
+  h2 {
+    color: #fff;
+    padding: 3rem;
+
+    @media (min-width: $tablet-devices-min+px) {
+      width: 60%;
+    }
+  }
+}
+
+.resume-drop-area {
+  border: 2px dashed $theme-border-color;
+  display: grid;
+  gap: 10px;
+  background: $theme-light-bg;
+  border-radius: 6px;
+  padding: 2rem;
+  justify-content: center;
+
+  p {
+    text-align: center;
+  }
+
+  .select-file-btn {
+    border: 1px solid $theme-primary-color;
+    border-radius: 6px;
+    background: #fff;
+    color: $theme-primary-color;
+    padding: 0.8rem 0.8rem;
+  }
+}
+
+.attached-file {
+  background: #f7f9fe;
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  margin: 10px 0;
+  gap: 1rem;
+
+  p {
+    font-size: 14px;
+  }
+
+  .remove-file {
+    background: none;
+    border: none;
+    outline: none;
+
+    img {
+      width: 16px;
+    }
+  }
+}
+
+

@@ -1,0 +1,774 @@
+    1: import React, { useEffect, useState, useRef } from "react";
+    2: import Layout from "@components/layout.js";
+    3: import Link from "next/link";
+    4: import SaleForm from "./sale-form";
+    5: import RentForm from "./rent-form";
+    6: import SimpleReactValidator from "simple-react-validator";
+    7: import { getValue } from "/utils/lodash";
+    8: import { toast } from "react-toastify";
+    9: import router from "next/router";
+   10: import axios from "axios";
+   11: import { Button } from "reactstrap";
+   12: import ProfileSVG from "@components/svg/profile-svg";
+   13: import AlbumSVG from "@components/svg/album-svg";
+   14: import PropertySVG from "@components/svg/property-svg";
+   15: import MapSVG from "@components/svg/map-svg";
+   16: import {
+   17:   fetchAmenities,
+   18:   fetchCities,
+   19:   fetchDevelopers,
+   20:   fetchLocationAreas,
+   21:   fetchLocations,
+   22:   fetchPropertyBhks,
+   23:   fetchRentProperties,
+   24:   fetchSaleProperties,
+   25:   fetchUpdateRentProperty,
+   26:   fetchUpdateSaleProperty,
+   27: } from "@services/APIs/common.service";
+   28: 
+   29: export default function ListStep3(props) {
+   30:   /* -------------------------------------------------------------------------- */
+   31:   /*                               Use State Section                            */
+   32:   /* -------------------------------------------------------------------------- */
+   33:   const simpleValidator = useRef(new SimpleReactValidator());
+   34:   const [, forceUpdate] = useState(0);
+   35:   const [isLoading, setIsLoading] = useState(false);
+   36:   const [saleRequest, setSaleRequest] = useState({
+   37:     title: "",
+   38:     address: "",
+   39:     about: "",
+   40:     balcony: "",
+   41:     bathrooms: "",
+   42: 
+   43:     logo: "", //-file
+   44: 
+   45:     property_rera: "",
+   46:     total_units: "",
+   47:     development_size: "",
+   48:     price: "",
+   49:     video_url: "",
+   50: 
+   51:     plot_area: "",
+   52:     plot_area_max: "",
+   53:     plot_area_min: "",
+   54:     carpet_area: "",
+   55:     carpet_area_min: "",
+   56:     carpet_area_max: "",
+   57:     super_build_up_area: "",
+   58:     super_build_up_area_min: "",
+   59:     super_build_up_area_max: "",
+   60: 
+   61:     latitude: "",
+   62:     longitude: "",
+   63: 
+   64:     city: "", //--dropdown
+   65:     location: "", //--dropdown
+   66:     location_area: "", //--dropdown
+   67: 
+   68:     Developer: "", //--dropdown
+   69: 
+   70:     // property_construction_status: "", //--dropdown
+   71:     furnishing: "", //--dropdown
+   72:     facing: "", //--dropdown
+   73:     property_bhks: [], //--dropdown
+   74:     amenities: [],
+   75:   });
+   76: 
+   77:   const [logoPreview, setLogoPreview] = useState("");
+   78:   const [image, setImage] = useState("");
+   79:   const [property_type, setProperty_type] = useState("");
+   80: 
+   81:   const [rentRequest, setRentRequest] = useState({
+   82:     title: "",
+   83:     address: "",
+   84:     about: "",
+   85:     logo: "",
+   86: 
+   87:     property_rera: "",
+   88:     total_units: "",
+   89:     development_size: "",
+   90:     price: "",
+   91:     video_url: "",
+   92:     bathrooms: "",
+   93:     balcony: "",
+   94: 
+   95:     plot_area: "",
+   96:     plot_area_max: "",
+   97:     plot_area_min: "",
+   98:     carpet_area: "",
+   99:     carpet_area_min: "",
+  100:     carpet_area_max: "",
+  101:     build_up_area: "",
+  102:     build_up_area_min: "",
+  103:     build_up_area_max: "",
+  104: 
+  105:     latitude: "",
+  106:     longitude: "",
+  107: 
+  108:     city: "", //--dropdown
+  109:     location: "", //--dropdown
+  110:     location_area: "", //--dropdown
+  111: 
+  112:     developer: "", //--dropdown
+  113: 
+  114:     furnishing: "", //--dropdown
+  115:     facing: "", //--dropdown
+  116:     property_bhks: [], //--dropdown
+  117:   });
+  118:   const [isLoading1, setIsLoading1] = useState(false);
+  119: 
+  120:   const [cityList, setCityList] = useState([]);
+  121:   const [locationList, setLocationList] = useState([]);
+  122:   const [locationAreaList, setLocationAreaList] = useState([]);
+  123:   const [propertyBHKList, setPropertyBHKList] = useState([]);
+  124:   const [developerList, setDeveloperList] = useState([]);
+  125:   const [amenitiesList, setAmenitiesList] = useState([]);
+  126:   const [furnishingList] = useState([
+  127:     { value: "furnished" },
+  128:     { value: "semi_furnished" },
+  129:     { value: "unfurnished" },
+  130:   ]);
+  131:   const [facingList] = useState([
+  132:     { value: "north" },
+  133:     { value: "south" },
+  134:     { value: "east" },
+  135:     { value: "west" },
+  136:     { value: "north_east" },
+  137:     { value: "north_west" },
+  138:     { value: "south_east" },
+  139:     { value: "south_west" },
+  140:   ]);
+  141: 
+  142:   /* -------------------------------------------------------------------------- */
+  143:   /*                               Use effect Section                           */
+  144:   /* -------------------------------------------------------------------------- */
+  145: 
+  146:   useEffect(() => {
+  147:     getPropertyBHKs();
+  148:     getDevelopers();
+  149:     getCities();
+  150:     getAmenities();
+  151:     getData();
+  152:   }, []);
+  153: 
+  154:   /* -------------------------------------------------------------------------- */
+  155:   /*                               API Section                                  */
+  156:   /* -------------------------------------------------------------------------- */
+  157: 
+  158:   const getData = async () => {
+  159:     if (props.type === "sale") {
+  160:       try {
+  161:         setIsLoading(true);
+  162:         let resp = await fetchSaleProperties(props.id);
+  163:         if (resp) {
+  164:           setIsLoading(false);
+  165:           setImage(
+  166:             getValue(resp, `saleProperty.logo.url`, "")
+  167:               ? process.env.NEXT_PUBLIC_API_URL +
+  168:                   getValue(resp, `saleProperty.logo.url`, "")
+  169:               : ""
+  170:           );
+  171:           setProperty_type(
+  172:             getValue(resp, `saleProperty.property_type.title`, "")
+  173:           );
+  174:           setSaleRequest({
+  175:             ...saleRequest,
+  176:             title: getValue(resp, `saleProperty.title`, ""),
+  177:             address: getValue(resp, `saleProperty.address`, ""),
+  178:             about: getValue(resp, `saleProperty.about`, ""),
+  179:             balcony: getValue(resp, `saleProperty.balcony`, ""),
+  180:             bathrooms: getValue(resp, `saleProperty.bathrooms`, ""),
+  181:             logo: getValue(resp, `saleProperty.logo.id`, ""), //-file
+  182:             property_rera: getValue(resp, `saleProperty.property_rera`, ""),
+  183:             total_units: getValue(resp, `saleProperty.total_units`, ""),
+  184:             development_size: getValue(
+  185:               resp,
+  186:               `saleProperty.development_size`,
+  187:               ""
+  188:             ),
+  189:             price:
+  190:               getValue(resp, `saleProperty.price`, "") !== 0
+  191:                 ? getValue(resp, `saleProperty.price`, "")
+  192:                 : "",
+  193:             video_url: getValue(resp, `saleProperty.video_url`, ""),
+  194:             plot_area: getValue(resp, `saleProperty.plot_area`, ""),
+  195:             plot_area_max: getValue(resp, `saleProperty.plot_area_max`, ""),
+  196:             plot_area_min: getValue(resp, `saleProperty.plot_area_min`, ""),
+  197:             carpet_area: getValue(resp, `saleProperty.carpet_area`, ""),
+  198:             carpet_area_min: getValue(resp, `saleProperty.carpet_area_min`, ""),
+  199:             carpet_area_max: getValue(resp, `saleProperty.carpet_area_max`, ""),
+  200:             super_build_up_area: getValue(
+  201:               resp,
+  202:               `saleProperty.super_build_up_area`,
+  203:               ""
+  204:             ),
+  205:             super_build_up_area_min: getValue(
+  206:               resp,
+  207:               `saleProperty.super_build_up_area_min`,
+  208:               ""
+  209:             ),
+  210:             super_build_up_area_max: getValue(
+  211:               resp,
+  212:               `saleProperty.super_build_up_area_max`,
+  213:               ""
+  214:             ),
+  215: 
+  216:             latitude: getValue(resp, `saleProperty.latitude`, ""),
+  217:             longitude: getValue(resp, `saleProperty.longitude`, ""),
+  218: 
+  219:             city: getValue(resp, `saleProperty.city.id`, ""),
+  220:             location: getValue(resp, `saleProperty.location.id`, ""),
+  221:             location_area: getValue(resp, `saleProperty.location_area.id`, ""),
+  222: 
+  223:             developer: getValue(resp, `saleProperty.developer.id`, ""),
+  224: 
+  225:             // property_construction_status: "", //--dropdown
+  226:             furnishing: getValue(resp, `saleProperty.furnishing`, ""),
+  227:             facing: getValue(resp, `saleProperty.facing`, ""),
+  228:             property_bhks: getValue(resp, `saleProperty.property_bhks`, []).map(
+  229:               (item) => item.id
+  230:             ),
+  231:             amenities: getValue(resp, `saleProperty.amenities`, []).map(
+  232:               (item) => ({
+  233:                 value: item.title,
+  234:                 label: item.title,
+  235:                 id: item.id,
+  236:               })
+  237:             ),
+  238:           });
+  239:         } else {
+  240:           setIsLoading(false);
+  241:         }
+  242:       } catch (error) {
+  243:         setIsLoading(false);
+  244:       }
+  245:     } else {
+  246:       try {
+  247:         let resp = await fetchRentProperties(props.id);
+  248:         setIsLoading(true);
+  249:         if (resp) {
+  250:           setImage(
+  251:             getValue(resp, `rentProperty.logo.url`, "")
+  252:               ? process.env.NEXT_PUBLIC_API_URL +
+  253:                   getValue(resp, `rentProperty.logo.url`, "")
+  254:               : ""
+  255:           );
+  256:           setProperty_type(
+  257:             getValue(resp, `rentProperty.property_type.title`, "")
+  258:           );
+  259:           setRentRequest({
+  260:             ...rentRequest,
+  261:             title: getValue(resp, `rentProperty.title`, ""),
+  262:             address: getValue(resp, `rentProperty.address`, ""),
+  263:             about: getValue(resp, `rentProperty.about`, ""),
+  264:             balcony: getValue(resp, `rentProperty.balcony`, ""),
+  265:             bathrooms: getValue(resp, `rentProperty.bathrooms`, ""),
+  266:             logo: getValue(resp, `rentProperty.logo.id`, ""), //-file
+  267:             development_size: getValue(
+  268:               resp,
+  269:               `rentProperty.development_size`,
+  270:               ""
+  271:             ),
+  272:             price:
+  273:               getValue(resp, `rentProperty.price`, "") !== 0
+  274:                 ? getValue(resp, `rentProperty.price`, "")
+  275:                 : "",
+  276:             video_url: getValue(resp, `rentProperty.video_url`, ""),
+  277:             plot_area: getValue(resp, `rentProperty.plot_area`, ""),
+  278:             plot_area_max: getValue(resp, `rentProperty.plot_area_max`, ""),
+  279:             plot_area_min: getValue(resp, `rentProperty.plot_area_min`, ""),
+  280:             carpet_area: getValue(resp, `rentProperty.carpet_area`, ""),
+  281:             carpet_area_min: getValue(resp, `rentProperty.carpet_area_min`, ""),
+  282:             carpet_area_max: getValue(resp, `rentProperty.carpet_area_max`, ""),
+  283:             build_up_area: getValue(resp, `rentProperty.build_up_area`, ""),
+  284:             build_up_area_min: getValue(
+  285:               resp,
+  286:               `rentProperty.build_up_area_min`,
+  287:               ""
+  288:             ),
+  289:             build_up_area_max: getValue(
+  290:               resp,
+  291:               `rentProperty.build_up_area_max`,
+  292:               ""
+  293:             ),
+  294: 
+  295:             latitude: getValue(resp, `rentProperty.latitude`, ""),
+  296:             longitude: getValue(resp, `rentProperty.longitude`, ""),
+  297: 
+  298:             city: getValue(resp, `rentProperty.city.id`, ""),
+  299:             location: getValue(resp, `rentProperty.location.id`, ""),
+  300:             location_area: getValue(resp, `rentProperty.location_area.id`, ""),
+  301: 
+  302:             developer: getValue(resp, `rentProperty.developer.id`, ""),
+  303: 
+  304:             // property_construction_status: "", //--dropdown
+  305:             furnishing: getValue(resp, `rentProperty.furnishing`, ""),
+  306:             facing: getValue(resp, `rentProperty.facing`, ""),
+  307:             property_bhks: getValue(resp, `rentProperty.property_bhks`, []).map(
+  308:               (item) => item.id
+  309:             ),
+  310:             amenities: getValue(resp, `rentProperty.amenities`, []).map(
+  311:               (item) => ({
+  312:                 value: item.title,
+  313:                 label: item.title,
+  314:                 id: item.id,
+  315:               })
+  316:             ),
+  317:           });
+  318:           setIsLoading(false);
+  319:         } else {
+  320:           setIsLoading(false);
+  321:         }
+  322:       } catch (error) {
+  323:         setIsLoading(false);
+  324:       }
+  325:     }
+  326:   };
+  327: 
+  328:   const getPropertyBHKs = async () => {
+  329:     try {
+  330:       let resp = await fetchPropertyBhks();
+  331:       if (resp) {
+  332:         setPropertyBHKList(getValue(resp, "data", []));
+  333:       }
+  334:     } catch (error) {}
+  335:   };
+  336: 
+  337:   const getDevelopers = async () => {
+  338:     try {
+  339:       let resp = await fetchDevelopers();
+  340:       if (resp) {
+  341:         setDeveloperList(getValue(resp, `data`, []));
+  342:       }
+  343:     } catch (error) {}
+  344:   };
+  345:   const getAmenities = async () => {
+  346:     try {
+  347:       let resp = await fetchAmenities();
+  348:       if (resp) {
+  349:         setAmenitiesList(
+  350:           getValue(resp, `amenities`, []).map((item) => ({
+  351:             value: item.title,
+  352:             label: item.title,
+  353:             id: item.id,
+  354:           }))
+  355:         );
+  356:       }
+  357:     } catch (error) {}
+  358:   };
+  359: 
+  360:   const getCities = async () => {
+  361:     try {
+  362:       let resp = await fetchCities();
+  363:       if (resp) {
+  364:         setCityList(getValue(resp, "cities", []));
+  365:         getLocations(getValue(resp, `cities[${0}].id`, ""));
+  366:       }
+  367:     } catch (error) {}
+  368:   };
+  369: 
+  370:   const getLocations = async (id) => {
+  371:     let where = {
+  372:       city: id,
+  373:     };
+  374:     try {
+  375:       let resp = await fetchLocations(where);
+  376:       if (resp) {
+  377:         setLocationList(getValue(resp, "data", []));
+  378:         getLocationArea(getValue(resp, `data[${0}].id`, ""));
+  379:       }
+  380:     } catch (error) {}
+  381:   };
+  382: 
+  383:   const getLocationArea = async (id) => {
+  384:     try {
+  385:       let where = {
+  386:         where: {
+  387:           location: id,
+  388:         },
+  389:       };
+  390:       let resp = await fetchLocationAreas(where);
+  391:       if (resp) {
+  392:         setLocationAreaList(getValue(resp, "data", []));
+  393:       }
+  394:     } catch (error) {}
+  395:   };
+  396: 
+  397:   const uploadImage = async (e, path, state, name) => {
+  398:     if (e.target.files[0]) {
+  399:       setLogoPreview(URL.createObjectURL(e.target.files[0]));
+  400:       const formData = new FormData();
+  401:       Array.from(e.target.files).forEach((image) => {
+  402:         formData.append("files", image);
+  403:       });
+  404:       axios
+  405:         .post(`${process.env.NEXT_PUBLIC_API_URL}/upload`, formData, {
+  406:           headers: {
+  407:             "Content-Type": "multipart/form-data",
+  408:             // Authorization: "Bearer " + authToken,
+  409:           },
+  410:         })
+  411:         .then(async (res) => {
+  412:           path({
+  413:             ...state,
+  414:             [name]: getValue(res, `data[${0}].id`, ""),
+  415:           });
+  416:         })
+  417:         .catch((err) => {});
+  418:     }
+  419:   };
+  420: 
+  421:   /* -------------------------------------  Submit Section ------------------------------------- */
+  422: 
+  423:   const handleSubmit = async () => {
+  424:     const formValid = simpleValidator.current.allValid();
+  425:     if (!formValid) {
+  426:       simpleValidator.current.showMessages();
+  427:       forceUpdate(1);
+  428:     } else {
+  429:       if (props.type === "sale") {
+  430:         let saleReq = JSON.parse(JSON.stringify(saleRequest));
+  431: 
+  432:         saleReq.balcony = saleReq.balcony ? parseFloat(saleReq.balcony) : 0;
+  433:         saleReq.bathrooms = saleReq.bathrooms
+  434:           ? parseFloat(saleReq.bathrooms)
+  435:           : 0;
+  436:         saleReq.total_units = saleReq.total_units
+  437:           ? parseFloat(saleReq.total_units)
+  438:           : 0;
+  439:         saleReq.development_size = saleReq.development_size
+  440:           ? parseFloat(saleReq.development_size)
+  441:           : 0;
+  442:         saleReq.price = saleReq.price ? parseFloat(saleReq.price) : 0;
+  443:         saleReq.plot_area = saleReq.plot_area
+  444:           ? parseFloat(saleReq.plot_area)
+  445:           : 0;
+  446:         saleReq.plot_area_max = saleReq.plot_area_max
+  447:           ? parseFloat(saleReq.plot_area_max)
+  448:           : 0;
+  449:         saleReq.plot_area_min = saleReq.plot_area
+  450:           ? parseFloat(saleReq.plot_area_min)
+  451:           : 0;
+  452:         saleReq.carpet_area = saleReq.carpet_area
+  453:           ? parseFloat(saleReq.carpet_area)
+  454:           : 0;
+  455:         saleReq.carpet_area_min = saleReq.carpet_area_min
+  456:           ? parseFloat(saleReq.carpet_area_min)
+  457:           : 0;
+  458:         saleReq.carpet_area_max = saleReq.carpet_area_max
+  459:           ? parseFloat(saleReq.carpet_area_max)
+  460:           : 0;
+  461:         saleReq.super_build_up_area = saleReq.super_build_up_area
+  462:           ? parseFloat(saleReq.super_build_up_area)
+  463:           : 0;
+  464:         saleReq.super_build_up_area_min = saleReq.super_build_up_area_min
+  465:           ? parseFloat(saleReq.super_build_up_area_min)
+  466:           : 0;
+  467:         saleReq.super_build_up_area_max = saleReq.super_build_up_area_max
+  468:           ? parseFloat(saleReq.super_build_up_area_max)
+  469:           : 0;
+  470:         saleReq.amenities =
+  471:           getValue(saleReq, `amenities.length`, 0) > 0
+  472:             ? getValue(saleReq, `amenities`, []).map((item) =>
+  473:                 getValue(item, `id`, "")
+  474:               )
+  475:             : [];
+  476:         let data = {
+  477:           data: saleReq,
+  478:           where: { id: props.id },
+  479:         };
+  480:         Object.keys(data.data).forEach((key) => {
+  481:           if (
+  482:             !data.data[key] ||
+  483:             data.data[key] === undefined ||
+  484:             data.data[key] === false
+  485:           ) {
+  486:             delete data.data[key];
+  487:           }
+  488:         });
+  489:         if (saleRequest.price != 0) {
+  490:           try {
+  491:             setIsLoading1(true);
+  492:             let resp = await fetchUpdateSaleProperty(data);
+  493:             if (resp) {
+  494:               toast.success("Updated successfully");
+  495:               setIsLoading1(false);
+  496:               router.push(
+  497:                 `/list-step4/${props.id}/${props.type ? props.type : "sale"}`
+  498:               );
+  499:             } else {
+  500:               setIsLoading1(false);
+  501:             }
+  502:           } catch (error) {
+  503:             setIsLoading1(false);
+  504:           }
+  505:         } else {
+  506:           toast.error("Please add price to continue");
+  507:         }
+  508:       } else {
+  509:         let rentReq = JSON.parse(JSON.stringify(rentRequest));
+  510: 
+  511:         rentReq.balcony = rentReq.balcony ? parseFloat(rentReq.balcony) : 0;
+  512:         rentReq.bathrooms = rentReq.bathrooms
+  513:           ? parseFloat(rentReq.bathrooms)
+  514:           : 0;
+  515:         rentReq.development_size = rentReq.development_size
+  516:           ? parseFloat(rentReq.development_size)
+  517:           : 0;
+  518:         rentReq.price = rentReq.price ? parseFloat(rentReq.price) : 0;
+  519:         rentReq.plot_area = rentReq.plot_area
+  520:           ? parseFloat(rentReq.plot_area)
+  521:           : 0;
+  522:         rentReq.plot_area_max = rentReq.plot_area_max
+  523:           ? parseFloat(rentReq.plot_area_max)
+  524:           : 0;
+  525:         rentReq.plot_area_min = rentReq.plot_area
+  526:           ? parseFloat(rentReq.plot_area_min)
+  527:           : 0;
+  528:         rentReq.carpet_area = rentReq.carpet_area
+  529:           ? parseFloat(rentReq.carpet_area)
+  530:           : 0;
+  531:         rentReq.carpet_area_min = rentReq.carpet_area_min
+  532:           ? parseFloat(rentReq.carpet_area_min)
+  533:           : 0;
+  534:         rentReq.carpet_area_max = rentReq.carpet_area_max
+  535:           ? parseFloat(rentReq.carpet_area_max)
+  536:           : 0;
+  537:         rentReq.build_up_area = rentReq.build_up_area
+  538:           ? parseFloat(rentReq.build_up_area)
+  539:           : 0;
+  540:         rentReq.build_up_area_min = rentReq.build_up_area_min
+  541:           ? parseFloat(rentReq.build_up_area_min)
+  542:           : 0;
+  543:         rentReq.build_up_area_max = rentReq.build_up_area_max
+  544:           ? parseFloat(rentReq.build_up_area_max)
+  545:           : 0;
+  546:         rentReq.amenities =
+  547:           getValue(rentReq, `amenities.length`, 0) > 0
+  548:             ? getValue(rentReq, `amenities`, []).map((item) =>
+  549:                 getValue(item, `id`, "")
+  550:               )
+  551:             : [];
+  552:         let data = {
+  553:           data: rentReq,
+  554:           where: { id: props.id },
+  555:         };
+  556:         Object.keys(data.data).forEach((key) => {
+  557:           if (
+  558:             !data.data[key] ||
+  559:             data.data[key] === undefined ||
+  560:             data.data[key] === false
+  561:           ) {
+  562:             delete data.data[key];
+  563:           }
+  564:         });
+  565:         if (rentRequest.price != 0) {
+  566:           try {
+  567:             setIsLoading1(true);
+  568:             let resp = await fetchUpdateRentProperty(data);
+  569:             if (resp) {
+  570:               toast.success("Updated successfully");
+  571:               setIsLoading1(false);
+  572:               router.push(
+  573:                 `/list-step4/${props.id}/${props.type ? props.type : "rent"}`
+  574:               );
+  575:             } else {
+  576:               setIsLoading1(false);
+  577:             }
+  578:           } catch (error) {
+  579:             setIsLoading1(false);
+  580:           }
+  581:         } else {
+  582:           toast.error("Please add price to continue");
+  583:         }
+  584:       }
+  585:     }
+  586:   };
+  587: 
+  588:   /* -------------------------------------------------------------------------- */
+  589:   /*                               Onchange Section                             */
+  590:   /* -------------------------------------------------------------------------- */
+  591: 
+  592:   const handleChangeSaleRequest = (e) => {
+  593:     const { name, value } = e.target;
+  594:     setSaleRequest({
+  595:       ...saleRequest,
+  596:       [name]: value,
+  597:     });
+  598:   };
+  599: 
+  600:   const handleChangeRentRequest = (e) => {
+  601:     const { name, value } = e.target;
+  602:     setRentRequest({
+  603:       ...rentRequest,
+  604:       [name]: value,
+  605:     });
+  606:   };
+  607: 
+  608:   const handleChangeSelectId = (e, path, state, name) => {
+  609:     const { value } = e.target;
+  610:     path({
+  611:       ...state,
+  612:       [name]: value,
+  613:     });
+  614:   };
+  615: 
+  616:   const handleChangePushArray = (value, path, state) => {
+  617:     let indexOf = getValue(state, `property_bhks`, []).includes(value);
+  618:     if (indexOf) {
+  619:       let filtered = getValue(state, `property_bhks`, []).filter(
+  620:         (item) => item !== value
+  621:       );
+  622:       state.property_bhks = filtered;
+  623:       path({ ...state });
+  624:     } else {
+  625:       state.property_bhks.push(value);
+  626:       path({ ...state });
+  627:     }
+  628:   };
+  629: 
+  630:   const handleChangeSelect = (e, path, state) => {
+  631:     state.amenities = e;
+  632:     path({ ...state });
+  633:   };
+  634:   return (
+  635:     <Layout>
+  636:       <div className="position-relative">
+  637:         <ul className="flight-tabs-ul">
+  638:           <li>
+  639:             <Button color="nothing">
+  640:               <span className="flight-tabs-icon">
+  641:                 <ProfileSVG />
+  642:               </span>
+  643:               <span className="flight-tabs-text">Your Details</span>
+  644:             </Button>
+  645:           </li>
+  646:           <li>
+  647:             <Link href={`/list-step2/${props.id}/${props.type}`}>
+  648:               <Button color="nothing">
+  649:                 <span className="flight-tabs-icon">
+  650:                   <PropertySVG />
+  651:                 </span>
+  652:                 <span className="flight-tabs-text">Property Listing/Type</span>
+  653:               </Button>
+  654:             </Link>
+  655:           </li>
+  656:           <li className="active">
+  657:             <Link href={`/list-step3/${props.id}/${props.type}`}>
+  658:               <Button color="nothing">
+  659:                 <span className="flight-tabs-icon">
+  660:                   <MapSVG />
+  661:                 </span>
+  662:                 <span className="flight-tabs-text">Property Details</span>
+  663:               </Button>
+  664:             </Link>
+  665:           </li>
+  666:           <li>
+  667:             <Link href={`/list-step4/${props.id}/${props.type}`}>
+  668:               <Button color="nothing">
+  669:                 <span className="flight-tabs-icon">
+  670:                   <AlbumSVG />
+  671:                 </span>
+  672:                 <span className="flight-tabs-text">Property Photos</span>
+  673:               </Button>
+  674:             </Link>
+  675:           </li>
+  676:         </ul>
+  677:         <section className="list-step1">
+  678:           <div className="custom-container">
+  679:             <div className="row">
+  680:               <div className="col-lg-10 mx-auto">
+  681:                 <h2>Provide Property Details Below</h2>
+  682:                 {/* <p className="mb-4">
+  683: 									Lorem Ipsum is simply dummy text of the printing and
+  684: 									typesetting industry. Lorem Ipsum has been the.
+  685: 								</p> */}
+  686:                 {props.type === "sale" && (
+  687:                   <SaleForm
+  688:                     image={image}
+  689:                     request={saleRequest}
+  690:                     setRequest={setSaleRequest}
+  691:                     onChange={handleChangeSaleRequest}
+  692:                     handleChangeSelectId={handleChangeSelectId}
+  693:                     handleChangePushArray={handleChangePushArray}
+  694:                     cityList={cityList}
+  695:                     locationList={locationList}
+  696:                     locationAreaList={locationAreaList}
+  697:                     propertyBHKList={propertyBHKList}
+  698:                     developerList={developerList}
+  699:                     furnishingList={furnishingList}
+  700:                     facingList={facingList}
+  701:                     simpleValidator={simpleValidator}
+  702:                     uploadImage={uploadImage}
+  703:                     logoPreview={logoPreview}
+  704:                     amenitiesList={amenitiesList}
+  705:                     handleChangeSelect={handleChangeSelect}
+  706:                     property_type={property_type}
+  707:                   />
+  708:                 )}
+  709:                 {props.type === "rent" && (
+  710:                   <RentForm
+  711:                     request={rentRequest}
+  712:                     image={image}
+  713:                     setRequest={setRentRequest}
+  714:                     onChange={handleChangeRentRequest}
+  715:                     handleChangeSelectId={handleChangeSelectId}
+  716:                     handleChangePushArray={handleChangePushArray}
+  717:                     cityList={cityList}
+  718:                     locationList={locationList}
+  719:                     locationAreaList={locationAreaList}
+  720:                     propertyBHKList={propertyBHKList}
+  721:                     developerList={developerList}
+  722:                     furnishingList={furnishingList}
+  723:                     facingList={facingList}
+  724:                     simpleValidator={simpleValidator}
+  725:                     amenitiesList={amenitiesList}
+  726:                     handleChangeSelect={handleChangeSelect}
+  727:                     logoPreview={logoPreview}
+  728:                     uploadImage={uploadImage}
+  729:                     property_type={property_type}
+  730:                   />
+  731:                 )}
+  732:                 <div className="mt-4 mb-5">
+  733:                   {isLoading1 ? (
+  734:                     <button className="theme-button theme-primary-btn mr-3">
+  735:                       Please wait...
+  736:                     </button>
+  737:                   ) : (
+  738:                     <button
+  739:                       className="theme-button theme-primary-btn mr-3"
+  740:                       onClick={handleSubmit}
+  741:                     >
+  742:                       Next
+  743:                     </button>
+  744:                   )}
+  745:                   <Link href={`/list-step2/${props.id}/${props.type}`}>
+  746:                     <button className="theme-button theme-secondary-btn mr-3">
+  747:                       Previous
+  748:                     </button>
+  749:                   </Link>
+  750:                   <Link href="/">
+  751:                     <button className="theme-button theme-secondary-btn mr-3">
+  752:                       Cancel
+  753:                     </button>
+  754:                   </Link>
+  755:                 </div>
+  756:               </div>
+  757:             </div>
+  758:           </div>
+  759:         </section>
+  760:       </div>
+  761:     </Layout>
+  762:   );
+  763: }
+  764: 
+  765: export async function getServerSideProps({ query }) {
+  766:   const id = query.id[0];
+  767:   const type = query.id[1];
+  768:   return {
+  769:     props: {
+  770:       id,
+  771:       type,
+  772:     },
+  773:   };
+  774: }

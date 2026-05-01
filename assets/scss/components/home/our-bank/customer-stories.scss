@@ -1,0 +1,33 @@
+.customer-story-wrapper{
+    &--title {
+        padding-bottom: 24px;
+        @media (max-width: $mobile-devices-max-width+px) {
+            padding-bottom: 0;
+         }
+        h2 {
+            font-weight: $light-font-weight;
+            @media (max-width: $mobile-devices-max-width+px) {
+               font-size: (30/$base-font-size)+rem;
+            }
+        }
+    }
+    &--cta-wrapper{
+        ul{
+            li{
+                display: inline-flex;
+                .arrow{
+                    &.swiper-button-disabled{
+                        img{
+                            opacity: 0.5;
+                        }
+                    }
+                    img {
+                        padding: 9px;
+                        background-color: #DADCE0; 
+                        border-radius: 50%;
+                    }
+                }
+            }
+        }
+    }
+}

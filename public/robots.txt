@@ -1,0 +1,9 @@
+# Disallow Googlebot from crawling URLs starting with /nogooglebot/
+User-agent: Googlebot
+Disallow: /nogooglebot/
+
+# Allow all other user agents to crawl the entire site
+User-agent: *
+Allow: /
+
+Sitemap: https://www.dreamsrealty.co.in/sitemap.xml

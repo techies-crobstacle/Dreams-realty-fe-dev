@@ -1,0 +1,84 @@
+@import "@scss/components/about-us/accordian/index.scss";
+.about-us-banner {
+  img.about-banner-img {
+    @media (max-width: $mobile-devices-max-width+px) {
+      height: 300px;
+      object-fit: cover;
+      width: 100%;
+    }
+  }
+  .custom-container {
+    position: absolute;
+    bottom: 32px;
+    left: 16px;
+    right: 0;
+    h3 {
+      color: $white-color;
+      font-size: (46 / $base-font-size) + rem;
+      font-weight: $light-font-weight;
+      line-height: 1;
+    }
+  }
+}
+.about-us-wrapper {
+  margin: 52px 0 0;
+  &--title {
+    max-width: 1000px;
+    width: 100%;
+    h2 {
+      font-size: (33 / $base-font-size) + rem;
+      font-weight: $light-font-weight;
+      line-height: 1.4;
+      color: $theme-font-heading-color;
+      @media (max-width: $mobile-devices-max-width+px) {
+        font-size: (23 / $base-font-size) + rem;
+        font-weight: 500;
+        // text-align: center;
+      }
+    }
+  }
+  &--body {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 15px;
+    margin: 24px 0;
+    @media (max-width: $mobile-devices-max-width+px) {
+      grid-template-columns: repeat(1, 1fr);
+    }
+    .about-us-card {
+      h4 {
+        font-size: (23 / $base-font-size) + rem;
+        font-weight: $light-font-weight;
+        padding-top: 14px;
+        line-height: 1.3;
+        max-width: 341px;
+        width: 100%;
+        color: $theme-font-heading-color;
+        @media (max-width: $mobile-devices-max-width+px) {
+          margin-bottom: 20px;
+        }
+      }
+      img.dimention-card {
+        height: 250px;
+        width: 100%;
+      }
+    }
+  }
+  &--footer {
+    margin-bottom: 52px;
+    .about-us-btn {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      button.theme-button {
+        border-radius: $base-border-radius;
+        border: 1px solid$theme-primary-color;
+        font-weight: $light-font-weight;
+        margin-right: 16px;
+        font-size: (13 / $base-font-size) + rem;
+      }
+    }
+  }
+}

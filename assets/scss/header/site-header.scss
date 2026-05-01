@@ -1,0 +1,77 @@
+// .header-wrapper {
+//     border-bottom: 1px solid  $theme-border-color;
+//     padding: 12px 0px;
+//     .icon-logo{
+//       img{
+//         max-width: 130px;
+//       }
+//         h2{
+//             color:$theme-logo-color;
+//         }
+//     }
+//     @media(max-width: $mobile-devices-max-width+px){
+//      .header-buttons{
+//         button{
+//             margin-right: 0 !important;
+//         }
+//      }
+//     }
+//     .header-buttons {
+//       .dropdown {
+//         &> .btn-secondary {
+//           background-color: transparent;
+//           border: none;
+//           outline: none !important;
+//           &:focus {
+//             outline: none !important;
+//           }
+//           &:active {
+//             outline: none !important;
+//           }
+//         }
+//       }
+//       .dropdown-menu {
+//         max-width: 300px;
+//         width: 100%;
+//         min-width: 300px;
+//       }
+//       &--account-details {
+//         padding: 16px 24px;
+//         border-bottom: 1px solid $theme-border-color;
+//         &--profile-image {
+//           width: 60px;
+//           height: 60px;
+//           display: flex;
+//           background-color: #1E4E40;
+//           color: $white-color;
+//           border-radius: 50%;
+//           margin: 0 auto;
+//           &.small {
+//             height: 30px;
+//             width: 30px;
+//           }
+//           span {
+//             margin: auto;
+//           }
+//         }
+//         .theme-flat-btn {
+//           border-radius: 30px;
+//         }
+//       }
+//     }
+// }
+// .navigation-menu-backdrop {
+//   @extend %position-fixed;
+//   top: 0;
+//   left: 0;
+//   height: 100vh;
+//   width: 100%;
+//   z-index: 1;
+//   visibility: hidden;
+//   opacity: 0;
+//   background-color: rgba(255, 255, 255 , 0.45);
+//   &.active {
+//     visibility: visible;
+//     opacity: 1;
+//   }
+// }

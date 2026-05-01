@@ -1,0 +1,782 @@
+    1: // import React, { useEffect, useState } from "react";
+    2: // import Layout from "@components/layout.js";
+    3: // import { getValue } from "/utils/lodash";
+    4: // import axios from "axios";
+    5: // import Link from "next/link";
+    6: // import { useRouter } from "next/router";
+    7: // import { Button } from "reactstrap";
+    8: // import ProfileSVG from "@components/svg/profile-svg";
+    9: // import AlbumSVG from "@components/svg/album-svg";
+   10: // import PropertySVG from "@components/svg/property-svg";
+   11: // import MapSVG from "@components/svg/map-svg";
+   12: // import UploadSVG from "@components/svg/upload-svg";
+   13: // import {
+   14: //   fetchRentProperties,
+   15: //   fetchSaleProperties,
+   16: //   fetchUpdateRentProperty,
+   17: //   fetchUpdateSaleProperty,
+   18: // } from "@services/APIs/common.service";
+   19: // function ListStep4(props) {
+   20: //   const router = useRouter();
+   21:   
+   22: //   /* -------------------------------------------------------------------------- */
+   23: //   /*                               Use State Section                            */
+   24: //   /* -------------------------------------------------------------------------- */
+   25: //   const [isLoading, setIsLoading] = useState(false);
+   26: //   const [imageList, setImageList] = useState([]);
+   27: //   const [isSubmitting, setIsSubmitting] = useState(false);
+   28: //   const [submitSuccess, setSubmitSuccess] = useState(false);
+   29: //   const [submitError, setSubmitError] = useState(false);
+   30: 
+   31: //   /* -------------------------------------------------------------------------- */
+   32: //   /*                               Use effect Section                           */
+   33: //   /* -------------------------------------------------------------------------- */
+   34: 
+   35: //   useEffect(() => {
+   36: //     getData();
+   37: //   }, []);
+   38: 
+   39: //   /* -------------------------------------------------------------------------- */
+   40: //   /*                               API Section                                  */
+   41: //   /* -------------------------------------------------------------------------- */
+   42: 
+   43: //   const uploadImage = async (e) => {
+   44: //     if (e.target.files[0]) {
+   45: //       const formData = new FormData();
+   46: //       Array.from(e.target.files).forEach((image) => {
+   47: //         formData.append("files", image);
+   48: //       });
+   49: //       axios
+   50: //         .post(`${process.env.NEXT_PUBLIC_API_URL}/upload`, formData, {
+   51: //           headers: {
+   52: //             "Content-Type": "multipart/form-data",
+   53: //             // Authorization: "Bearer " + authToken,
+   54: //           },
+   55: //         })
+   56: //         .then(async (res) => {
+   57: //           if (props.type === "sale") {
+   58: //             let data = {
+   59: //               data: {
+   60: //                 images: getValue(res, `data`, []).map((item) => item.id),
+   61: //               },
+   62: //               where: { id: props.id },
+   63: //             };
+   64: //             let resp = await fetchUpdateSaleProperty(data);
+   65: //             if (resp) {
+   66: //               e.target.getValue = null;
+   67: //               getData();
+   68: //             }
+   69: //           } else {
+   70: //             let data = {
+   71: //               data: {
+   72: //                 images: getValue(res, `data`, []).map((item) => item.id),
+   73: //               },
+   74: //               where: { id: props.id },
+   75: //             };
+   76: //             let resp = await fetchUpdateRentProperty(data);
+   77: //             if (resp) {
+   78: //               getData();
+   79: //             }
+   80: //           }
+   81: //         })
+   82: //         .catch((err) => {});
+   83: //     }
+   84: //   };
+   85: //   const getData = async () => {
+   86: //     if (props.type === "sale") {
+   87: //       try {
+   88: //         setIsLoading(true);
+   89: //         let resp = await fetchSaleProperties(props.id);
+   90: //         if (resp) {
+   91: //           setIsLoading(false);
+   92: //           setImageList(getValue(resp, `saleProperty.images`, []));
+   93: //         } else {
+   94: //           setIsLoading(false);
+   95: //         }
+   96: //       } catch (error) {
+   97: //         setIsLoading(false);
+   98: //       }
+   99: //     } else {
+  100: //       try {
+  101: //         let resp = await fetchRentProperties(props.id);
+  102: //         setIsLoading(true);
+  103: //         if (resp) {
+  104: //           setImageList(getValue(resp, `rentProperty.images`, []));
+  105: //           setIsLoading(false);
+  106: //         } else {
+  107: //           setIsLoading(false);
+  108: //         }
+  109: //       } catch (error) {
+  110: //         setIsLoading(false);
+  111: //       }
+  112: //     }
+  113: //   };
+  114: 
+  115: //   const handleSubmit = (e) => {
+  116: //     // Prevent default and stop any other event handling
+  117: //     e.preventDefault();
+  118: //     e.stopPropagation();
+  119:     
+  120: //     // Immediately set loading state
+  121: //     setIsSubmitting(true);
+  122: //     setSubmitError(false);
+  123: //     setSubmitSuccess(false);
+  124:     
+  125: //     // Process submission in next tick to ensure UI updates
+  126: //     requestAnimationFrame(() => {
+  127: //       setTimeout(async () => {
+  128: //         try {
+  129: //           console.log('Processing submission...');
+  130:           
+  131: //           // Minimum 2 seconds to show loading
+  132: //           const startTime = Date.now();
+  133:           
+  134: //           // Your actual API call would go here
+  135: //           // await submitFormData();
+  136:           
+  137: //           // Ensure minimum loading time for UX
+  138: //           const elapsedTime = Date.now() - startTime;
+  139: //           const remainingTime = Math.max(0, 2000 - elapsedTime);
+  140:           
+  141: //           if (remainingTime > 0) {
+  142: //             await new Promise(resolve => setTimeout(resolve, remainingTime));
+  143: //           }
+  144:           
+  145: //           // Show success state
+  146: //           setIsSubmitting(false);
+  147: //           setSubmitSuccess(true);
+  148:           
+  149: //           // Navigate after showing success
+  150: //           setTimeout(() => {
+  151: //             router.push('/create-thankyou');
+  152: //           }, 800);
+  153:           
+  154: //         } catch (error) {
+  155: //           console.error('Submission error:', error);
+  156: //           setIsSubmitting(false);
+  157: //           setSubmitError(true);
+  158:           
+  159: //           // Reset error state after 3 seconds
+  160: //           setTimeout(() => {
+  161: //             setSubmitError(false);
+  162: //           }, 3000);
+  163: //         }
+  164: //       }, 10);
+  165: //     });
+  166: //   };
+  167: 
+  168: //   return (
+  169: //     <Layout>
+  170: //       <style jsx>{`
+  171: //         .spinner-border {
+  172: //           display: inline-block;
+  173: //           border: 2px solid transparent;
+  174: //           border-top: 2px solid currentColor;
+  175: //           border-radius: 50%;
+  176: //           animation: spinner-border 0.75s linear infinite;
+  177: //         }
+  178: //         .spinner-border-sm {
+  179: //           width: 1rem;
+  180: //           height: 1rem;
+  181: //           border-width: 2px;
+  182: //         }
+  183: //         @keyframes spinner-border {
+  184: //           0% { 
+  185: //             transform: rotate(0deg); 
+  186: //           }
+  187: //           100% { 
+  188: //             transform: rotate(360deg); 
+  189: //           }
+  190: //         }
+  191: //       `}</style>
+  192:       
+  193: //       {/* Debug info - remove this after testing */}
+  194: //       <div style={{ position: 'fixed', top: '10px', right: '10px', background: 'black', color: 'white', padding: '10px', zIndex: 9999 }}>
+  195: //         isSubmitting: {isSubmitting.toString()}<br/>
+  196: //         submitSuccess: {submitSuccess.toString()}<br/>
+  197: //         submitError: {submitError.toString()}
+  198: //       </div>
+  199:       
+  200: //       <div className="position-relative">
+  201: //         <ul className="flight-tabs-ul">
+  202: //           <li>
+  203: //             <Button color="nothing">
+  204: //               <span className="flight-tabs-icon">
+  205: //                 <ProfileSVG />
+  206: //               </span>
+  207: //               <span className="flight-tabs-text">Your Details</span>
+  208: //             </Button>
+  209: //           </li>
+  210: //           <li>
+  211: //             <Link href={`/list-step2/${props.id}/${props.type}`}>
+  212: //               <Button color="nothing">
+  213: //                 <span className="flight-tabs-icon">
+  214: //                   <PropertySVG />
+  215: //                 </span>
+  216: //                 <span className="flight-tabs-text">Property Listing/Type</span>
+  217: //               </Button>
+  218: //             </Link>
+  219: //           </li>
+  220: //           <li>
+  221: //             <Link href={`/list-step3/${props.id}/${props.type}`}>
+  222: //               <Button color="nothing">
+  223: //                 <span className="flight-tabs-icon">
+  224: //                   <MapSVG />
+  225: //                 </span>
+  226: //                 <span className="flight-tabs-text">Property Details</span>
+  227: //               </Button>
+  228: //             </Link>
+  229: //           </li>
+  230: //           <li className="active">
+  231: //             <Link href={`/list-step4/${props.id}/${props.type}`}>
+  232: //               <Button color="nothing">
+  233: //                 <span className="flight-tabs-icon">
+  234: //                   <AlbumSVG />
+  235: //                 </span>
+  236: //                 <span className="flight-tabs-text">Property Photos</span>
+  237: //               </Button>
+  238: //             </Link>
+  239: //           </li>
+  240: //         </ul>
+  241: //         <section className="list-step1">
+  242: //           <div className="custom-container">
+  243: //             <div className="row">
+  244: //               <div className="col-md-10 mx-auto">
+  245: //                 {/* <h2>Photos</h2>
+  246: // 								<p className="mb-4">
+  247: // 									90% Property Seekers contact on properties with Photos
+  248: // 								</p> */}
+  249: //                 <label className="label-contact">Property Images</label>
+  250: //                 <div className="d-flex justify-content-start">
+  251: //                   <label className="file-upload-lg">
+  252: //                     <div className="text-center">
+  253: //                       <UploadSVG />
+  254: //                       <h4>Upload Photo</h4>
+  255: //                       <p>
+  256: //                         Upload Pictures - JPG or PNG (1087px X 569px) Minimum
+  257: //                       </p>
+  258: //                     </div>
+  259: //                     <input
+  260: //                       type="file"
+  261: //                       name="upload"
+  262: //                       id="upload"
+  263: //                       onChange={(e) => uploadImage(e)}
+  264: //                       multiple
+  265: //                     />
+  266: //                   </label>
+  267: //                 </div>
+  268: //                 <hr className="my-4" />
+  269: //                 {isLoading ? (
+  270: //                   <p className="text-center mt-3">Please wait...</p>
+  271: //                 ) : imageList.length > 0 ? (
+  272: //                   <div className="row">
+  273: //                     {imageList.map((item, index) => {
+  274: //                       return (
+  275: //                         <div
+  276: //                           key={index}
+  277: //                           className="col-sm-2 col-md-3 col-lg-4 mb-3"
+  278: //                         >
+  279: //                           <div className="img-photo">
+  280: //                             <img
+  281: //                               alt="photo-icon"
+  282: //                               src={
+  283: //                                 getValue(item, `url`, "")
+  284: //                                   ? process.env.NEXT_PUBLIC_API_URL +
+  285: //                                     getValue(item, `url`, "")
+  286: //                                   : "/images/insert_photo-24px.svg"
+  287: //                               }
+  288: //                             />
+  289: //                             {/* <button class="btn-close">&times;</button> */}
+  290: //                           </div>
+  291: //                         </div>
+  292: //                       );
+  293: //                     })}
+  294: //                   </div>
+  295: //                 ) : (
+  296: //                   <p className="text-center mt-2 mb-2">No Data Found</p>
+  297: //                 )}
+  298: //                 <div className="mt-4 mb-5">
+  299: //                   <button 
+  300: //                     className="theme-button theme-primary-btn mr-3" 
+  301: //                     disabled={isSubmitting || submitSuccess}
+  302: //                     onClick={handleSubmit}
+  303: //                     style={{ 
+  304: //                       minWidth: '160px',
+  305: //                       opacity: isSubmitting || submitSuccess ? 0.8 : 1,
+  306: //                       cursor: isSubmitting || submitSuccess ? 'not-allowed' : 'pointer',
+  307: //                       pointerEvents: isSubmitting || submitSuccess ? 'none' : 'auto'
+  308: //                     }}
+  309: //                   >
+  310: //                     {isSubmitting ? (
+  311: //                       <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+  312: //                         <span 
+  313: //                           style={{
+  314: //                             display: 'inline-block',
+  315: //                             width: '16px',
+  316: //                             height: '16px',
+  317: //                             border: '2px solid transparent',
+  318: //                             borderTop: '2px solid currentColor',
+  319: //                             borderRadius: '50%',
+  320: //                             animation: 'spin 1s linear infinite',
+  321: //                             marginRight: '8px'
+  322: //                           }}
+  323: //                         ></span>
+  324: //                         Processing...
+  325: //                       </span>
+  326: //                     ) : submitSuccess ? (
+  327: //                       <span style={{ color: '#28a745' }}>✓ Success! Redirecting...</span>
+  328: //                     ) : submitError ? (
+  329: //                       <span style={{ color: '#dc3545' }}>❌ Error! Click to retry</span>
+  330: //                     ) : (
+  331: //                       'Submit'
+  332: //                     )}
+  333: //                   </button>
+  334:                   
+  335: //                   <Link href={`/list-step3/${props.id}/${props.type}`}>
+  336: //                     <button 
+  337: //                       className="theme-button theme-secondary-btn mr-3" 
+  338: //                       disabled={isSubmitting || submitSuccess}
+  339: //                       style={{ opacity: isSubmitting || submitSuccess ? 0.6 : 1 }}
+  340: //                     >
+  341: //                       Previous
+  342: //                     </button>
+  343: //                   </Link>
+  344: 
+  345: //                   <Link href="/">
+  346: //                     <button 
+  347: //                       className="theme-button theme-secondary-btn mr-3" 
+  348: //                       disabled={isSubmitting || submitSuccess}
+  349: //                       style={{ opacity: isSubmitting || submitSuccess ? 0.6 : 1 }}
+  350: //                     >
+  351: //                       Cancel
+  352: //                     </button>
+  353: //                   </Link>
+  354: //                 </div>
+  355: //               </div>
+  356: //             </div>
+  357: //           </div>
+  358: //         </section>
+  359: //         <style jsx>{`
+  360: //           @keyframes spin {
+  361: //             0% { transform: rotate(0deg); }
+  362: //             100% { transform: rotate(360deg); }
+  363: //           }
+  364: //         `}</style>
+  365: //       </div>
+  366: //     </Layout>
+  367: //   );
+  368: // }
+  369: 
+  370: // export default ListStep4;
+  371: 
+  372: // export async function getServerSideProps({ query }) {
+  373: //   const id = query.id[0];
+  374: //   const type = query.id[1];
+  375: //   return {
+  376: //     props: {
+  377: //       id,
+  378: //       type,
+  379: //     },
+  380: //   };
+  381: // }
+  382: 
+  383: 
+  384: import React, { useEffect, useState, useRef } from "react";
+  385: import Layout from "@components/layout.js";
+  386: import { getValue } from "/utils/lodash";
+  387: import axios from "axios";
+  388: import Link from "next/link";
+  389: import { useRouter } from "next/router";
+  390: import { Button } from "reactstrap";
+  391: import ProfileSVG from "@components/svg/profile-svg";
+  392: import AlbumSVG from "@components/svg/album-svg";
+  393: import PropertySVG from "@components/svg/property-svg";
+  394: import MapSVG from "@components/svg/map-svg";
+  395: import UploadSVG from "@components/svg/upload-svg";
+  396: import {
+  397:   fetchRentProperties,
+  398:   fetchSaleProperties,
+  399:   fetchUpdateRentProperty,
+  400:   fetchUpdateSaleProperty,
+  401: } from "@services/APIs/common.service";
+  402: 
+  403: function ListStep4(props) {
+  404:   const router = useRouter();
+  405: 
+  406:   /* -------------------------------------------------------------------------- */
+  407:   /*                               Use State Section                            */
+  408:   /* -------------------------------------------------------------------------- */
+  409:   const [isLoading, setIsLoading] = useState(false);
+  410:   const [imageList, setImageList] = useState([]);
+  411:   const [isSubmitting, setIsSubmitting] = useState(false);
+  412:   const [submitSuccess, setSubmitSuccess] = useState(false);
+  413:   const [submitError, setSubmitError] = useState(false);
+  414: 
+  415:   // Ref-based lock — fires INSTANTLY on click, before any re-render,
+  416:   // so rapid double-clicks are blocked at the very first event.
+  417:   const isSubmittingRef = useRef(false);
+  418: 
+  419:   /* -------------------------------------------------------------------------- */
+  420:   /*                               Use effect Section                           */
+  421:   /* -------------------------------------------------------------------------- */
+  422:   useEffect(() => {
+  423:     getData();
+  424:   }, []);
+  425: 
+  426:   /* -------------------------------------------------------------------------- */
+  427:   /*                               API Section                                  */
+  428:   /* -------------------------------------------------------------------------- */
+  429:   const uploadImage = async (e) => {
+  430:     if (e.target.files[0]) {
+  431:       const formData = new FormData();
+  432:       Array.from(e.target.files).forEach((image) => {
+  433:         formData.append("files", image);
+  434:       });
+  435:       axios
+  436:         .post(`${process.env.NEXT_PUBLIC_API_URL}/upload`, formData, {
+  437:           headers: {
+  438:             "Content-Type": "multipart/form-data",
+  439:           },
+  440:         })
+  441:         .then(async (res) => {
+  442:           if (props.type === "sale") {
+  443:             let data = {
+  444:               data: {
+  445:                 images: getValue(res, `data`, []).map((item) => item.id),
+  446:               },
+  447:               where: { id: props.id },
+  448:             };
+  449:             let resp = await fetchUpdateSaleProperty(data);
+  450:             if (resp) {
+  451:               e.target.getValue = null;
+  452:               getData();
+  453:             }
+  454:           } else {
+  455:             let data = {
+  456:               data: {
+  457:                 images: getValue(res, `data`, []).map((item) => item.id),
+  458:               },
+  459:               where: { id: props.id },
+  460:             };
+  461:             let resp = await fetchUpdateRentProperty(data);
+  462:             if (resp) {
+  463:               getData();
+  464:             }
+  465:           }
+  466:         })
+  467:         .catch((err) => {});
+  468:     }
+  469:   };
+  470: 
+  471:   const getData = async () => {
+  472:     if (props.type === "sale") {
+  473:       try {
+  474:         setIsLoading(true);
+  475:         let resp = await fetchSaleProperties(props.id);
+  476:         if (resp) {
+  477:           setIsLoading(false);
+  478:           setImageList(getValue(resp, `saleProperty.images`, []));
+  479:         } else {
+  480:           setIsLoading(false);
+  481:         }
+  482:       } catch (error) {
+  483:         setIsLoading(false);
+  484:       }
+  485:     } else {
+  486:       try {
+  487:         let resp = await fetchRentProperties(props.id);
+  488:         setIsLoading(true);
+  489:         if (resp) {
+  490:           setImageList(getValue(resp, `rentProperty.images`, []));
+  491:           setIsLoading(false);
+  492:         } else {
+  493:           setIsLoading(false);
+  494:         }
+  495:       } catch (error) {
+  496:         setIsLoading(false);
+  497:       }
+  498:     }
+  499:   };
+  500: 
+  501:   const handleSubmit = async (e) => {
+  502:     e.preventDefault();
+  503:     e.stopPropagation();
+  504: 
+  505:     // IMMEDIATE button disabling - DOM level protection
+  506:     const button = e.currentTarget;
+  507:     if (button.disabled || isSubmittingRef.current) {
+  508:       console.log("Double click blocked!");
+  509:       return;
+  510:     }
+  511:     
+  512:     // IMMEDIATE visual feedback - change button text instantly
+  513:     isSubmittingRef.current = true;
+  514:     button.disabled = true;
+  515:     button.style.pointerEvents = 'none';
+  516:     button.style.opacity = '0.75';
+  517:     button.innerHTML = `
+  518:       <span style="display: inline-block; width: 15px; height: 15px; border: 2px solid rgba(255, 255, 255, 0.4); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; margin-right: 8px;"></span>
+  519:       Submitting...
+  520:     `;
+  521:     console.log("Button text changed immediately!");
+  522: 
+  523:     // Background state update
+  524:     setIsSubmitting(true);
+  525:     setSubmitError(false);
+  526:     setSubmitSuccess(false);
+  527: 
+  528:     try {
+  529:       // Your actual API call goes here
+  530:       // await submitFormData();
+  531: 
+  532:       // Simulate async work — replace with real call
+  533:       await new Promise((resolve) => setTimeout(resolve, 2000));
+  534: 
+  535:       console.log("Form submitted successfully!");
+  536:       button.innerHTML = "✓ Redirecting...";
+  537:       button.style.backgroundColor = "#28a745";
+  538:       button.style.borderColor = "#28a745";
+  539:       
+  540:       setIsSubmitting(false);
+  541:       setSubmitSuccess(true);
+  542: 
+  543:       // Navigate after briefly showing success
+  544:       setTimeout(() => {
+  545:         console.log("Redirecting to thank you page...");
+  546:         router.push("/create-thankyou");
+  547:       }, 800);
+  548:       
+  549:     } catch (error) {
+  550:       console.error("Submission error:", error);
+  551:       // Re-enable button on error
+  552:       isSubmittingRef.current = false;
+  553:       button.disabled = false;
+  554:       button.style.pointerEvents = 'auto';
+  555:       button.style.opacity = '1';
+  556:       button.innerHTML = "❌ Error — Retry";
+  557:       button.style.backgroundColor = "#dc3545";
+  558:       button.style.borderColor = "#dc3545";
+  559:       
+  560:       setIsSubmitting(false);
+  561:       setSubmitError(true);
+  562: 
+  563:       setTimeout(() => {
+  564:         button.innerHTML = "Submit";
+  565:         button.style.backgroundColor = "";
+  566:         button.style.borderColor = "";
+  567:         setSubmitError(false);
+  568:       }, 3000);
+  569:     }
+  570:   };
+  571: 
+  572:   /* -------------------------------------------------------------------------- */
+  573:   /*                               Render                                       */
+  574:   /* -------------------------------------------------------------------------- */
+  575:   return (
+  576:     <Layout>
+  577:       <style jsx>{`
+  578:         /* ── Spinner animation ── */
+  579:         @keyframes spin {
+  580:           0%   { transform: rotate(0deg); }
+  581:           100% { transform: rotate(360deg); }
+  582:         }
+  583:         .btn-spinner {
+  584:           display: inline-block;
+  585:           width: 15px;
+  586:           height: 15px;
+  587:           border: 2px solid rgba(255, 255, 255, 0.4);
+  588:           border-top-color: #fff;
+  589:           border-radius: 50%;
+  590:           animation: spin 0.7s linear infinite;
+  591:           margin-right: 8px;
+  592:           flex-shrink: 0;
+  593:         }
+  594: 
+  595:         /* ── Submit button states ── */
+  596:         .submit-btn {
+  597:           min-width: 160px;
+  598:           display: inline-flex;
+  599:           align-items: center;
+  600:           justify-content: center;
+  601:           transition: opacity 0.15s ease;
+  602:         }
+  603:         .submit-btn:disabled {
+  604:           opacity: 0.75 !important;
+  605:           cursor: not-allowed !important;
+  606:           pointer-events: none !important;
+  607:         }
+  608:         .submit-btn.is-success {
+  609:           background-color: #28a745 !important;
+  610:           border-color: #28a745 !important;
+  611:           color: #fff !important;
+  612:         }
+  613:         .submit-btn.is-error {
+  614:           background-color: #dc3545 !important;
+  615:           border-color: #dc3545 !important;
+  616:           color: #fff !important;
+  617:         }
+  618:       `}</style>
+  619: 
+  620:       <div className="position-relative">
+  621:         <ul className="flight-tabs-ul">
+  622:           <li>
+  623:             <Button color="nothing">
+  624:               <span className="flight-tabs-icon">
+  625:                 <ProfileSVG />
+  626:               </span>
+  627:               <span className="flight-tabs-text">Your Details</span>
+  628:             </Button>
+  629:           </li>
+  630:           <li>
+  631:             <Link href={`/list-step2/${props.id}/${props.type}`}>
+  632:               <Button color="nothing">
+  633:                 <span className="flight-tabs-icon">
+  634:                   <PropertySVG />
+  635:                 </span>
+  636:                 <span className="flight-tabs-text">Property Listing/Type</span>
+  637:               </Button>
+  638:             </Link>
+  639:           </li>
+  640:           <li>
+  641:             <Link href={`/list-step3/${props.id}/${props.type}`}>
+  642:               <Button color="nothing">
+  643:                 <span className="flight-tabs-icon">
+  644:                   <MapSVG />
+  645:                 </span>
+  646:                 <span className="flight-tabs-text">Property Details</span>
+  647:               </Button>
+  648:             </Link>
+  649:           </li>
+  650:           <li className="active">
+  651:             <Link href={`/list-step4/${props.id}/${props.type}`}>
+  652:               <Button color="nothing">
+  653:                 <span className="flight-tabs-icon">
+  654:                   <AlbumSVG />
+  655:                 </span>
+  656:                 <span className="flight-tabs-text">Property Photos</span>
+  657:               </Button>
+  658:             </Link>
+  659:           </li>
+  660:         </ul>
+  661: 
+  662:         <section className="list-step1">
+  663:           <div className="custom-container">
+  664:             <div className="row">
+  665:               <div className="col-md-10 mx-auto">
+  666:                 <label className="label-contact">Property Images</label>
+  667:                 <div className="d-flex justify-content-start">
+  668:                   <label className="file-upload-lg">
+  669:                     <div className="text-center">
+  670:                       <UploadSVG />
+  671:                       <h4>Upload Photo</h4>
+  672:                       <p>
+  673:                         Upload Pictures - JPG or PNG (1087px X 569px) Minimum
+  674:                       </p>
+  675:                     </div>
+  676:                     <input
+  677:                       type="file"
+  678:                       name="upload"
+  679:                       id="upload"
+  680:                       onChange={(e) => uploadImage(e)}
+  681:                       multiple
+  682:                     />
+  683:                   </label>
+  684:                 </div>
+  685: 
+  686:                 <hr className="my-4" />
+  687: 
+  688:                 {isLoading ? (
+  689:                   <p className="text-center mt-3">Please wait...</p>
+  690:                 ) : imageList.length > 0 ? (
+  691:                   <div className="row">
+  692:                     {imageList.map((item, index) => (
+  693:                       <div
+  694:                         key={index}
+  695:                         className="col-sm-2 col-md-3 col-lg-4 mb-3"
+  696:                       >
+  697:                         <div className="img-photo">
+  698:                           <img
+  699:                             alt="photo-icon"
+  700:                             src={
+  701:                               getValue(item, `url`, "")
+  702:                                 ? process.env.NEXT_PUBLIC_API_URL +
+  703:                                   getValue(item, `url`, "")
+  704:                                 : "/images/insert_photo-24px.svg"
+  705:                             }
+  706:                           />
+  707:                         </div>
+  708:                       </div>
+  709:                     ))}
+  710:                   </div>
+  711:                 ) : (
+  712:                   <p className="text-center mt-2 mb-2">No Data Found</p>
+  713:                 )}
+  714: 
+  715:                 <div className="mt-4 mb-5">
+  716:                   {/* ── Submit button ── */}
+  717:                   <button
+  718:                     className={`theme-button theme-primary-btn mr-3 submit-btn${
+  719:                       submitSuccess ? " is-success" : ""
+  720:                     }${submitError ? " is-error" : ""}`}
+  721:                     disabled={isSubmitting || submitSuccess}
+  722:                     onClick={handleSubmit}
+  723:                   >
+  724:                     {isSubmitting ? (
+  725:                       <>
+  726:                         <span className="btn-spinner" />
+  727:                         Submitting...
+  728:                       </>
+  729:                     ) : submitSuccess ? (
+  730:                       "✓ Redirecting..."
+  731:                     ) : submitError ? (
+  732:                       "❌ Error — Retry"
+  733:                     ) : (
+  734:                       "Submit"
+  735:                     )}
+  736:                   </button>
+  737: 
+  738:                   <Link href={`/list-step3/${props.id}/${props.type}`}>
+  739:                     <button
+  740:                       className="theme-button theme-secondary-btn mr-3"
+  741:                       disabled={isSubmitting || submitSuccess}
+  742:                       style={{
+  743:                         opacity: isSubmitting || submitSuccess ? 0.6 : 1,
+  744:                       }}
+  745:                     >
+  746:                       Previous
+  747:                     </button>
+  748:                   </Link>
+  749: 
+  750:                   <Link href="/">
+  751:                     <button
+  752:                       className="theme-button theme-secondary-btn mr-3"
+  753:                       disabled={isSubmitting || submitSuccess}
+  754:                       style={{
+  755:                         opacity: isSubmitting || submitSuccess ? 0.6 : 1,
+  756:                       }}
+  757:                     >
+  758:                       Cancel
+  759:                     </button>
+  760:                   </Link>
+  761:                 </div>
+  762:               </div>
+  763:             </div>
+  764:           </div>
+  765:         </section>
+  766:       </div>
+  767:     </Layout>
+  768:   );
+  769: }
+  770: 
+  771: export default ListStep4;
+  772: 
+  773: export async function getServerSideProps({ query }) {
+  774:   const id = query.id[0];
+  775:   const type = query.id[1];
+  776:   return {
+  777:     props: {
+  778:       id,
+  779:       type,
+  780:     },
+  781:   };
+  782: }

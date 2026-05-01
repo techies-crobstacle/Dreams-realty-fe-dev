@@ -1,0 +1,38 @@
+.customer-story-wrapper {
+  padding: 0 0 52px;
+  &--title {
+    padding-bottom: 24px;
+    @media (max-width: $mobile-devices-max-width+px) {
+      padding-bottom: 0;
+    }
+    h2 {
+      font-weight: $bold-font-weight;
+      font-size: 1.46rem;
+      @media (max-width: $mobile-devices-max-width+px) {
+        font-size: (30 / $base-font-size) + rem;
+      }
+    }
+  }
+  &--cta-wrapper {
+    ul {
+      li {
+        display: inline-flex;
+        .arrow {
+          &.swiper-button-disabled {
+            img {
+              opacity: 0.5;
+            }
+          }
+          img {
+            padding: 9px;
+            background-color: #dadce0;
+            border-radius: 50%;
+            // &:hover{
+
+            // }
+          }
+        }
+      }
+    }
+  }
+}

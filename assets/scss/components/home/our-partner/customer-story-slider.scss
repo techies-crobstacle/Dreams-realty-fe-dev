@@ -1,0 +1,6 @@
+.property-card-width {
+    max-width: 400px;
+    @media(max-width: $mobile-devices-max-width+px){
+        max-width: 280px;
+    }
+}

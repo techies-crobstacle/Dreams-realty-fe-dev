@@ -1,0 +1,16 @@
+.inner-page-wrapper {
+  p {
+    padding-bottom: 18px;
+    // color: #1d1d1d;
+  }
+
+  p strong:first-of-type {
+    padding-top: 10px;
+    // padding-bottom: 6px;
+    display: block;
+    color: #000;
+  }
+  p strong {
+    padding-top: 30px;
+  }
+}

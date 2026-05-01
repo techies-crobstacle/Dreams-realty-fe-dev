@@ -1,0 +1,255 @@
+    1: "use client";
+    2: import React, { useRef } from "react";
+    3: import { getValue } from "/utils/lodash";
+    4: import Link from "next/link";
+    5: import PhoneInput from "react-phone-input-2";
+    6: import SimpleReactValidator from "simple-react-validator";
+    7: 
+    8: function Tab1(props) {
+    9:   const {
+   10:     propertyType = "sale",
+   11:     setPropertyType = () => {},
+   12:     handleChangeRequest = () => {},
+   13:     simpleValidator = { current: { message: () => "" } },
+   14:     request = { full_name: "", email: "", phone: "" },
+   15:     handleSubmit = () => {},
+   16:     isLoading = false,
+   17:     setRequest = () => {},
+   18:     phoneError = "",
+   19:     setPhoneError = () => {},
+   20:     isValidPhoneNumber = () => true,
+   21:   } = props;
+   22:   // function blockSpecialChar(e) {
+   23:   //   var k;
+   24:   //   document.all ? (k = e.keyCode) : (k = e.which);
+   25:   //   return (
+   26:   //     (k > 64 && k < 91) ||
+   27:   //     (k > 96 && k < 123) ||
+   28:   //     k == 8 ||
+   29:   //     k == 32 ||
+   30:   //     (k >= 48 && k <= 57)
+   31:   //   );
+   32:   // }
+   33: 
+   34:   const handlePhoneChange = (value, country) => {
+   35:     try {
+   36:       const fullPhone = `+${value}`;
+   37:       const dialCode = `+${country.dialCode}`;
+   38: 
+   39:       setRequest((prev) => ({
+   40:         ...prev,
+   41:         phone: fullPhone, // full number like +919999999999
+   42:         country_code: dialCode, // separate if needed
+   43:       }));
+   44: 
+   45:       // Validate phone number
+   46:       if (value) {
+   47:         if (!isValidPhoneNumber(fullPhone)) {
+   48:           setPhoneError("Please enter a valid phone number");
+   49:         } else {
+   50:           setPhoneError("");
+   51:         }
+   52:       } else {
+   53:         setPhoneError("Please enter a valid phone number");
+   54:       }
+   55:     } catch (error) {
+   56:       setPhoneError("Please enter a valid phone number");
+   57:       console.error("Phone validation error:", error);
+   58:     }
+   59:   };
+   60: 
+   61:   const validator = useRef(
+   62:     new SimpleReactValidator({
+   63:       validators: {
+   64:         phone: {
+   65:           message: "Please enter a valid phone number",
+   66:           rule: (val, params, validator) => {
+   67:             try {
+   68:               if (!val) return false;
+   69:               // Remove spaces and any other non-digit characters except +
+   70:               const cleanedValue = val.replace(/[^\d+]/g, "");
+   71:               return isValidPhoneNumber(cleanedValue);
+   72:             } catch (error) {
+   73:               return false;
+   74:             }
+   75:           },
+   76:         },
+   77:       },
+   78:     })
+   79:   );
+   80: 
+   81:   // Create a safe validator function that won't throw errors during build
+   82:   const safeValidatorMessage = (field, value, rules) => {
+   83:     try {
+   84:       if (simpleValidator?.current?.message) {
+   85:         return simpleValidator.current.message(field, value, rules);
+   86:       }
+   87:       return "";
+   88:     } catch (error) {
+   89:       return "";
+   90:     }
+   91:   };
+   92: 
+   93:   return (
+   94:     <div>
+   95:       <h3>Add Your Details</h3>
+   96:       <div className="form-container mt-3">
+   97:         <div className="row">
+   98:           <div className="col-md-4">
+   99:             <div className="form-group">
+  100:               <label
+  101:                 className={`radio-css ${
+  102:                   propertyType === "sale" ? "active" : ""
+  103:                 }`}
+  104:                 htmlFor="radio1"
+  105:               >
+  106:                 <div>
+  107:                   <h4>Sale</h4>
+  108:                   {/* <p>
+  109:                                         You are the person who owns the property and fully
+  110:                                         incharge
+  111:                                     </p> */}
+  112:                 </div>
+  113:                 <input
+  114:                   type="radio"
+  115:                   id="radio1"
+  116:                   name="sale"
+  117:                   checked={propertyType === "sale" ? true : false}
+  118:                   onChange={() =>
+  119:                     setPropertyType(propertyType === "sale" ? "rent" : "sale")
+  120:                   }
+  121:                 />
+  122:               </label>
+  123:             </div>
+  124:           </div>
+  125:           <div className="col-md-4">
+  126:             <div className="form-group">
+  127:               <label
+  128:                 className={`radio-css ${
+  129:                   propertyType === "rent" ? "active" : ""
+  130:                 }`}
+  131:                 htmlFor="radio2"
+  132:               >
+  133:                 <div>
+  134:                   <h4>Rent/Lease</h4>
+  135:                   {/* <p>
+  136: 															You are the person who owns the property and fully
+  137: 															incharge
+  138: 														</p> */}
+  139:                 </div>
+  140:                 <input
+  141:                   type="radio"
+  142:                   id="radio2"
+  143:                   name="rent"
+  144:                   checked={propertyType === "rent" ? true : false}
+  145:                   onChange={() =>
+  146:                     setPropertyType(propertyType === "sale" ? "rent" : "sale")
+  147:                   }
+  148:                 />
+  149:               </label>
+  150:             </div>
+  151:           </div>
+  152:         </div>
+  153:         <div className="row">
+  154:           <div className="col-md-5">
+  155:             <div className="form-group">
+  156:               <label htmlFor="fullname" className="label-contact">
+  157:                 Full Name <span style={{ color: "red" }}>*</span>
+  158:               </label>
+  159:               <input
+  160:                 type="text"
+  161:                 name="full_name"
+  162:                 id="full_name"
+  163:                 placeholder="Enter Full Name"
+  164:                 className="form-control form-control-height"
+  165:                 onChange={(e) => {
+  166:                   // Only allow letters and spaces
+  167:                   const value = e.target.value.replace(/[^A-Za-z\s]/g, "");
+  168:                   e.target.value = value;
+  169:                   handleChangeRequest(e);
+  170:                 }}
+  171:                 value={getValue(request, "full_name", "")}
+  172:               />
+  173:               <div className="form-error">
+  174:                 {safeValidatorMessage(
+  175:                   "Full Name",
+  176:                   getValue(request, "full_name", ""),
+  177:                   "required"
+  178:                 )}
+  179:               </div>
+  180:             </div>
+  181:           </div>
+  182:           <div className="col-md-5">
+  183:             <div className="form-group">
+  184:               <label htmlFor="email" className="label-contact">
+  185:                 Email Address <span style={{ color: "red" }}>*</span>
+  186:               </label>
+  187:               <input
+  188:                 type="text"
+  189:                 name="email"
+  190:                 id="email"
+  191:                 placeholder="Enter Email Address"
+  192:                 className="form-control form-control-height"
+  193:                 onChange={handleChangeRequest}
+  194:                 value={getValue(request, "email", "")}
+  195:               />
+  196:               <div className="form-error">
+  197:                 {safeValidatorMessage(
+  198:                   "Email",
+  199:                   getValue(request, "email", ""),
+  200:                   "required|email"
+  201:                 )}
+  202:               </div>
+  203:             </div>
+  204:           </div>
+  205:           <div className="col-md-5">
+  206:             <div className="form-group">
+  207:               <label htmlFor="phone" className="label-contact">
+  208:                 Phone Number <span style={{ color: "red" }}>*</span>
+  209:               </label>
+  210:               <PhoneInput
+  211:                 country={"in"}
+  212:                 value={request?.phone ? request.phone.replace(/^\+/, "") : ""} // value without "+"
+  213:                 onChange={handlePhoneChange}
+  214:                 inputClass="form-control form-control-height w-100 custom-phone-input"
+  215:                 containerClass="phone-input-container"
+  216:                 inputProps={{
+  217:                   name: "phone",
+  218:                   id: "phone",
+  219:                   required: true
+  220:                 }}
+  221:                 enableSearch={true}
+  222:                 disableDefaultCountry={false}
+  223:                 placeholder="Enter phone number"
+  224:               />
+  225:               <span className="form-error">
+  226:                 {phoneError}
+  227:               </span>
+  228:             </div>
+  229:           </div>
+  230:         </div>
+  231:       </div>
+  232:       <div className="mt-4 mb-5 d-flex gap-3">
+  233:         {isLoading ? (
+  234:           <button className="theme-button theme-primary-btn mr-3">
+  235:             Please wait...
+  236:           </button>
+  237:         ) : (
+  238:           <button
+  239:             className="theme-button theme-primary-btn mr-3"
+  240:             onClick={() => handleSubmit(2, "tab2")}
+  241:           >
+  242:             Next
+  243:           </button>
+  244:         )}
+  245:         <Link href="/">
+  246:           <button className="theme-button theme-secondary-btn mr-0">
+  247:             Cancel
+  248:           </button>
+  249:         </Link>
+  250:       </div>
+  251:     </div>
+  252:   );
+  253: }
+  254: // Testing
+  255: export default Tab1;

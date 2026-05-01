@@ -1,0 +1,33 @@
+.map-view-wrapper {
+  @media (max-width: ($mobile-devices-max-width)+px) {
+    position: relative !important;
+    max-width: 100%;
+  }
+  @media (min-width: ($tablet-devices-min)+px) and (max-width: ($tablet-devices-max)+px) {
+    max-width: 100%;
+    position: relative !important;
+  }
+  //   max-width: 455px;
+  // top: 0;
+  // right: 0;
+  z-index: 10;
+  width: 100%;
+  max-width: 1290px;
+  margin: 0 auto;
+  padding: 0 34px;
+
+  iframe {
+    border: none;
+    outline: none;
+    @media (max-width: ($mobile-devices-max-width)+px) {
+      height: 400px;
+      margin-bottom: 16px;
+    }
+  }
+  .theme-button {
+    top: 10px;
+    left: 10px;
+    padding-left: 10px;
+    z-index: 1;
+  }
+}

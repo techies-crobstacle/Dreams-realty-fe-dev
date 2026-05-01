@@ -1,0 +1,147 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap");
+@import "_variables.scss";
+@import "_extends.scss";
+
+* {
+  margin: 0;
+  padding: 0;
+  outline: none !important;
+  box-sizing: border-box;
+}
+html {
+  font-size: $base-font-size + px;
+  color: $theme-font-primary-color;
+  @media (max-width: $mobile-devices-max-width+px) {
+    font-size: $base-font-size-mobile + px;
+  }
+  @media (min-width: $tablet-devices-min+px) and (max-width: $medium-devices-max+px) {
+    font-size: $base-font-size-mobile + px;
+  }
+}
+body {
+  font-family: $font-family;
+  font-size: 1rem;
+  line-height: 1.2;
+  font-weight: $normal-font-weight;
+  color: $theme-font-primary-color;
+  &.interfont {
+    font-family: "Inter", sans-serif;
+  }
+}
+a {
+  text-decoration: none !important;
+  color: $theme-font-primary-color;
+}
+
+p {
+  margin: 0;
+  padding: 0;
+}
+
+ul,
+li {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+a:focus,
+a:hover,
+a:active {
+  outline: medium none !important;
+  text-decoration: none;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+h1 {
+  @extend %medium-bold-font;
+}
+
+h2 {
+  @extend %medium-bold-font;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+  color: $theme-font-heading-color;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  @extend %bold-font;
+}
+
+h1 {
+  font-size: ($heading1-font-size/$base-font-size) + rem;
+  @media (max-width: $mobile-devices-max-width+px) {
+    font-size: ($heading1-mobile-font-size/$base-font-size-mobile) + rem;
+  }
+  @media (min-width: $tablet-devices-min+px) and (max-width: $tablet-devices-max+px) {
+    font-size: ($heading1-tablet-font-size/$base-font-size-mobile) + rem;
+  }
+}
+
+h2 {
+  font-size: ($heading2-font-size/$base-font-size) + rem;
+  @media (max-width: $mobile-devices-max-width+px) {
+    font-size: ($heading2-mobile-font-size/$base-font-size-mobile) + rem;
+  }
+  @media (min-width: $tablet-devices-min+px) and (max-width: $tablet-devices-max+px) {
+    font-size: ($heading2-tablet-font-size/$base-font-size-mobile) + rem;
+  }
+}
+
+h3 {
+  font-size: ($heading3-font-size/$base-font-size) + rem;
+  @media (max-width: $mobile-devices-max-width+px) {
+    font-size: ($heading3-mobile-font-size/$base-font-size-mobile) + rem;
+  }
+  @media (min-width: $tablet-devices-min+px) and (max-width: $tablet-devices-max+px) {
+    font-size: ($heading3-tablet-font-size/$base-font-size-mobile) + rem;
+  }
+}
+
+h4 {
+  font-size: ($heading4-font-size/$base-font-size) + rem;
+  @media (max-width: $mobile-devices-max-width+px) {
+    font-size: ($heading4-mobile-font-size/$base-font-size-mobile) + rem;
+  }
+  @media (min-width: $tablet-devices-min+px) and (max-width: $tablet-devices-max+px) {
+    font-size: ($heading4-tablet-font-size/$base-font-size-mobile) + rem;
+  }
+}
+
+button::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+button,
+a {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+.flex-1 {
+  flex: 1;
+}
+.normal-font {
+  @extend %normal-font;
+}

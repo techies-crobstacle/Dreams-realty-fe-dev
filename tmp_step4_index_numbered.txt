@@ -1,0 +1,155 @@
+    1: import React, { useRef, useState } from "react";
+    2: import { getValue } from "/utils/lodash";
+    3: import Link from "next/link";
+    4: import UploadSVG from "@components/svg/upload-svg";
+    5: 
+    6: function ListStepTab4(props) {
+    7:   const {
+    8:     handleSubmit,
+    9:     uploadImage,
+   10:     handleSubmitTab,
+   11:     imageList,
+   12:     isLoading,
+   13:     handleRemoveImages,
+   14:   } = props;
+   15: 
+   16:   const isSubmittingRef = useRef(false);
+   17:   const [isSubmitting, setIsSubmitting] = useState(false);
+   18: 
+   19:   const handleSubmitClick = async (e) => {
+   20:     e.preventDefault();
+   21:     e.stopPropagation();
+   22: 
+   23:     // IMMEDIATE button disabling and visual feedback
+   24:     const button = e.currentTarget;
+   25:     if (button.disabled || isSubmittingRef.current) {
+   26:       console.log("Double click blocked!");
+   27:       return;
+   28:     }
+   29:     
+   30:     // IMMEDIATE visual feedback - change button text instantly
+   31:     isSubmittingRef.current = true;
+   32:     button.disabled = true;
+   33:     button.style.pointerEvents = 'none';
+   34:     button.style.opacity = '0.75';
+   35:     button.innerHTML = `
+   36:       <span style="display: inline-block; width: 15px; height: 15px; border: 2px solid rgba(255, 255, 255, 0.4); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; margin-right: 8px;"></span>
+   37:       Submitting...
+   38:     `;
+   39:     console.log("Button text changed to Submitting...");
+   40: 
+   41:     setIsSubmitting(true);
+   42: 
+   43:     try {
+   44:       // Call the parent's handleSubmit function
+   45:       await handleSubmit();
+   46:       
+   47:       console.log("Form submitted successfully!");
+   48:       button.innerHTML = "✓ Success!";
+   49:       button.style.backgroundColor = "#28a745";
+   50:       button.style.borderColor = "#28a745";
+   51:       
+   52:     } catch (error) {
+   53:       console.error("Submission error:", error);
+   54:       // Re-enable button on error
+   55:       isSubmittingRef.current = false;
+   56:       button.disabled = false;
+   57:       button.style.pointerEvents = 'auto';
+   58:       button.style.opacity = '1';
+   59:       button.innerHTML = "❌ Error — Retry";
+   60:       button.style.backgroundColor = "#dc3545";
+   61:       button.style.borderColor = "#dc3545";
+   62:       
+   63:       setTimeout(() => {
+   64:         button.innerHTML = "Submit";
+   65:         button.style.backgroundColor = "";
+   66:         button.style.borderColor = "";
+   67:         setIsSubmitting(false);
+   68:       }, 3000);
+   69:     }
+   70:   };
+   71: 
+   72:   return (
+   73:     <>
+   74:       <style jsx>{`
+   75:         @keyframes spin {
+   76:           0% { transform: rotate(0deg); }
+   77:           100% { transform: rotate(360deg); }
+   78:         }
+   79:       `}</style>
+   80:       <div className="row">
+   81:         <div className="col-md-10 mx-auto">
+   82:           <label className="label-contact">Property Images</label>
+   83:           <div className="d-flex justify-content-start">
+   84:             <label className="file-upload-lg">
+   85:               <div className="text-center">
+   86:                 <UploadSVG />
+   87:                 <h4>Upload Photo</h4>
+   88:                 <p>Upload Pictures - JPG or PNG (1087px X 569px) Minimum</p>
+   89:               </div>
+   90:               <input
+   91:                 type="file"
+   92:                 name="upload"
+   93:                 id="upload"
+   94:                 onChange={(e) => uploadImage(e)}
+   95:                 multiple
+   96:               />
+   97:             </label>
+   98:           </div>
+   99:           <hr className="my-4" />
+  100:           {getValue(props, `imageList.length`, 0) > 0 ? (
+  101:             <div className="row">
+  102:               {getValue(props, `imageList`, []).map((item, index) => {
+  103:                 return (
+  104:                   <div key={index} className="col-sm-2 col-md-3 col-lg-4 mb-3">
+  105:                     <div className="img-photo">
+  106:                       <img
+  107:                         alt="photo-icon"
+  108:                         src={
+  109:                           getValue(item, `url`, "")
+  110:                             ? process.env.NEXT_PUBLIC_API_URL +
+  111:                               getValue(item, `url`, "")
+  112:                             : "/images/insert_photo-24px.svg"
+  113:                         }
+  114:                       />
+  115:                       <button
+  116:                         className="btn-close"
+  117:                         onClick={() => handleRemoveImages(index)}
+  118:                       >
+  119:                         &times;
+  120:                       </button>
+  121:                     </div>
+  122:                   </div>
+  123:                 );
+  124:               })}
+  125:             </div>
+  126:           ) : (
+  127:             <p className="text-center mt-2 mb-2">No Data Found</p>
+  128:           )}
+  129:           <div className="mt-4 mb-5 d-flex gap-3 flex-wrap">
+  130:             <button
+  131:               className="theme-button theme-secondary-btn mr-3"
+  132:               onClick={() => handleSubmitTab(3)}
+  133:             >
+  134:               Previous
+  135:             </button>
+  136:             <button
+  137:               className="theme-button theme-primary-btn mr-3"
+  138:               onClick={handleSubmitClick}
+  139:               disabled={getValue(props, `imageList.length`, 0) === 0 || isSubmitting}
+  140:             >
+  141:               Submit
+  142:             </button>
+  143:             <Link href="/">
+  144:               <button className="theme-button theme-secondary-btn mr-3">
+  145:                 Cancel
+  146:               </button>
+  147:             </Link>
+  148:           </div>
+  149:         </div>
+  150:       </div>
+  151:     </>
+  152:   );
+  153: }
+  154: 
+  155: export default ListStepTab4;

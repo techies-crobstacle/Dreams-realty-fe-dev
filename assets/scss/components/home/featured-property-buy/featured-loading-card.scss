@@ -1,0 +1,48 @@
+.featured-loading-card {
+  width: 100%;
+  border: 1px solid $theme-border-color;
+  border-radius: $base-border-radius;
+}
+.loading-image {
+  height: 214px;
+  width: 100%;
+  animation: shimmer 10s infinite;
+  background: linear-gradient(to right, #eff1f3 4%, #e2e2e2 25%, #eff1f3 36%);
+}
+.loading-buy-card-details {
+  margin: 24px;
+}
+.heading {
+  height: 35px;
+  width: 100%;
+  animation: shimmer 12s infinite;
+  background: linear-gradient(to right, #eff1f3 4%, #e2e2e2 25%, #eff1f3 36%);
+  margin-bottom: 2px;
+}
+.sub-heading {
+  height: 23px;
+  width: 90%;
+  animation: shimmer 12s infinite;
+  background: linear-gradient(to right, #eff1f3 4%, #e2e2e2 25%, #eff1f3 36%);
+  margin-bottom: 2px;
+}
+.loading-location {
+  height: 18px;
+  width: 80%;
+  animation: shimmer 12s infinite;
+  background: linear-gradient(to right, #eff1f3 4%, #e2e2e2 25%, #eff1f3 36%);
+  margin-bottom: 44px;
+}
+.loading-text {
+  height: 23px;
+  width: 90%;
+  animation: shimmer 12s infinite;
+  background: linear-gradient(to right, #eff1f3 4%, #e2e2e2 25%, #eff1f3 36%);
+  margin-bottom: 2px;
+}
+.loading-sub-text {
+  height: 20px;
+  width: 80%;
+  animation: shimmer 12s infinite;
+  background: linear-gradient(to right, #eff1f3 4%, #e2e2e2 25%, #eff1f3 36%);
+}

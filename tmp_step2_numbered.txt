@@ -1,0 +1,274 @@
+    1: import React, { useEffect, useState } from "react";
+    2: import Layout from "@components/layout.js";
+    3: import Link from "next/link";
+    4: import { toast } from "react-toastify";
+    5: import { getValue } from "/utils/lodash";
+    6: import router from "next/router";
+    7: import PropertySVG from "@components/svg/property-svg";
+    8: import MapSVG from "@components/svg/map-svg";
+    9: import { Button } from "reactstrap";
+   10: import ProfileSVG from "@components/svg/profile-svg";
+   11: import AlbumSVG from "@components/svg/album-svg";
+   12: import {
+   13:   fetchPropertyTypes,
+   14:   fetchRentProperties,
+   15:   fetchSaleProperties,
+   16:   fetchUpdateRentProperty,
+   17:   fetchUpdateSaleProperty,
+   18: } from "@services/APIs/common.service";
+   19: 
+   20: export default function ListStep2(props) {
+   21:   /* -------------------------------------------------------------------------- */
+   22:   /*                               Use State Section                            */
+   23:   /* -------------------------------------------------------------------------- */
+   24:   const [loading, setLoading] = useState(false);
+   25:   const [isLoading, setIsLoading] = useState(false);
+   26:   const [propertyTypeList, setPropertyTypeList] = useState([]);
+   27:   const [property_type, setProperty_type] = useState("");
+   28:   const [request, setRequest] = useState({
+   29:     full_name: "",
+   30:     email: "",
+   31:     phone: "",
+   32:   });
+   33: 
+   34:   /* -------------------------------------------------------------------------- */
+   35:   /*                               Use effect Section                           */
+   36:   /* -------------------------------------------------------------------------- */
+   37: 
+   38:   useEffect(() => {
+   39:     getPropertyTypeList();
+   40:     getData();
+   41:   }, []);
+   42: 
+   43:   /* -------------------------------------------------------------------------- */
+   44:   /*                               API Section                                  */
+   45:   /* -------------------------------------------------------------------------- */
+   46:   const getData = async () => {
+   47:     if (props.type === "sale") {
+   48:       try {
+   49:         setIsLoading(true);
+   50:         let resp = await fetchSaleProperties(props.id);
+   51:         if (resp) {
+   52:           setIsLoading(false);
+   53:           setProperty_type(getValue(resp, `saleProperty.property_type.id`, ""));
+   54:         } else {
+   55:           setIsLoading(false);
+   56:         }
+   57:       } catch (error) {
+   58:         setIsLoading(false);
+   59:       }
+   60:     } else {
+   61:       try {
+   62:         let resp = await fetchRentProperties(props.id);
+   63:         setIsLoading(true);
+   64:         if (resp) {
+   65:           setProperty_type(getValue(resp, `rentProperty.property_type.id`, ""));
+   66:           setIsLoading(false);
+   67:         } else {
+   68:           setIsLoading(false);
+   69:         }
+   70:       } catch (error) {
+   71:         setIsLoading(false);
+   72:       }
+   73:     }
+   74:   };
+   75: 
+   76:   const getPropertyTypeList = async () => {
+   77:     try {
+   78:       setLoading(true);
+   79:       let resp = await fetchPropertyTypes();
+   80:       if (resp) {
+   81:         setPropertyTypeList(getValue(resp, `data`, []));
+   82:         setLoading(false);
+   83:       } else {
+   84:         setLoading(false);
+   85:       }
+   86:     } catch (error) {
+   87:       setLoading(false);
+   88:     }
+   89:   };
+   90: 
+   91:   const handleSubmit = async () => {
+   92:     if (property_type) {
+   93:       let data = {
+   94:         data: {
+   95:           property_type: property_type,
+   96:         },
+   97:         where: { id: props.id },
+   98:       };
+   99:       if (props.type === "sale") {
+  100:         try {
+  101:           setIsLoading(true);
+  102:           let resp = await fetchUpdateSaleProperty(data);
+  103:           if (resp) {
+  104:             toast.success("Updated successfully");
+  105:             setIsLoading(false);
+  106:             router.push(
+  107:               `/list-step3/${props.id}/${props.type ? props.type : "sale"}`
+  108:             );
+  109:           } else {
+  110:             setIsLoading(false);
+  111:           }
+  112:         } catch (error) {
+  113:           setIsLoading(false);
+  114:         }
+  115:       } else {
+  116:         try {
+  117:           setIsLoading(true);
+  118:           let resp = await fetchUpdateRentProperty(data);
+  119:           if (resp) {
+  120:             toast.success("Updated successfully");
+  121:             setIsLoading(false);
+  122:             router.push(
+  123:               `/list-step3/${props.id}/${props.type ? props.type : "rent"}`
+  124:             );
+  125:           } else {
+  126:             setIsLoading(false);
+  127:           }
+  128:         } catch (error) {
+  129:           setIsLoading(false);
+  130:         }
+  131:       }
+  132:     } else {
+  133:       toast.error("Please add property type to continue");
+  134:     }
+  135:   };
+  136: 
+  137:   /* -------------------------------------------------------------------------- */
+  138:   /*                               On change Section                            */
+  139:   /* -------------------------------------------------------------------------- */
+  140: 
+  141:   const handleRequest = (id) => {
+  142:     setProperty_type(id);
+  143:   };
+  144:   return (
+  145:     <Layout>
+  146:       <div className="position-relative">
+  147:         <ul className="flight-tabs-ul">
+  148:           <li>
+  149:             <Button color="nothing">
+  150:               <span className="flight-tabs-icon">
+  151:                 <ProfileSVG />
+  152:               </span>
+  153:               <span className="flight-tabs-text">Your Details</span>
+  154:             </Button>
+  155:           </li>
+  156:           <li className="active">
+  157:             <Link href={`/list-step2/${props.id}/${props.type}`}>
+  158:               <Button color="nothing">
+  159:                 <span className="flight-tabs-icon">
+  160:                   <PropertySVG />
+  161:                 </span>
+  162:                 <span className="flight-tabs-text">Property Listing/Type</span>
+  163:               </Button>
+  164:             </Link>
+  165:           </li>
+  166:           <li>
+  167:             <Link href={`/list-step3/${props.id}/${props.type}`}>
+  168:               <Button color="nothing">
+  169:                 <span className="flight-tabs-icon">
+  170:                   <MapSVG />
+  171:                 </span>
+  172:                 <span className="flight-tabs-text">Property Details</span>
+  173:               </Button>
+  174:             </Link>
+  175:           </li>
+  176:           <li>
+  177:             <Link href={`/list-step4/${props.id}/${props.type}`}>
+  178:               <Button color="nothing">
+  179:                 <span className="flight-tabs-icon">
+  180:                   <AlbumSVG />
+  181:                 </span>
+  182:                 <span className="flight-tabs-text">Property Photos</span>
+  183:               </Button>
+  184:             </Link>
+  185:           </li>
+  186:         </ul>
+  187:         <section className="list-step1">
+  188:           <div className="custom-container">
+  189:             <div className="row">
+  190:               <div className="col-lg-10 mx-auto">
+  191:                 <h2>Select Your Listing and Property Type</h2>
+  192:                 {/* <p className="mb-4">
+  193: 									Lorem Ipsum is simply dummy text of the printing and
+  194: 									typesetting industry. Lorem Ipsum has been the.
+  195: 								</p> */}
+  196:                 <div className="form-container">
+  197:                   {loading ? (
+  198:                     <p className="text-center mt-2">Please wait...</p>
+  199:                   ) : (
+  200:                     <div className="row">
+  201:                       {propertyTypeList.map((item, index) => {
+  202:                         return (
+  203:                           <div className="col-md-4" key={index}>
+  204:                             <div className="form-group">
+  205:                               <label
+  206:                                 class={`radio-css ${
+  207:                                   item.id === property_type ? "active" : ""
+  208:                                 }`}
+  209:                                 htmlFor="radio3"
+  210:                               >
+  211:                                 <div
+  212:                                   className="cursor-pointer"
+  213:                                   onClick={() => handleRequest(item.id)}
+  214:                                 >
+  215:                                   <h4>{getValue(item, "title", "")}</h4>
+  216:                                 </div>
+  217:                                 <input
+  218:                                   type="radio"
+  219:                                   id={getValue(item, "title", "")}
+  220:                                   name="checked"
+  221:                                   checked={item.id === property_type}
+  222:                                   onChange={() => handleRequest(item.id)}
+  223:                                 />
+  224:                               </label>
+  225:                             </div>
+  226:                           </div>
+  227:                         );
+  228:                       })}
+  229:                     </div>
+  230:                   )}
+  231:                   <div className="mt-4 mb-5">
+  232:                     <Link href="/list-step1">
+  233:                       <button className="theme-button theme-secondary-btn mr-3">
+  234:                         Back
+  235:                       </button>
+  236:                     </Link>
+  237:                     {isLoading ? (
+  238:                       <button className="theme-button theme-primary-btn mr-3">
+  239:                         Please wait...
+  240:                       </button>
+  241:                     ) : (
+  242:                       <button
+  243:                         className="theme-button theme-primary-btn mr-3"
+  244:                         onClick={handleSubmit}
+  245:                       >
+  246:                         Next
+  247:                       </button>
+  248:                     )}
+  249:                     <Link href="/">
+  250:                       <button className="theme-button theme-secondary-btn mr-0">
+  251:                         Cancel
+  252:                       </button>
+  253:                     </Link>
+  254:                   </div>
+  255:                 </div>
+  256:               </div>
+  257:             </div>
+  258:           </div>
+  259:         </section>
+  260:       </div>
+  261:     </Layout>
+  262:   );
+  263: }
+  264: 
+  265: export async function getServerSideProps({ query }) {
+  266:   const id = query.id[0];
+  267:   const type = query.id[1];
+  268:   return {
+  269:     props: {
+  270:       id,
+  271:       type,
+  272:     },
+  273:   };
+  274: }

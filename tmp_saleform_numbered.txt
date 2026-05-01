@@ -1,0 +1,715 @@
+    1: import { textFormat } from "@common/formatText";
+    2: import React from "react";
+    3: import { getValue } from "/utils/lodash";
+    4: 
+    5: function SaleForm(props) {
+    6:   return (
+    7:     <div>
+    8:       <div className="form-container">
+    9:         <div className="row">
+   10:           {/* <div className="col-md-10">
+   11: 						<div className="form-group">
+   12: 							<label className="label-contact">Property Brand Logo</label>
+   13: 							<div className="d-flex justify-content-start align-items-center">
+   14: 								<label className="file-upload-sm">
+   15: 									<img src="/images/insert_photo-24px.svg" />
+   16: 									<input
+   17: 										type="file"
+   18: 										name="upload"
+   19: 										id="upload"
+   20: 										onChange={(e) =>
+   21: 											props.uploadImage(
+   22: 												e,
+   23: 												props.setRequest,
+   24: 												props.request,
+   25: 												"logo"
+   26: 											)
+   27: 										}
+   28: 									/>
+   29: 								</label>
+   30: 								<div className="ml-4">
+   31: 									<h4>Upload Pictures - JPG or PNG (190px X 160px) Minimum</h4>
+   32: 									<div className="img-box">
+   33: 										<img
+   34: 											className="img-fluid"
+   35: 											src={
+   36: 												props.image
+   37: 													? props.image
+   38: 													: props.logoPreview
+   39: 													? props.logoPreview
+   40: 													: ""
+   41: 											}
+   42: 										/>
+   43: 									</div>
+   44: 								</div>
+   45: 							</div>
+   46: 						</div>
+   47: 					</div> */}
+   48:           <div className="col-md-10">
+   49:             <div className="form-group">
+   50:               <label htmlFor="pname" className="label-contact">
+   51:                 Property Name <span style={{ color: "red" }}>*</span>
+   52:               </label>
+   53:               <input
+   54:                 type="text"
+   55:                 name="title"
+   56:                 id="title"
+   57:                 placeholder="Enter Property Name"
+   58:                 className="form-control "
+   59:                 value={getValue(props, `request.title`, "")}
+   60:                 onChange={props.onChange}
+   61:               />
+   62:               {props.simpleValidator && (
+   63:                 <div className="form-error">
+   64:                   {props.simpleValidator.current.message(
+   65:                     "Property Name",
+   66:                     getValue(props.request, "title", ""),
+   67:                     "required"
+   68:                   )}
+   69:                 </div>
+   70:               )}
+   71:             </div>
+   72:           </div>
+   73:           {/* <div className="col-md-10">
+   74: 						<div className="form-group">
+   75: 							<label htmlFor="desc" className="label-contact">
+   76: 								About/Property Description *
+   77: 							</label>
+   78: 							<textarea
+   79: 								name="about"
+   80: 								id="about"
+   81: 								rows="7"
+   82: 								placeholder="Enter About/Property Description"
+   83: 								className="form-control textarea"
+   84: 								value={getValue(props, `request.about`, "")}
+   85: 								onChange={props.onChange}
+   86: 							/>
+   87: 							{props.simpleValidator && (
+   88: 								<div className="form-error">
+   89: 									{props.simpleValidator.current.message(
+   90: 										"About/Property Description",
+   91: 										getValue(props.request, "about", ""),
+   92: 										"required"
+   93: 									)}
+   94: 								</div>
+   95: 							)}
+   96: 						</div>
+   97: 					</div> */}
+   98:           <div className="col-md-10">
+   99:             <div className="form-group">
+  100:               <label htmlFor="ad1" className="label-contact">
+  101:                 Address
+  102:               </label>
+  103:               <textarea
+  104:                 type="text"
+  105:                 name="address"
+  106:                 id="address"
+  107:                 rows="7"
+  108:                 placeholder="Villa No | Apartment - Flat #/Tower # / Floor / No. of Towers"
+  109:                 className="form-control textarea"
+  110:                 value={getValue(props, `request.address`, "")}
+  111:                 onChange={props.onChange}
+  112:               />
+  113:             </div>
+  114:           </div>
+  115: 
+  116:           {/* <div className="col-md-5">
+  117: 						<div className="form-group">
+  118: 							<label htmlFor="City" className="label-contact">
+  119: 								City
+  120: 							</label>
+  121: 							<select
+  122: 								value={getValue(props, `request.city`, "")}
+  123: 								className="form-control "
+  124: 								onChange={(e) =>
+  125: 									props.handleChangeSelectId(
+  126: 										e,
+  127: 										props.setRequest,
+  128: 										props.request,
+  129: 										"city"
+  130: 									)
+  131: 								}
+  132: 							>
+  133: 								<option value={""}>Select</option>
+  134: 								{getValue(props, `cityList`, []).map((item) => {
+  135: 									return (
+  136: 										<option
+  137: 											value={item.id}
+  138: 											selected={item.id === getValue(props, `request.city`, "")}
+  139: 										>
+  140: 											{item.title}
+  141: 										</option>
+  142: 									);
+  143: 								})}
+  144: 							</select>
+  145: 						</div>
+  146: 					</div> */}
+  147: 
+  148:           {/* <div className="col-md-5">
+  149: 						<div className="form-group">
+  150: 							<label htmlFor="Location" className="label-contact">
+  151: 								Location
+  152: 							</label>
+  153: 							<select
+  154: 								value={getValue(props, `request.location`, "")}
+  155: 								className="form-control "
+  156: 								onChange={(e) =>
+  157: 									props.handleChangeSelectId(
+  158: 										e,
+  159: 										props.setRequest,
+  160: 										props.request,
+  161: 										"location"
+  162: 									)
+  163: 								}
+  164: 							>
+  165: 								<option value={""}>Select</option>
+  166: 								{getValue(props, `locationList`, []).map((item) => {
+  167: 									return (
+  168: 										<option
+  169: 											value={item.id}
+  170: 											selected={
+  171: 												item.id === getValue(props, `request.location`, "")
+  172: 											}
+  173: 										>
+  174: 											{textFormat(item.title)}
+  175: 										</option>
+  176: 									);
+  177: 								})}
+  178: 							</select>
+  179: 						</div>
+  180: 					</div> */}
+  181:         </div>
+  182: 
+  183:         <div className="row">
+  184:           {/* <div className="col-md-5">
+  185: 						<div className="form-group">
+  186: 							<label htmlFor="Location" className="label-contact">
+  187: 								Location Area
+  188: 							</label>
+  189: 							<select
+  190: 								value={getValue(props, `request.location_area`, "")}
+  191: 								className="form-control "
+  192: 								onChange={(e) =>
+  193: 									props.handleChangeSelectId(
+  194: 										e,
+  195: 										props.setRequest,
+  196: 										props.request,
+  197: 										"location_area"
+  198: 									)
+  199: 								}
+  200: 							>
+  201: 								<option value={""}>Select</option>
+  202: 								{getValue(props, `locationAreaList`, []).map((item) => {
+  203: 									return (
+  204: 										<option
+  205: 											value={item.id}
+  206: 											selected={
+  207: 												item.id === getValue(props, `request.location_area`, "")
+  208: 											}
+  209: 										>
+  210: 											{item.title}
+  211: 										</option>
+  212: 									);
+  213: 								})}
+  214: 							</select>
+  215: 						</div>
+  216: 					</div> */}
+  217:           <div className="col-md-5">
+  218:             <div className="form-group">
+  219:               <label htmlFor="Location" className="label-contact">
+  220:                 Furnishing <span style={{ color: "red" }}>*</span>
+  221:               </label>
+  222:               <select
+  223:                 value={getValue(props, `request.furnishing`, "")}
+  224:                 className="form-control "
+  225:                 onChange={(e) =>
+  226:                   props.handleChangeSelectId(
+  227:                     e,
+  228:                     props.setRequest,
+  229:                     props.request,
+  230:                     "furnishing"
+  231:                   )
+  232:                 }
+  233:               >
+  234:                 <option value={""}>Select</option>
+  235:                 {getValue(props, `furnishingList`, []).map((item) => {
+  236:                   return (
+  237:                     <option
+  238:                       value={item.value}
+  239:                       selected={
+  240:                         item.value === getValue(props, `request.furnishing`, "")
+  241:                       }
+  242:                     >
+  243:                       {textFormat(item.value)}
+  244:                     </option>
+  245:                   );
+  246:                 })}
+  247:               </select>
+  248:               {props.simpleValidator && (
+  249:                 <div className="form-error">
+  250:                   {props.simpleValidator.current.message(
+  251:                     "Furnishing",
+  252:                     getValue(props.request, "furnishing", ""),
+  253:                     "required"
+  254:                   )}
+  255:                 </div>
+  256:               )}
+  257:             </div>
+  258:           </div>
+  259:           <div className="col-md-5">
+  260:             <div className="form-group">
+  261:               <label htmlFor="Location" className="label-contact">
+  262:                 Facing
+  263:               </label>
+  264:               <select
+  265:                 value={getValue(props, `request.facing`, "")}
+  266:                 className="form-control "
+  267:                 onChange={(e) =>
+  268:                   props.handleChangeSelectId(
+  269:                     e,
+  270:                     props.setRequest,
+  271:                     props.request,
+  272:                     "facing"
+  273:                   )
+  274:                 }
+  275:               >
+  276:                 <option value={""}>Select</option>
+  277:                 {getValue(props, `facingList`, []).map((item) => {
+  278:                   return (
+  279:                     <option
+  280:                       value={item.value}
+  281:                       selected={
+  282:                         item.value === getValue(props, `request.facing`, "")
+  283:                       }
+  284:                     >
+  285:                       {textFormat(item.value)}
+  286:                     </option>
+  287:                   );
+  288:                 })}
+  289:               </select>
+  290:             </div>
+  291:           </div>
+  292:           {/* <div className="col-md-5">
+  293: 						<div className="form-group">
+  294: 							<label htmlFor="Location" className="label-contact">
+  295: 								Developer
+  296: 							</label>
+  297: 							<select
+  298: 								value={getValue(props, `request.developer`, "")}
+  299: 								className="form-control "
+  300: 								onChange={(e) =>
+  301: 									props.handleChangeSelectId(
+  302: 										e,
+  303: 										props.setRequest,
+  304: 										props.request,
+  305: 										"developer"
+  306: 									)
+  307: 								}
+  308: 							>
+  309: 								<option value={""}>Select</option>
+  310: 								{getValue(props, `developerList`, []).map((item) => {
+  311: 									return (
+  312: 										<option
+  313: 											value={item.id}
+  314: 											selected={
+  315: 												item.id === getValue(props, `request.developer`, "")
+  316: 											}
+  317: 										>
+  318: 											{item.title}
+  319: 										</option>
+  320: 									);
+  321: 								})}
+  322: 							</select>
+  323: 						</div>
+  324: 					</div> */}
+  325:         </div>
+  326: 
+  327:         <div className="row">
+  328:           <div className="col-md-5">
+  329:             <div className="form-group">
+  330:               <label htmlFor="ad1" className="label-contact">
+  331:                 Price <span style={{ color: "red" }}>*</span>
+  332:               </label>
+  333:               <input
+  334:                 type="number"
+  335:                 name="price"
+  336:                 id="price"
+  337:                 placeholder="Enter Price (Min 50 Lacs)"
+  338:                 className="form-control "
+  339:                 value={getValue(props, `request.price`, "")}
+  340:                 onChange={props.onChange}
+  341:                 min="5000000"
+  342:               />
+  343:               {props.simpleValidator && (
+  344:                 <div className="form-error">
+  345:                   {props.simpleValidator.current.message(
+  346:                     "Price",
+  347:                     getValue(props.request, "price", 0),
+  348:                     "required"
+  349:                   )}
+  350:                 </div>
+  351:               )}
+  352:             </div>
+  353:           </div>
+  354: 
+  355:           {/* <div className="col-md-5">
+  356: 						<div className="form-group">
+  357: 							<label htmlFor="ad1" className="label-contact">
+  358: 								Balcony
+  359: 							</label>
+  360: 							<input
+  361: 								type="number"
+  362: 								name="balcony"
+  363: 								id="balcony"
+  364: 								placeholder="Enter Balcony"
+  365: 								className="form-control "
+  366: 								value={getValue(props, `request.balcony`, "")}
+  367: 								onChange={props.onChange}
+  368: 							/>
+  369: 						</div>
+  370: 					</div> */}
+  371:           <div className="col-md-5">
+  372:             <div className="form-group">
+  373:               <label htmlFor="ad1" className="label-contact">
+  374:                 Bathrooms
+  375:               </label>
+  376:               <input
+  377:                 type="number"
+  378:                 name="bathrooms"
+  379:                 id="bathrooms"
+  380:                 placeholder="Enter Bathrooms"
+  381:                 className="form-control "
+  382:                 value={getValue(props, `request.bathrooms`, "")}
+  383:                 onChange={props.onChange}
+  384:                 max="30"
+  385:               />
+  386:             </div>
+  387:           </div>
+  388:           {/* <div className="col-md-5">
+  389: 						<div className="form-group">
+  390: 							<label htmlFor="ad1" className="label-contact">
+  391: 								Property RERA
+  392: 							</label>
+  393: 							<input
+  394: 								type="text"
+  395: 								name="property_rera"
+  396: 								id="property_rera"
+  397: 								placeholder="Enter Property RERA"
+  398: 								className="form-control "
+  399: 								value={getValue(props, `request.property_rera`, "")}
+  400: 								onChange={props.onChange}
+  401: 							/>
+  402: 						</div>
+  403: 					</div> */}
+  404: 
+  405:           {/* <div className="col-md-5">
+  406: 						<div className="form-group">
+  407: 							<label htmlFor="ad1" className="label-contact">
+  408: 								Total Units
+  409: 							</label>
+  410: 							<input
+  411: 								type="number"
+  412: 								name="total_units"
+  413: 								id="total_units"
+  414: 								placeholder="Enter Total Units"
+  415: 								className="form-control "
+  416: 								value={getValue(props, `request.total_units`, "")}
+  417: 								onChange={props.onChange}
+  418: 							/>
+  419: 						</div>
+  420: 					</div>
+  421: 
+  422: 					<div className="col-md-5">
+  423: 						<div className="form-group">
+  424: 							<label htmlFor="ad1" className="label-contact">
+  425: 								Development Size (Acres)
+  426: 							</label>
+  427: 							<input
+  428: 								type="number"
+  429: 								name="development_size"
+  430: 								id="development_size"
+  431: 								placeholder="Enter Development Size"
+  432: 								className="form-control "
+  433: 								value={getValue(props, `request.development_size`, "")}
+  434: 								onChange={props.onChange}
+  435: 							/>
+  436: 						</div>
+  437: 					</div> */}
+  438: 
+  439:           {/* <br />
+  440: 					<div className="col-md-5">
+  441: 						<div className="form-group">
+  442: 							<label htmlFor="ad1" className="label-contact">
+  443: 								Latitude
+  444: 							</label>
+  445: 							<input
+  446: 								type="text"
+  447: 								name="latitude"
+  448: 								id="latitude"
+  449: 								placeholder="Enter Latitude"
+  450: 								className="form-control "
+  451: 								value={getValue(props, `request.latitude`, "")}
+  452: 								onChange={props.onChange}
+  453: 							/>
+  454: 						</div>
+  455: 					</div>
+  456: 
+  457: 					<div className="col-md-5">
+  458: 						<div className="form-group">
+  459: 							<label htmlFor="ad1" className="label-contact">
+  460: 								Longitude
+  461: 							</label>
+  462: 							<input
+  463: 								type="text"
+  464: 								name="longitude"
+  465: 								id="longitude"
+  466: 								placeholder="Enter Longitude"
+  467: 								className="form-control "
+  468: 								value={getValue(props, `request.longitude`, "")}
+  469: 								onChange={props.onChange}
+  470: 							/>
+  471: 						</div>
+  472: 					</div> */}
+  473: 
+  474:           <br />
+  475: 
+  476:           <div className="col-md-10">
+  477:             <label htmlFor="pincode" className="label-contact">
+  478:               Property BHK
+  479:             </label>
+  480:             <div className="form-group">
+  481:               {getValue(props, `propertyBHKList.length`, 0) > 0 &&
+  482:                 getValue(props, `propertyBHKList`, []).map((item, index) => {
+  483:                   return (
+  484:                     // add class active to label when checked
+  485:                     <label
+  486:                       className={`checkbox-button ${
+  487:                         getValue(props, `request.property_bhks`, []).includes(
+  488:                           getValue(item, "id")
+  489:                         )
+  490:                           ? "active"
+  491:                           : ""
+  492:                       }`}
+  493:                       key={index}
+  494:                     >
+  495:                       <span>{getValue(item, "title")}</span>
+  496:                       <input
+  497:                         type="checkbox"
+  498:                         onChange={() =>
+  499:                           props.handleChangePushArray(
+  500:                             getValue(item, "id"),
+  501:                             props.setRequest,
+  502:                             props.request
+  503:                           )
+  504:                         }
+  505:                         checked={getValue(
+  506:                           props,
+  507:                           `request.property_bhks`,
+  508:                           []
+  509:                         ).includes(getValue(item, "id"))}
+  510:                       />
+  511:                     </label>
+  512:                   );
+  513:                 })}
+  514:             </div>
+  515:           </div>
+  516:           {getValue(props, "property_type", "") !== "Apartments" && (
+  517:             <div className="col-md-5">
+  518:               <div className="form-group">
+  519:                 <label htmlFor="carea" className="label-contact">
+  520:                   Plot Area (sqft)
+  521:                 </label>
+  522:                 <input
+  523:                   type="number"
+  524:                   name="plot_area"
+  525:                   id="plot_area"
+  526:                   placeholder="Enter Plot Area (sqft)"
+  527:                   className="form-control "
+  528:                   value={getValue(props, `request.plot_area`, "")}
+  529:                   onChange={props.onChange}
+  530:                 />
+  531:               </div>
+  532:             </div>
+  533:           )}
+  534:           {/* <div className="col-md-5">
+  535: 						<div className="form-group">
+  536: 							<label htmlFor="carea" className="label-contact">
+  537: 								Carpet Area (sqft)
+  538: 							</label>
+  539: 							<input
+  540: 								type="number"
+  541: 								name="carpet_area"
+  542: 								id="carpet_area"
+  543: 								placeholder="Enter Carpet Area (sqft)"
+  544: 								className="form-control "
+  545: 								value={getValue(props, `request.carpet_area`, "")}
+  546: 								onChange={props.onChange}
+  547: 							/>
+  548: 						</div>
+  549: 					</div> */}
+  550:           <div className="col-md-5">
+  551:             <div className="form-group">
+  552:               <label htmlFor="barea" className="label-contact">
+  553:                 Super Built-up Area (Sqft){" "}
+  554:                 <span style={{ color: "red" }}>*</span>
+  555:               </label>
+  556:               <input
+  557:                 type="number"
+  558:                 name="super_build_up_area"
+  559:                 id="super_build_up_area"
+  560:                 placeholder="Enter Built-up Area (Sqft)"
+  561:                 className="form-control "
+  562:                 value={getValue(props, `request.super_build_up_area`, "")}
+  563:                 onChange={props.onChange}
+  564:               />
+  565:               {props.simpleValidator && (
+  566:                 <div className="form-error">
+  567:                   {props.simpleValidator.current.message(
+  568:                     "Built-up Area",
+  569:                     getValue(props.request, "super_build_up_area", ""),
+  570:                     "required"
+  571:                   )}
+  572:                 </div>
+  573:               )}
+  574:             </div>
+  575:           </div>
+  576:         </div>
+  577:         <div className="row">
+  578:           {/* <div className="col-md-5">
+  579: 						<div className="form-group">
+  580: 							<label htmlFor="carea" className="label-contact">
+  581: 								Plot Area Min
+  582: 							</label>
+  583: 							<input
+  584: 								type="number"
+  585: 								name="plot_area_min"
+  586: 								id="plot_area_min"
+  587: 								placeholder="Enter Plot Area Min (sqft)"
+  588: 								className="form-control "
+  589: 								value={getValue(props, `request.plot_area_min`, "")}
+  590: 								onChange={props.onChange}
+  591: 							/>
+  592: 						</div>
+  593: 					</div>
+  594: 					<div className="col-md-5">
+  595: 						<div className="form-group">
+  596: 							<label htmlFor="carea" className="label-contact">
+  597: 								Plot Area Max
+  598: 							</label>
+  599: 							<input
+  600: 								type="number"
+  601: 								name="plot_area_max"
+  602: 								id="plot_area_max"
+  603: 								placeholder="Enter Plot Area Max (sqft)"
+  604: 								className="form-control "
+  605: 								value={getValue(props, `request.plot_area_max`, "")}
+  606: 								onChange={props.onChange}
+  607: 							/>
+  608: 						</div>
+  609: 					</div>
+  610: 
+  611: 					<div className="col-md-5">
+  612: 						<div className="form-group">
+  613: 							<label htmlFor="carea" className="label-contact">
+  614: 								Carpet Area Min
+  615: 							</label>
+  616: 							<input
+  617: 								type="number"
+  618: 								name="carpet_area_min"
+  619: 								id="carpet_area_min"
+  620: 								placeholder="Enter Carpet Area Min (sqft)"
+  621: 								className="form-control "
+  622: 								value={getValue(props, `request.carpet_area_min`, "")}
+  623: 								onChange={props.onChange}
+  624: 							/>
+  625: 						</div>
+  626: 					</div>
+  627: 					<div className="col-md-5">
+  628: 						<div className="form-group">
+  629: 							<label htmlFor="carea" className="label-contact">
+  630: 								Carpet Area Max
+  631: 							</label>
+  632: 							<input
+  633: 								type="number"
+  634: 								name="carpet_area_max"
+  635: 								id="carpet_area_max"
+  636: 								placeholder="Enter Carpet Area Max (sqft)"
+  637: 								className="form-control "
+  638: 								value={getValue(props, `request.carpet_area_max`, "")}
+  639: 								onChange={props.onChange}
+  640: 							/>
+  641: 						</div>
+  642: 					</div>
+  643: 
+  644: 					<div className="col-md-5">
+  645: 						<div className="form-group">
+  646: 							<label htmlFor="carea" className="label-contact">
+  647: 								Build Up Area Min
+  648: 							</label>
+  649: 							<input
+  650: 								type="number"
+  651: 								name="super_build_up_area_min"
+  652: 								id="super_build_up_area_min"
+  653: 								placeholder="Enter Build Up Area Min (sqft)"
+  654: 								className="form-control "
+  655: 								value={getValue(props, `request.super_build_up_area_min`, "")}
+  656: 								onChange={props.onChange}
+  657: 							/>
+  658: 						</div>
+  659: 					</div>
+  660: 					<div className="col-md-5">
+  661: 						<div className="form-group">
+  662: 							<label htmlFor="carea" className="label-contact">
+  663: 								Build Up Area Max
+  664: 							</label>
+  665: 							<input
+  666: 								type="number"
+  667: 								name="super_build_up_area_max"
+  668: 								id="super_build_up_area_max"
+  669: 								placeholder="Enter Build Up Area Max (sqft)"
+  670: 								className="form-control "
+  671: 								value={getValue(props, `request.super_build_up_area_max`, "")}
+  672: 								onChange={props.onChange}
+  673: 							/>
+  674: 						</div>
+  675: 					</div>
+  676: 
+  677: 					<div className="col-md-10">
+  678: 						<div className="form-group">
+  679: 							<label htmlFor="video" className="label-contact">
+  680: 								Amenities
+  681: 							</label>
+  682: 							<Select
+  683: 								options={props.amenitiesList}
+  684: 								isMulti
+  685: 								value={getValue(props, `request.amenities`, "")}
+  686: 								onChange={(e) =>
+  687: 									props.handleChangeSelect(e, props.setRequest, props.request)
+  688: 								}
+  689: 							/>
+  690: 						</div>
+  691: 					</div> */}
+  692: 
+  693:           <div className="col-md-10">
+  694:             <div className="form-group">
+  695:               <label htmlFor="video" className="label-contact">
+  696:                 Property Video Link (Youtube)
+  697:               </label>
+  698:               <textarea
+  699:                 name="video_url"
+  700:                 id="video_url"
+  701:                 rows="7"
+  702:                 placeholder="Enter Property Video Link (Youtube)"
+  703:                 className="form-control textarea"
+  704:                 value={getValue(props, `request.video_url`, "")}
+  705:                 onChange={props.onChange}
+  706:               />
+  707:             </div>
+  708:           </div>
+  709:         </div>
+  710:       </div>
+  711:     </div>
+  712:   );
+  713: }
+  714: 
+  715: export default SaleForm;

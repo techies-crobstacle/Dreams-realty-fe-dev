@@ -1,0 +1,632 @@
+.orin-blog-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  color: #333;
+  line-height: 1.6;
+  margin-bottom: 40px;
+  
+}
+
+.orin-diamond-icon{
+  position: absolute;
+              top: -8px; 
+              left: 50%; 
+              transform: translateX(-50%);
+              background-Color: white;
+              padding: 0 5px;
+}
+
+.orin-section-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.orin-section-title {
+  font-size: 28px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 10px;
+  margin-top: 40px;
+}
+
+.orin-section-subtitle {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.orin-section-divider {
+  width: 60px;
+  height: 1px;
+  background-color: #333;
+  margin: 0 auto;
+}
+
+.orin-loading {
+  text-align: center;
+  padding: 40px 0;
+  font-size: 18px;
+  color: #666;
+}
+
+.read-btn {
+  color: #3c67a4;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.read-btn:hover {
+  text-decoration: underline;
+}
+
+/* Featured Section Styles */
+.orin-featured-card {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.orin-featured-image {
+  position: relative;
+}
+
+.orin-featured-img {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  border: none;
+}
+
+.orin-featured-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-align: center;
+}
+
+.orin-featured-badge {
+  background: #fff;
+  color: #333;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 12px;
+  
+}
+
+.orin-featured-title {
+  font-size: 32px;
+  font-weight: 300;
+  margin-bottom: 15px;
+  line-height: 1.3;
+  border-bottom: 2px solid white hidden;
+}
+
+.orin-featured-title:hover {
+ border-bottom: 2px solid white ;
+}
+
+
+.orin-featured-next,
+.orin-featured-prev {
+  transition: transform 0.2s;
+}
+
+.orin-featured-next:hover,
+.orin-featured-prev:hover {
+  transform: translateY(-50%) scale(1.1);
+}
+
+/* Featured Layout Container */
+.orin-featured-layout {
+  margin-bottom: 60px;
+}
+
+/* Side Card Styles */
+.orin-side-card {
+  
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  height: 100%;
+}
+
+.orin-side-card:hover {
+  transform: translateY(-5px);
+}
+
+.orin-side-image {
+  overflow: hidden;
+}
+
+.orin-side-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.orin-side-card:hover .orin-side-img {
+  transform: scale(1.05);
+}
+
+.orin-side-body {
+  padding: 20px;
+}
+
+.orin-side-title {
+  font-size: 18px;
+  font-weight: 400;
+  margin-bottom: 12px;
+  line-height: 1.4;
+  color: #333;
+}
+
+.orin-side-excerpt {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 15px;
+  line-height: 1.6;
+  display: -webkit-box;
+  /* -webkit-line-clamp: 3; */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.orin-side-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #999;
+  margin-bottom: 15px;
+}
+
+/* Large Card Styles */
+.orin-masonry-large-card {
+  border: 1px solid gray;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.orin-masonry-large-card:hover {
+  transform: translateY(-5px);
+}
+
+.orin-masonry-large-image {
+  overflow: hidden;
+}
+
+.orin-masonry-large-img {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.orin-masonry-large-card:hover .orin-masonry-large-img {
+  transform: scale(1.05);
+}
+
+.orin-masonry-large-body {
+  padding: 30px;
+}
+
+.orin-masonry-large-title {
+  font-size: 24px;
+  font-weight: 400;
+  margin-bottom: 15px;
+  line-height: 1.4;
+  color: #333;
+}
+
+.orin-masonry-large-excerpt {
+  color: #666;
+  font-size: 16px;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.orin-masonry-large-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #999;
+  margin-bottom: 20px;
+}
+
+/* Masonry Layout Styles */
+.orin-masonry-container {
+  margin-top: 40px;
+}
+
+.orin-masonry-grid {
+  column-count: 3;
+  column-gap: 30px;
+  column-fill: balance;
+}
+
+.orin-masonry-item {
+  display: inline-block;
+  width: 100%;
+  margin-bottom: 30px;
+  break-inside: avoid;
+  page-break-inside: avoid;
+  transition: transform 0.3s ease;
+}
+
+.orin-masonry-item:hover {
+  transform: translateY(-3px);
+}
+
+/* Ensure cards don't break across columns */
+.orin-masonry-item .orin-article-card {
+  break-inside: avoid;
+  page-break-inside: avoid;
+  margin-bottom: 0;
+}
+
+/* Article Card Styles */
+.orin-article-card {
+  overflow: hidden;
+  transition: all 0.3s ease;
+  height: 100%;
+  border-radius: 8px;
+}
+
+.orin-article-card:hover {
+  transform: translateY(-5px);
+}
+
+.orin-article-image {
+  overflow: hidden;
+}
+
+.orin-article-img {
+  width: 100%;
+  height: auto;
+  min-height: 150px;
+  
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.orin-article-card:hover .orin-article-img {
+  transform: scale(1.05);
+}
+
+/* Add variety to masonry items */
+.orin-masonry-item:nth-child(3n+1) .orin-article-img {
+  height: 180px;
+}
+
+.orin-masonry-item:nth-child(3n+2) .orin-article-img {
+  height: 220px;
+}
+
+.orin-masonry-item:nth-child(3n+3) .orin-article-img {
+  height: 200px;
+}
+
+.orin-article-body {
+  padding: 25px;
+}
+
+.orin-article-title {
+  font-size: 18px;
+  font-weight: 400;
+  margin-bottom: 15px;
+  line-height: 1.4;
+  color: #333;
+}
+
+.orin-article-excerpt {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 15px;
+  line-height: 1.6;
+}
+
+.orin-article-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #999;
+  margin-bottom: 15px;
+}
+
+/* Small Card Styles (if needed) */
+.orin-masonry-small-card {
+  border: none;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  height: 100%;
+}
+
+.orin-masonry-small-card:hover {
+  transform: translateY(-5px);
+}
+
+.orin-masonry-small-image {
+  overflow: hidden;
+}
+
+.orin-masonry-small-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.orin-masonry-small-card:hover .orin-masonry-small-img {
+  transform: scale(1.05);
+}
+
+.orin-masonry-small-body {
+  padding: 20px;
+}
+
+.orin-masonry-small-title {
+  font-size: 16px;
+  font-weight: 400;
+  margin-bottom: 10px;
+  line-height: 1.4;
+  color: #333;
+}
+
+.orin-masonry-small-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #999;
+  margin-bottom: 15px;
+}
+
+/* Pagination Styles */
+.orin-pagination-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+}
+
+.orin-pagination {
+  border: none;
+}
+
+.orin-pagination-link {
+  border: none;
+  color: #666;
+  padding: 10px 15px;
+  margin: 0 5px;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+.orin-pagination-link:hover {
+  background-color: #f8f9fa;
+  color: #333;
+}
+
+.orin-pagination .page-item.active .orin-pagination-link {
+  background-color: #3c67a4;
+  color: white;
+}
+
+
+/* Footer Styles */
+.orin-footer {
+  
+  padding: 50px 0 30px;
+  margin-top: 80px;
+}
+
+.orin-footer-section {
+  margin-bottom: 30px;
+}
+
+.orin-footer-title {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 25px;
+  color: #333;
+}
+
+.orin-footer-posts {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.orin-footer-post {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.orin-footer-post-img {
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+ 
+}
+
+.orin-footer-post-img:hover {
+background-color: #000;
+}
+
+.orin-footer-post-content {
+  flex: 1;
+}
+
+.orin-footer-post-title {
+  font-size: 14px;
+  font-weight: 400;
+  margin-bottom: 3px;
+  line-height: 1.4;
+  color: #333;
+}
+
+.orin-footer-post-date {
+  color: #999;
+  font-size: 12px;
+}
+
+.orin-contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.orin-form-group {
+  margin-bottom: 0;
+}
+
+.orin-form-input {
+  border: 1px solid #ddd;
+  padding: 12px;
+  border-radius: 5px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+.orin-form-input:focus {
+  border-color: #333;
+  box-shadow: none;
+  outline: none;
+}
+
+.orin-contact-btn {
+  background-color: #333;
+  border: none;
+  color: white;
+  padding: 12px 25px;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+  align-self: flex-start;
+}
+
+.orin-contact-btn:hover {
+  background-color: #555;
+}
+
+.orin-footer-bottom {
+  margin-top: 30px;
+}
+
+.orin-footer-divider {
+  border: none;
+  height: 1px;
+  background-color: #ddd;
+  margin: 30px 0 20px;
+}
+
+.orin-copyright {
+  text-align: center;
+}
+
+.orin-copyright p {
+  color: #666;
+  font-size: 14px;
+  margin: 0;
+}
+
+/* Responsive Styles */
+@media (max-width: 992px) {
+  .orin-masonry-grid {
+    column-count: 2;
+    column-gap: 25px;
+  }
+  
+  .orin-masonry-item:nth-child(2n+1) .orin-article-img {
+    height: 180px;
+  }
+
+  .orin-masonry-item:nth-child(2n+2) .orin-article-img {
+    height: 220px;
+  }
+}
+
+@media (max-width: 768px) {
+  .orin-featured-title {
+    font-size: 24px;
+  }
+
+  .orin-masonry-large-img {
+    height: 250px;
+  }
+
+  .orin-masonry-large-body {
+    padding: 20px;
+  }
+
+  .orin-masonry-large-title {
+    font-size: 20px;
+  }
+
+  .orin-masonry-large-excerpt {
+    font-size: 14px;
+  }
+  
+  .orin-masonry-grid {
+    column-count: 1;
+    column-gap: 0;
+  }
+  
+  .orin-masonry-item {
+    margin-bottom: 25px;
+  }
+  
+  .orin-featured-layout {
+    margin-bottom: 40px;
+  }
+  
+  .orin-masonry-item .orin-article-img {
+    height: 200px !important;
+  }
+  
+  /* Stack large card and side card on mobile */
+  .orin-featured-layout .row {
+    flex-direction: column;
+  }
+  
+  .orin-side-card {
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 576px) {
+  .orin-masonry-container {
+    margin-top: 30px;
+  }
+  
+  .orin-masonry-item {
+    margin-bottom: 20px;
+  }
+  
+  .orin-section-title {
+    font-size: 40px;
+  }
+  
+  .orin-featured-layout {
+    margin-bottom: 30px;
+  }
+  
+  .orin-footer {
+    margin-top: 50px;
+    padding: 40px 0 20px;
+  }
+}
+
+.blog-body li{
+  list-style: disc;
+}

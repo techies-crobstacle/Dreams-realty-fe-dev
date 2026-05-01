@@ -1,0 +1,30 @@
+.property-listing-pagination {
+    padding: 54px 0;
+    ul {
+        margin-bottom: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+  li {
+    display: inline-block;
+    a {
+        height: 36px;
+        width: 36px;
+        border-radius: 50%;
+        display: inline-block;
+        line-height: 36px;
+        color: $theme-primary-color;
+        margin: 0 4px;
+        cursor: pointer;
+        &.active {
+            background-color: $theme-primary-color;
+            color: $white-color;
+        }
+        &:hover {
+            background-color: $theme-primary-color;
+            color: $white-color !important;
+        }
+    }
+  }
+}

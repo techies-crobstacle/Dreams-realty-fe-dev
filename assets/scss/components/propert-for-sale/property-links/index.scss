@@ -1,0 +1,104 @@
+.property-for-sale-wrapper {
+    border-top: 1px solid $theme-border-color;
+    &--banner-links {
+        padding: 24px 0;
+        ul {
+            li {
+                display: inline-flex;
+                @media (max-width: ($mobile-devices-max-width)+px) {
+                    margin-bottom: 0px;
+                }
+                &:not(:last-child) {
+                    margin-right: 24px;
+                }
+                a {
+                    @media (max-width: ($mobile-devices-max-width)+px) {
+                        font-size: (15 / $base-font-size) + rem;
+                    }
+                    font-size: (23 / $base-font-size) + rem;
+                    padding-bottom: 10px;
+                    font-weight: $light-font-weight;
+                    color: $theme-secondary-color;
+                    border-bottom: 2px solid transparent;
+                    &.active {
+                        border-bottom: 2px solid $theme-primary-color;
+                        color: $theme-primary-color;
+                       
+                    }
+                    &:hover{
+                        color:$theme-primary-color;
+                        border-bottom: 2px solid $theme-primary-color;
+                        transition: 0.3s ease;
+                    }
+                }
+            }
+        }
+    }
+    &--title {
+        padding: 0 0 24px;
+        @media (min-width: ($tablet-devices-min)+px) and (max-width: ($tablet-devices-max)+px) {
+            flex-direction: column;
+        }
+        h3 {
+            font-size: (16 / $base-font-size) + rem;
+            font-weight: $light-font-weight;
+            max-width: 567px;
+            width: 100%;
+            @media (max-width: ($mobile-devices-max-width)+px) {
+                font-size: (26 / $base-font-size) + rem;
+                max-width: 100%;
+                margin: 0 auto 10px;
+                text-align: center;
+            }
+            @media (min-width: ($tablet-devices-min)+px) and (max-width: ($tablet-devices-max)+px) {
+                font-size: (26 / $base-font-size) + rem;
+                max-width: 100%;
+                margin: 0 auto 10px;
+                text-align: center;
+            }
+        }
+        .sale-btn {
+            @media (max-width: ($mobile-devices-max-width)+px) {
+                max-width: 320px;
+                width: 100%;
+                text-align: center;
+                margin-top: 15px;
+                margin: 0 auto;
+            }
+            @media (min-width: ($tablet-devices-min)+px) and (max-width: ($tablet-devices-max)+px) {
+                max-width: 320px;
+                width: 100%;
+                text-align: center;
+                margin-top: 15px;
+                margin: 0 auto;
+            }
+            button {
+                border-radius: 0;
+                font-weight: $light-font-weight;
+            }
+        }
+    }
+}
+.wrapper-new {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 24px;
+    &.map-view {
+        @media (max-width: ($mobile-devices-max-width)+px) {
+            grid-template-columns: repeat(1, 1fr);
+            max-width: 100%;
+        }
+        @media (min-width: ($tablet-devices-min)+px) and (max-width: ($tablet-devices-max)+px) {
+            grid-template-columns: repeat(2, 1fr);
+            max-width: 100%;
+        }
+        max-width: calc(100% - 416px);
+        grid-template-columns: repeat(2, 1fr);
+    }
+    @media (max-width: ($mobile-devices-max-width)+px) {
+        grid-template-columns: repeat(1, 1fr);
+    }
+    @media (min-width: ($tablet-devices-max)+px) and (max-width: ($tablet-devices-max)+px) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

@@ -1,0 +1,104 @@
+    1: import React from "react";
+    2: import Link from "next/link";
+    3: import SaleForm from "./sale-form";
+    4: import RentForm from "./rent-form";
+    5: export default function ListStepTab3(props) {
+    6:   const {
+    7:     type,
+    8:     image,
+    9:     saleRequest,
+   10:     setSaleRequest,
+   11:     handleChangeSaleRequest,
+   12:     rentRequest,
+   13:     setRentRequest,
+   14:     handleChangeRentRequest,
+   15:     handleChangeSelectId,
+   16:     handleChangePushArray,
+   17:     cityList,
+   18:     locationList,
+   19:     locationAreaList,
+   20:     propertyBHKList,
+   21:     developerList,
+   22:     furnishingList,
+   23:     facingList,
+   24:     simpleValidator,
+   25:     amenitiesList,
+   26:     handleChangeSelect,
+   27:     logoPreview,
+   28:     uploadImage,
+   29:     property_type,
+   30:     handleSubmit,
+   31:   } = props;
+   32:   return (
+   33:     <div className="row">
+   34:       <div className="col-lg-10 mx-auto">
+   35:         <h3 className="mb-3">Provide Property Details Below</h3>
+   36:         {type === "sale" && (
+   37:           <SaleForm
+   38:             image={image}
+   39:             request={saleRequest}
+   40:             setRequest={setSaleRequest}
+   41:             onChange={handleChangeSaleRequest}
+   42:             handleChangeSelectId={handleChangeSelectId}
+   43:             handleChangePushArray={handleChangePushArray}
+   44:             cityList={cityList}
+   45:             locationList={locationList}
+   46:             locationAreaList={locationAreaList}
+   47:             propertyBHKList={propertyBHKList}
+   48:             developerList={developerList}
+   49:             furnishingList={furnishingList}
+   50:             facingList={facingList}
+   51:             simpleValidator={simpleValidator}
+   52:             uploadImage={uploadImage}
+   53:             logoPreview={logoPreview}
+   54:             amenitiesList={amenitiesList}
+   55:             handleChangeSelect={handleChangeSelect}
+   56:             property_type={property_type}
+   57:           />
+   58:         )}
+   59:         {type === "rent" && (
+   60:           <RentForm
+   61:             request={rentRequest}
+   62:             image={image}
+   63:             setRequest={setRentRequest}
+   64:             onChange={handleChangeRentRequest}
+   65:             handleChangeSelectId={handleChangeSelectId}
+   66:             handleChangePushArray={handleChangePushArray}
+   67:             cityList={cityList}
+   68:             locationList={locationList}
+   69:             locationAreaList={locationAreaList}
+   70:             propertyBHKList={propertyBHKList}
+   71:             developerList={developerList}
+   72:             furnishingList={furnishingList}
+   73:             facingList={facingList}
+   74:             simpleValidator={simpleValidator}
+   75:             amenitiesList={amenitiesList}
+   76:             handleChangeSelect={handleChangeSelect}
+   77:             logoPreview={logoPreview}
+   78:             uploadImage={uploadImage}
+   79:             property_type={property_type}
+   80:           />
+   81:         )}
+   82:         <div className="mt-4 mb-5 d-flex gap-3 flex-wrap">
+   83:           <button
+   84:             className="theme-button theme-secondary-btn mr-3"
+   85:             onClick={() => handleSubmit(2)}
+   86:           >
+   87:             Previous
+   88:           </button>
+   89:           <button
+   90:             className="theme-button theme-primary-btn mr-3"
+   91:             onClick={() => handleSubmit(4, "tab4")}
+   92:           >
+   93:             Next
+   94:           </button>
+   95:           <Link href="/">
+   96:             <button className="theme-button theme-secondary-btn mr-3">
+   97:               Cancel
+   98:             </button>
+   99:           </Link>
+  100:         </div>
+  101:       </div>
+  102:     </div>
+  103:   );
+  104: }

@@ -1,0 +1,357 @@
+.property-listing-wrapper {
+  padding: 22px 0;
+  h1 {
+    @media (max-width: #{$mobile-devices-max-width}px) {
+      font-size: 1.5rem;
+    }
+  }
+  .testimonial-wrapper {
+    background-color: $white-color;
+    .testimonial-btn-variant {
+      margin-top: 40px;
+    }
+  }
+}
+
+.flight-tabs-ul {
+  text-align: center;
+  padding: 30px 40px;
+  
+  // Mobile responsive navigation
+  @media (max-width: #{$mobile-devices-max-width}px) {
+    padding: 20px 8px; // Reduced side padding to fit on one line
+    text-align: center;
+    
+    // Only enable scroll for very small devices (below 375px)
+    @media (max-width: 374px) {
+      overflow-x: auto;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+      padding: 18px 5px; // Even less padding for scroll mode
+    }
+  }
+  
+  li {
+    position: relative;
+    display: inline-block;
+    margin-right: 60px;
+    vertical-align: top;
+    
+    @media (max-width: #{$mobile-devices-max-width}px) {
+      display: inline-block;
+      margin-right: 15px; // Further reduced spacing for tight one-line fit
+      margin-bottom: 0;
+      min-width: 70px; // Smaller width to ensure one-line fit
+      
+      // For very small screens, allow horizontal scroll
+      @media (max-width: 374px) {
+        margin-right: 20px; // More spacing when scrolling
+        min-width: 75px;
+        white-space: nowrap;
+      }
+    }
+    
+    &::before {
+      content: "";
+      position: absolute;
+      left: 73px;
+      width: 143px;
+      height: 1px;
+      background-color: $theme-border-color;
+      top: 12px;
+      
+      @media (max-width: #{$mobile-devices-max-width}px) {
+        left: 60px; // Adjust for smaller tab width
+        width: 45px; // Shorter lines for tighter spacing
+        top: 18px;
+        
+        // For very small screens, adjust line positioning
+        @media (max-width: 374px) {
+          left: 65px;
+          width: 50px;
+        }
+      }
+    }
+    &:last-child {
+      margin-right: 0;
+      &::before {
+        display: none;
+      }
+    }
+    .btn.btn-nothing {
+      width: 115px;
+      white-space: break-spaces;
+      
+      @media (max-width: #{$mobile-devices-max-width}px) {
+        width: 70px; // Match min-width for consistency
+        padding: 5px 1px; // Minimal padding for tight fit
+        font-size: 0.65rem; // Smaller font for better fit
+        
+        // For very small screens, slightly larger for touch
+        @media (max-width: 374px) {
+          width: 75px;
+          padding: 6px 2px;
+          font-size: 0.7rem;
+        }
+      }
+      
+      span {
+        display: block;
+        &.flight-tabs-icon {
+          margin-bottom: 5px;
+          height: 24px;
+          
+          @media (max-width: #{$mobile-devices-max-width}px) {
+            height: 16px; // Compact icon for tight one-line layout
+            margin-bottom: 4px; // Minimal spacing
+            
+            // For very small screens
+            @media (max-width: 374px) {
+              height: 18px;
+              margin-bottom: 6px;
+            }
+          }
+          
+          svg {
+            fill: $theme-font-primary-color;
+          }
+        }
+        &.flight-tabs-text {
+          line-height: 18px;
+          
+          @media (max-width: #{$mobile-devices-max-width}px) {
+            padding-top: 5px;
+            line-height: 12px; // Tight line height for compact fit
+            font-size: 0.75rem; // Smaller font for one-line layout
+            
+            // For very small screens
+            @media (max-width: 374px) {
+              line-height: 14px;
+              font-size: 0.7rem;
+            }
+          }
+        }
+      }
+    }
+    &.active {
+      .btn.btn-nothing {
+        span {
+          &.flight-tabs-icon {
+            svg {
+              fill: $theme-primary-color;
+            }
+          }
+          &.flight-tabs-text {
+            color: $theme-primary-color;
+          }
+        }
+      }
+    }
+  }
+}
+
+.medium-padding {
+  padding-bottom: 120px;
+}
+
+.large-padding {
+  padding-bottom: 200px;
+}
+
+.list-step1 {
+  .form-group {
+    margin-bottom: 20px;
+  }
+  .form-control {
+    height: 44px;
+    &.textarea {
+      height: auto;
+    }
+  }
+  .form-error {
+    display: block;
+    margin: 4px 0 0;
+  }
+  .theme-button {
+    min-width: 150px;
+  }
+  
+  // Mobile responsive styles - only affects mobile screens
+  @media (max-width: #{$mobile-devices-max-width}px) {
+    h3 {
+      font-size: 1.4rem;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    
+    .form-container {
+      padding: 15px;
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      
+      .row {
+        margin-left: 0;
+        margin-right: 0;
+        
+        .col-md-4,
+        .col-md-5 {
+          padding-left: 8px;
+          padding-right: 8px;
+          margin-bottom: 15px;
+        }
+      }
+    }
+    
+    // Property type radio buttons - stack vertically on mobile
+    .radio-css {
+      padding: 12px 15px;
+      margin-bottom: 10px;
+      
+      h4 {
+        font-size: 1.1rem;
+        margin-bottom: 0;
+      }
+      
+      input {
+        margin-left: 8px;
+      }
+    }
+    
+    // Form inputs mobile styling
+    .form-group {
+      margin-bottom: 18px;
+      
+      .label-contact {
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 6px;
+        display: block;
+      }
+      
+      .form-control {
+        font-size: 16px; // Prevents zoom on iOS
+        padding: 12px 15px;
+        border-radius: 6px;
+        
+        &::placeholder {
+          font-size: 14px;
+          color: #999;
+        }
+      }
+      
+      // Phone input specific styling
+      .phone-input-container {
+        .custom-phone-input {
+          font-size: 16px !important; // Prevents zoom on iOS
+          padding: 12px 15px 12px 48px !important;
+        }
+        
+        // Hide any additional labels from PhoneInput component
+        .react-tel-input .form-control {
+          border: 1px solid #ddd;
+        }
+        
+        // Ensure no extra text appears
+        .flag-dropdown {
+          background: transparent;
+          border: none;
+        }
+        
+        // Hide any default PhoneInput labels
+        .react-tel-input .country-list .country .country-name {
+          display: block;
+        }
+      }
+    }
+    
+    // Button container mobile styling
+    .d-flex.gap-3 {
+      flex-direction: column;
+      gap: 12px !important;
+      margin-top: 30px;
+      padding: 0 15px;
+      
+      .theme-button {
+        width: 100%;
+        min-width: unset;
+        padding: 15px 20px;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 6px;
+        
+        &.theme-primary-btn {
+          order: 1;
+        }
+        
+        &.theme-secondary-btn {
+          order: 2;
+          margin-right: 0 !important;
+        }
+      }
+    }
+    
+    // Form error styling for mobile
+    .form-error {
+      font-size: 0.8rem;
+      margin: 6px 0 0 4px;
+      line-height: 1.3;
+    }
+    
+    // Reduce overall padding/margins for mobile
+    .mt-3 {
+      margin-top: 1rem !important;
+    }
+    
+    .mt-4 {
+      margin-top: 1.5rem !important;
+    }
+    
+    .mb-5 {
+      margin-bottom: 2rem !important;
+    }
+  }
+  
+  .img-box {
+    max-width: 100px;
+    max-height: 100px;
+    margin-top: 10px;
+  }
+  .css-1s2u09g-control,
+  .css-1pahdxg-control {
+    min-height: 150px;
+    align-items: flex-start;
+    .css-319lph-ValueContainer {
+      padding: 4px 8px;
+    }
+  }
+  .img-photo {
+    width: 100%;
+    height: 170px;
+    position: relative;
+    img {
+      object-fit: cover;
+      object-position: center;
+      border-radius: 4px;
+      width: 100%;
+      height: 100%;
+    }
+    .btn-close {
+      border: 0;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      background-color: $white-color;
+      border-radius: 50%;
+      font-size: 24px;
+      line-height: 24px;
+      color: $theme-font-primary-color;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+  }
+}

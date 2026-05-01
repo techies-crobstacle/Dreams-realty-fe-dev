@@ -1,0 +1,78 @@
+.customer-review-wrapper {
+    background-color: $theme-background-color;
+    padding: 52px 0;
+    .review-header {
+        &--title {
+            padding-bottom: 24px;
+            @media (max-width: ($mobile-devices-max-width)+px) {
+                padding-bottom: 15px;
+            }
+            h3 {
+                font-weight: $light-font-weight;
+                font-size: (33 / $base-font-size) + rem;
+                @media (max-width: ($mobile-devices-max-width)+px) {
+                    font-size: (24 / $base-font-size) + rem;
+                    margin-bottom: 10px;
+                    text-align: center;
+                }
+            }
+        }
+        &--slider-controls-review {
+            @media (max-width: ($mobile-devices-max-width)+px) {
+                margin: 0 auto;
+                padding-bottom: 20px;
+            }
+            a {
+                @media (max-width: ($mobile-devices-max-width)+px) {
+                    font-size: (18 / $base-font-size) + rem;
+                }
+                font-size: (23 / $base-font-size) + rem;
+                border-bottom: 1px solid $theme-slider-link;
+                font-weight: $light-font-weight;
+                color: $theme-slider-link;
+                margin-right: 32px;
+                &:hover {
+                    color: $theme-primary-color;
+                    border-bottom: 1px solid $theme-primary-color;
+                    transition: 0.3s ease;
+                }
+            }
+        }
+        img {
+            padding: 9px;
+            background-color: #f7f7f8;
+            border-radius: 50%;
+            .arrow{
+                &.swiper-button-disabled{
+                    img{
+                        opacity: 0.5;
+                    }
+                }
+            }
+        }
+    }
+    .review-card {
+        padding: 24px;
+        background-color: $white-color;
+        margin-bottom: 40px;
+        img.person-card-img{
+            height: 36px;
+            width: 36px;
+        }
+        h5 {
+            padding: 8px 0 3px;
+            color:$theme-font-heading-color;
+            font-weight: $light-font-weight;
+            font-size: (16/ $base-font-size) + rem;
+            @media (max-width: ($mobile-devices-max-width)+px) {
+                font-size: (15 / $base-font-size) + rem;
+                margin-bottom: 10px;
+            }
+        }
+        p{
+            padding-top: 8px;
+            font-weight: $light-font-weight;
+            font-size: (13 / $base-font-size) + rem;
+        }
+    }
+}
