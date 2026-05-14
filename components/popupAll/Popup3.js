@@ -355,7 +355,7 @@ const Popup3 = () => {
           overflow: "hidden",
           animation: "slideIn 0.4s ease-out",
           display: "flex",
-          flexDirection: isTablet ? "column" : "row",
+          flexDirection: isMobile ? "column" : "row",
         }}
       >
         {/* Close Button */}
@@ -384,12 +384,12 @@ const Popup3 = () => {
           ×
         </button>
 
-        <div style={{ display: "flex", height: "100%", width: "100%", flexDirection: isTablet ? "column" : "row" }}>
+        <div style={{ display: "flex", height: "100%", width: "100%", flexDirection: isMobile ? "column" : "row" }}>
           {/* Left Side - Enhanced Visual Section */}
           <div
             style={{
-              flex: isTablet ? "none" : 1,
-              height: isMobile ? "auto" : isTablet ? "40%" : "100%",
+              flex: isMobile ? "none" : 1,
+              height: isMobile ? "auto" : "100%",
               position: "relative",
               padding: isMobile ? "0px" : isTablet ? "20px" : "30px",
               color: "white",
@@ -406,7 +406,7 @@ const Popup3 = () => {
                 left: 0,
                 width: "100%",
                 height: isMobile ? "auto" : "100%",
-                objectFit: "cover",
+                objectFit: "fill",
                 objectPosition: "center",
                 zIndex: -2,
                 display: "block",
@@ -433,15 +433,15 @@ const Popup3 = () => {
           <div
             className="no"
             style={{
-              width: isTablet ? "100%" : "350px",
-              flex: isTablet ? 1 : "none",
+              width: isMobile ? "100%" : isTablet ? "50%" : "350px",
+              flex: isMobile ? 1 : "none",
               padding: isMobile ? "15px" : isTablet ? "20px" : "30px",
               backgroundColor: "white",
               display: "flex",
               flexDirection: "column",
               justifyContent: isMobile ? "flex-start" : "space-between",
               gap: isMobile ? "15px" : "0",
-              height: isMobile ? "auto" : isTablet ? "60%" : "100%",
+              height: isMobile ? "auto" : "100%",
               overflowY: "auto",
             }}
           >

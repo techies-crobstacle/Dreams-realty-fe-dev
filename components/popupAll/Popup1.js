@@ -373,7 +373,7 @@ const WelcomePopup = ({ onClose }) => {
                 left: 0,
                 width: "100%",
                 height: isMobile ? "auto" : "100%",
-                objectFit: "cover",
+                objectFit: "fill",
                 objectPosition: "center",
                 zIndex: -2,
                 display: "block",
@@ -384,7 +384,7 @@ const WelcomePopup = ({ onClose }) => {
 
           <div
             style={{
-              width: isMobile ? "100%" : isTablet ? "400px" : "450px",
+              width: isMobile ? "100%" : isTablet ? "50%" : "450px",
               flex: isMobile ? 1 : "none",
               padding: isMobile ? "12px" : isTablet ? "24px" : "32px",
               backgroundColor: "white",
