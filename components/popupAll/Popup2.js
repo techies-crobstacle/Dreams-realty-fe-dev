@@ -273,9 +273,9 @@ const Popup2 = ({ onClose }) => {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: isMobile ? "95vw" : isTablet ? "85vw" : "min(70vw, 1100px)",
-    maxWidth: isMobile ? "400px" : "none",
-    height: isMobile ? "95vh" : isTablet ? "85vh" : "min(85vh, 700px)",
+    width: isMobile ? "75vw" : isTablet ? "85vw" : "min(70vw, 1100px)",
+    maxWidth: isMobile ? "none" : "none",
+    height: isMobile ? "90vh" : isTablet ? "85vh" : "min(85vh, 700px)",
     maxHeight: "95vh",
     backgroundColor: "white",
     borderRadius: isMobile ? "12px" : "16px",
@@ -353,29 +353,32 @@ const Popup2 = ({ onClose }) => {
           <div
             style={{
               flex: isMobile ? "none" : 1,
-              height: isMobile ? "35%" : "100%",
-              minHeight: isMobile ? "200px" : "auto",
+              height: isMobile ? "auto" : "100%",
+              minHeight: isMobile ? "120px" : "auto",
               position: "relative",
-              padding: isMobile ? "16px" : isTablet ? "24px" : "32px",
+              padding: isMobile ? "0px" : isTablet ? "24px" : "32px",
               color: "white",
-              display: "flex",
+              display: isMobile ? "block" : "flex",
               flexDirection: "column",
               justifyContent: "center",
               alignItems: "center",
             }}
           >
-            <div
+            {/* Image Component */}
+            <img
+              src="/pop-min.jpeg"
+              alt="Popup background"
               style={{
-                position: "absolute",
+                position: isMobile ? "static" : "absolute",
                 top: 0,
                 left: 0,
-                right: 0,
-                bottom: 0,
-                backgroundImage: `url('/pop-min.jpeg')`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat",
+                width: "100%",
+                height: isMobile ? "auto" : "100%",
+                objectFit: "cover",
+                objectPosition: "center",
                 zIndex: -2,
+                display: "block",
+                backgroundColor: windowWidth <= 1024 ? "transparent" : "transparent"
               }}
             />
           </div>
@@ -384,21 +387,21 @@ const Popup2 = ({ onClose }) => {
             style={{
               width: isMobile ? "100%" : isTablet ? "400px" : "450px",
               flex: isMobile ? 1 : "none",
-              padding: isMobile ? "20px" : isTablet ? "24px" : "32px",
+              padding: isMobile ? "12px" : isTablet ? "24px" : "32px",
               backgroundColor: "white",
               display: "flex",
               flexDirection: "column",
-              height: isMobile ? "65%" : "100%",
+              height: isMobile ? "auto" : "100%",
               overflowY: "auto",
             }}
           >
-            <div style={{ textAlign: "center", marginBottom: isMobile ? "16px" : "24px" }}>
+            <div style={{ textAlign: "center", marginBottom: isMobile ? "10px" : "24px" }}>
               <h3
                 style={{
-                  fontSize: isMobile ? "20px" : "24px",
+                  fontSize: isMobile ? "18px" : "24px",
                   fontWeight: "bold",
                   color: "#1f2937",
-                  marginBottom: "8px",
+                  marginBottom: isMobile ? "4px" : "8px",
                 }}
               >
                 Get Started
@@ -406,7 +409,7 @@ const Popup2 = ({ onClose }) => {
               <p
                 style={{
                   color: "#6b7280",
-                  fontSize: isMobile ? "14px" : "16px",
+                  fontSize: isMobile ? "12px" : "16px",
                   lineHeight: "1.5",
                 }}
               >
@@ -418,7 +421,7 @@ const Popup2 = ({ onClose }) => {
               style={{ 
                 display: "flex", 
                 flexDirection: "column", 
-                gap: isMobile ? "16px" : "20px",
+                gap: isMobile ? "8px" : "20px",
                 flex: 1,
               }}
             >
@@ -426,10 +429,10 @@ const Popup2 = ({ onClose }) => {
                 <label
                   style={{
                     display: "block",
-                    fontSize: "14px",
+                    fontSize: isMobile ? "12px" : "14px",
                     fontWeight: "600",
                     color: "#374151",
-                    marginBottom: "8px",
+                    marginBottom: isMobile ? "4px" : "8px",
                   }}
                 >
                   Full Name *
@@ -443,10 +446,10 @@ const Popup2 = ({ onClose }) => {
                   placeholder="Enter your full name"
                   style={{
                     width: "100%",
-                    padding: isMobile ? "12px" : "14px",
+                    padding: isMobile ? "8px 10px" : "14px",
                     border: `2px solid ${errors.name ? "#ef4444" : "#e5e7eb"}`,
                     borderRadius: "8px",
-                    fontSize: isMobile ? "16px" : "14px",
+                    fontSize: isMobile ? "13px" : "14px",
                     boxSizing: "border-box",
                     transition: "all 0.2s ease",
                     outline: "none",
@@ -469,10 +472,10 @@ const Popup2 = ({ onClose }) => {
                 <label
                   style={{
                     display: "block",
-                    fontSize: "14px",
+                    fontSize: isMobile ? "12px" : "14px",
                     fontWeight: "600",
                     color: "#374151",
-                    marginBottom: "8px",
+                    marginBottom: isMobile ? "4px" : "8px",
                   }}
                 >
                   Phone Number *
@@ -485,7 +488,7 @@ const Popup2 = ({ onClose }) => {
                       top: "50%",
                       transform: "translateY(-50%)",
                       color: "#6b7280",
-                      fontSize: isMobile ? "16px" : "14px",
+                      fontSize: isMobile ? "13px" : "14px",
                       pointerEvents: "none",
                     }}
                   >
@@ -501,10 +504,10 @@ const Popup2 = ({ onClose }) => {
                     maxLength="10"
                     style={{
                       width: "100%",
-                      padding: isMobile ? "12px 12px 12px 50px" : "14px 14px 14px 50px",
+                      padding: isMobile ? "8px 8px 8px 45px" : "14px 14px 14px 50px",
                       border: `2px solid ${errors.phone ? "#ef4444" : "#e5e7eb"}`,
                       borderRadius: "8px",
-                      fontSize: isMobile ? "16px" : "14px",
+                      fontSize: isMobile ? "13px" : "14px",
                       boxSizing: "border-box",
                       transition: "all 0.2s ease",
                       outline: "none",
@@ -528,10 +531,10 @@ const Popup2 = ({ onClose }) => {
                 <label
                   style={{
                     display: "block",
-                    fontSize: "14px",
+                    fontSize: isMobile ? "12px" : "14px",
                     fontWeight: "600",
                     color: "#374151",
-                    marginBottom: "8px",
+                    marginBottom: isMobile ? "4px" : "8px",
                   }}
                 >
                   Email Address *
@@ -545,10 +548,10 @@ const Popup2 = ({ onClose }) => {
                   placeholder="your.email@example.com"
                   style={{
                     width: "100%",
-                    padding: isMobile ? "12px" : "14px",
+                    padding: isMobile ? "8px 10px" : "14px",
                     border: `2px solid ${errors.email ? "#ef4444" : "#e5e7eb"}`,
                     borderRadius: "8px",
-                    fontSize: isMobile ? "16px" : "14px",
+                    fontSize: isMobile ? "13px" : "14px",
                     boxSizing: "border-box",
                     transition: "all 0.2s ease",
                     outline: "none",
@@ -571,10 +574,10 @@ const Popup2 = ({ onClose }) => {
                 <label
                   style={{
                     display: "block",
-                    fontSize: "14px",
+                    fontSize: isMobile ? "12px" : "14px",
                     fontWeight: "600",
                     color: "#374151",
-                    marginBottom: "8px",
+                    marginBottom: isMobile ? "4px" : "8px",
                   }}
                 >
                   Choose Apartment
@@ -585,10 +588,10 @@ const Popup2 = ({ onClose }) => {
                   onChange={handleInputChange}
                   style={{
                     width: "100%",
-                    padding: isMobile ? "12px" : "14px",
+                    padding: isMobile ? "8px 10px" : "14px",
                     border: "2px solid #e5e7eb",
                     borderRadius: "8px",
-                    fontSize: isMobile ? "16px" : "14px",
+                    fontSize: isMobile ? "13px" : "14px",
                     boxSizing: "border-box",
                     backgroundColor: "white",
                     outline: "none",
@@ -605,10 +608,10 @@ const Popup2 = ({ onClose }) => {
                 <label
                   style={{
                     display: "block",
-                    fontSize: "14px",
+                    fontSize: isMobile ? "12px" : "14px",
                     fontWeight: "600",
                     color: "#374151",
-                    marginBottom: "8px",
+                    marginBottom: isMobile ? "4px" : "8px",
                   }}
                 >
                   Message (Optional)
@@ -617,18 +620,18 @@ const Popup2 = ({ onClose }) => {
                   name="message"
                   value={request.message}
                   onChange={handleInputChange}
-                  rows={isMobile ? 3 : 4}
+                  rows={isMobile ? 2 : 4}
                   placeholder="Tell us about your requirements..."
                   style={{
                     width: "100%",
-                    padding: isMobile ? "12px" : "14px",
+                    padding: isMobile ? "8px 10px" : "14px",
                     border: "2px solid #e5e7eb",
                     borderRadius: "8px",
-                    fontSize: isMobile ? "16px" : "14px",
+                    fontSize: isMobile ? "13px" : "14px",
                     boxSizing: "border-box",
                     transition: "all 0.2s ease",
                     resize: "vertical",
-                    minHeight: isMobile ? "80px" : "100px",
+                    minHeight: isMobile ? "50px" : "100px",
                     outline: "none",
                   }}
                 />
@@ -639,7 +642,7 @@ const Popup2 = ({ onClose }) => {
                 disabled={isContactLoading}
                 style={{
                   width: "100%",
-                  padding: isMobile ? "14px" : "16px",
+                  padding: isMobile ? "10px" : "16px",
                   background: isContactLoading
                     ? "#94a3b8"
                     : "linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)",

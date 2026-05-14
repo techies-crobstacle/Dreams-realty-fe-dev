@@ -347,8 +347,8 @@ const Popup4 = () => {
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: "min(58vw, 1200px)",
-          height: "min(78vh, 600px)",
+          width: isMobile ? "75vw" : isTablet ? "85vw" : "min(58vw, 1200px)",
+          height: isMobile ? "90vh" : isTablet ? "85vh" : "min(78vh, 600px)",
           backgroundColor: "white",
           borderRadius: "8px",
           boxShadow: "0 32px 64px rgba(0, 0, 0, 0.25)",
@@ -390,27 +390,30 @@ const Popup4 = () => {
           <div
             style={{
               flex: isTablet ? "none" : 1,
-              height: isTablet ? "40%" : "100%",
+              height: isMobile ? "auto" : isTablet ? "40%" : "100%",
               position: "relative",
-              padding: isMobile ? "15px" : isTablet ? "20px" : "30px",
+              padding: isMobile ? "0px" : isTablet ? "20px" : "30px",
               color: "white",
+              display: isMobile ? "block" : "block",
             }}
           >
-            {/* Background Image */}
-            <div
+            {/* Image Component */}
+            <img
+              src="/popupImage-min.png"
+              alt="Popup background"
               style={{
-                position: "absolute",
+                position: isMobile ? "static" : "absolute",
                 top: 0,
                 left: 0,
-                right: 0,
-                bottom: 0,
-                backgroundImage: `url('/popupImage-min.png')`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat",
+                width: "100%",
+                height: isMobile ? "auto" : "100%",
+                objectFit: "cover",
+                objectPosition: "center",
                 zIndex: -2,
+                display: "block",
+                backgroundColor: windowWidth <= 1024 ? "transparent" : "transparent"
               }}
-            ></div>
+            />
 
             {/* Bottom Section - Stats & Features */}
             <div style={{ position: "relative", zIndex: 1 }}>
@@ -437,19 +440,20 @@ const Popup4 = () => {
               backgroundColor: "white",
               display: "flex",
               flexDirection: "column",
-              justifyContent: "space-between",
-              height: isTablet ? "60%" : "100%",
+              justifyContent: isMobile ? "flex-start" : "space-between",
+              gap: isMobile ? "15px" : "0",
+              height: isMobile ? "auto" : isTablet ? "60%" : "100%",
               overflowY: "auto",
             }}
           >
             {/* Form Header */}
-            <div style={{ textAlign: "center", marginBottom: isMobile ? "15px" : "20px" }}>
+            <div style={{ textAlign: "center", marginBottom: isMobile ? "0px" : "20px" }}>
               <h3
                 style={{
                   fontSize: isMobile ? "18px" : isTablet ? "20px" : "24px",
                   fontWeight: "bold",
                   color: "#1f2937",
-                  marginBottom: "6px",
+                  marginBottom: isMobile ? "4px" : "6px",
                 }}
               >
                 Get Started
@@ -470,7 +474,7 @@ const Popup4 = () => {
               style={{
                 display: "flex",
                 flexDirection: "column",
-                gap: isMobile ? "12px" : "16px"
+                gap: isMobile ? "8px" : "16px"
               }}
             >
               {/* Name Field */}
@@ -478,10 +482,10 @@ const Popup4 = () => {
                 <label
                   style={{
                     display: "block",
-                    fontSize: "13px",
+                    fontSize: isMobile ? "12px" : "13px",
                     fontWeight: "600",
                     color: "#374151",
-                    marginBottom: "6px",
+                    marginBottom: isMobile ? "4px" : "6px",
                   }}
                 >
                   Full Name *
@@ -521,10 +525,10 @@ const Popup4 = () => {
                 <label
                   style={{
                     display: "block",
-                    fontSize: "13px",
+                    fontSize: isMobile ? "12px" : "13px",
                     fontWeight: "600",
                     color: "#374151",
-                    marginBottom: "6px",
+                    marginBottom: isMobile ? "4px" : "6px",
                   }}
                 >
                   Phone Number *
@@ -580,10 +584,10 @@ const Popup4 = () => {
                 <label
                   style={{
                     display: "block",
-                    fontSize: "13px",
+                    fontSize: isMobile ? "12px" : "13px",
                     fontWeight: "600",
                     color: "#374151",
-                    marginBottom: "6px",
+                    marginBottom: isMobile ? "4px" : "6px",
                   }}
                 >
                   Email Address *
@@ -622,10 +626,10 @@ const Popup4 = () => {
                 <label
                   style={{
                     display: "block",
-                    fontSize: "13px",
+                    fontSize: isMobile ? "12px" : "13px",
                     fontWeight: "600",
                     color: "#374151",
-                    marginBottom: "6px",
+                    marginBottom: isMobile ? "4px" : "6px",
                   }}
                 >
                   Choose Appartement
@@ -656,10 +660,10 @@ const Popup4 = () => {
                 <label
                   style={{
                     display: "block",
-                    fontSize: "13px",
+                    fontSize: isMobile ? "12px" : "13px",
                     fontWeight: "600",
                     color: "#374151",
-                    marginBottom: "6px",
+                    marginBottom: isMobile ? "4px" : "6px",
                   }}
                 >
                   Message (Optional)
@@ -668,17 +672,17 @@ const Popup4 = () => {
                   name="message"
                   value={request.message}
                   onChange={handleInputChange}
-                  rows={3}
+                  rows={isMobile ? 2 : 3}
                   style={{
                     width: "100%",
-                    padding: isMobile ? "8px 10px" : "10px 12px",
+                    padding: isMobile ? "6px 10px" : "10px 12px",
                     border: "2px solid #e5e7eb",
                     borderRadius: "8px",
                     fontSize: isMobile ? "13px" : "14px",
                     boxSizing: "border-box",
                     transition: "all 0.2s ease",
                     resize: "vertical",
-                    minHeight: "80px",
+                    minHeight: isMobile ? "50px" : "80px",
                   }}
                 />
               </div>

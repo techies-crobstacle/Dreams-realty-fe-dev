@@ -1,3 +1,4 @@
+
 // import "../styles/Blog.css";
 // import "../styles/Bslug.css";
 // import "bootstrap/scss/bootstrap.scss";
@@ -23,18 +24,27 @@
 // import Popup3 from "../components/popupAll/Popup3";
 // import Popup4 from "../components/popupAll/Popup4";
 
+// // Routes where popups should NOT appear
+// const POPUP_BLOCKED_ROUTES = [
+//   "/list-step1",
+//    "/list-step2",
+//    "/list-step3",
+//   "/list-step4"
+
+// ];
+
 // export default function MyApp({ Component, pageProps }) {
 //   const router = useRouter();
-  
+
 //   // State for managing which popup to show
 //   const [activePopup, setActivePopup] = useState(null);
-  
+
 //   // Available popups array
 //   const popups = [
 //     { id: 1, component: Popup1 },
 //     { id: 2, component: Popup2 },
 //     { id: 3, component: Popup3 },
-//     { id: 4, component: Popup4 }
+//     { id: 4, component: Popup4 },
 //   ];
 
 //   // Function to get random popup
@@ -46,7 +56,7 @@
 //   // Function to show popup with auto-close
 //   const showPopup = useCallback((popupId) => {
 //     setActivePopup(popupId);
-    
+
 //     // Auto-close after 1 minute (60000ms)
 //     setTimeout(() => {
 //       setActivePopup(null);
@@ -61,9 +71,12 @@
 //   // Initial popup on landing (only once per session)
 //   useEffect(() => {
 //     const hasSeenInitialPopup = sessionStorage.getItem("initialPopupShown");
-    
-//     if (!hasSeenInitialPopup) {
-//       // Show random popup after 2 seconds of landing
+
+//     if (
+//       !hasSeenInitialPopup &&
+//       !POPUP_BLOCKED_ROUTES.includes(router.pathname)
+//     ) {
+//       // Show random popup after 30 seconds of landing
 //       const timer = setTimeout(() => {
 //         const randomPopupId = getRandomPopup();
 //         showPopup(randomPopupId);
@@ -72,31 +85,38 @@
 
 //       return () => clearTimeout(timer);
 //     }
-//   }, [getRandomPopup, showPopup]);
+//   }, [getRandomPopup, showPopup, router.pathname]);
 
-//   // Recurring popup every 3 minutes
+//   // Recurring popup every 2 minutes
 //   useEffect(() => {
 //     const interval = setInterval(() => {
-//       // Only show if no popup is currently active
-//       if (!activePopup) {
+//       // Only show if no popup is currently active AND current route is not blocked
+//       if (!activePopup && !POPUP_BLOCKED_ROUTES.includes(router.pathname)) {
 //         const randomPopupId = getRandomPopup();
 //         showPopup(randomPopupId);
 //       }
-//     }, 2 * 60 * 1000); // 3 minutes = 180000ms
+//     }, 2 * 60 * 1000); // 2 minutes = 120000ms
 
 //     return () => clearInterval(interval);
-//   }, [activePopup, getRandomPopup, showPopup]);
+//   }, [activePopup, getRandomPopup, showPopup, router.pathname]);
 
-//   // Google Analytics route change tracking
+//   // Google Analytics route change tracking + close popup on blocked routes
 //   useEffect(() => {
 //     const handleRouteChange = (url) => {
 //       ga.pageview(url);
+
+//       // Close popup if navigating to a blocked route
+//       const path = url.split("?")[0]; // strip query params
+//       if (POPUP_BLOCKED_ROUTES.includes(path)) {
+//         closePopup();
+//       }
 //     };
+
 //     router.events.on("routeChangeComplete", handleRouteChange);
 //     return () => {
 //       router.events.off("routeChangeComplete", handleRouteChange);
 //     };
-//   }, [router.events]);
+//   }, [router.events, closePopup]);
 
 //   // Render the active popup component
 //   const renderActivePopup = () => {
@@ -143,11 +163,11 @@
 //           defer
 //         ></script>
 //       </Head>
-      
+
 //       <SpeedInsights />
 //       <Analytics />
-      
-//       <ToastContainer 
+
+//       <ToastContainer
 //         theme="dark"
 //         position="bottom-right"
 //         autoClose={2000}
@@ -160,7 +180,7 @@
 //         pauseOnFocusLoss
 //         pauseOnHover
 //       />
-      
+
 //       <Component {...pageProps} />
 
 //       {/* Render active popup */}
@@ -168,6 +188,7 @@
 //     </>
 //   );
 // }
+
 
 import "../styles/Blog.css";
 import "../styles/Bslug.css";
@@ -246,18 +267,18 @@ export default function MyApp({ Component, pageProps }) {
       !hasSeenInitialPopup &&
       !POPUP_BLOCKED_ROUTES.includes(router.pathname)
     ) {
-      // Show random popup after 30 seconds of landing
+      // Show random popup after 1 minute of landing
       const timer = setTimeout(() => {
         const randomPopupId = getRandomPopup();
         showPopup(randomPopupId);
         sessionStorage.setItem("initialPopupShown", "true");
-      }, 30000);
+      }, 60000); // 1 minute = 60000ms
 
       return () => clearTimeout(timer);
     }
   }, [getRandomPopup, showPopup, router.pathname]);
 
-  // Recurring popup every 2 minutes
+  // Recurring popup every 3 minutes
   useEffect(() => {
     const interval = setInterval(() => {
       // Only show if no popup is currently active AND current route is not blocked
@@ -265,7 +286,7 @@ export default function MyApp({ Component, pageProps }) {
         const randomPopupId = getRandomPopup();
         showPopup(randomPopupId);
       }
-    }, 2 * 60 * 1000); // 2 minutes = 120000ms
+    }, 3 * 60 * 1000); // 3 minutes = 180000ms
 
     return () => clearInterval(interval);
   }, [activePopup, getRandomPopup, showPopup, router.pathname]);
