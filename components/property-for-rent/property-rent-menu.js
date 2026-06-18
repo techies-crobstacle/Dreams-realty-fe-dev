@@ -12,7 +12,7 @@ export default function PropertyMenu(props) {
 
   return (
     <>
-      <div className="custom-container">
+      <div className="custom-container mobile-filter-container">
         <div className="mobile-filter-toggle-wrapper">
           <div className="mobile-active-filters">
             {props.selectedPropertyType?.title && (

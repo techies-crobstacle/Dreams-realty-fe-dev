@@ -128,6 +128,10 @@
 
 // Hide filters on mobile by default; show when toggled
 @media (max-width: ($mobile-devices-max-width)+px) {
+  .mobile-filter-container {
+    overflow: visible;
+  }
+
   .mobile-filters-hidden {
     display: none !important;
   }
@@ -136,8 +140,38 @@
     display: block !important;
     position: relative !important;
     width: 100% !important;
+    margin-bottom: 16px;
     z-index: 11;
     background: #fff;
+
+    ul {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      overflow: visible;
+
+      li {
+        width: 100%;
+        overflow: visible;
+      }
+    }
+
+    .dropdown,
+    .filter-btn {
+      width: 100%;
+    }
+
+    .dropdown-menu {
+      position: static !important;
+      transform: none !important;
+      width: 100%;
+      margin-top: 8px;
+    }
+
+    .property-dropdown--options {
+      position: static;
+      min-width: 100%;
+    }
   }
 
   // Hide the desktop active-filter tags row on mobile (shown inline instead)

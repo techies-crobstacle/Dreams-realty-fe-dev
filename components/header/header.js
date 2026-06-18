@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { getValue } from "/utils/lodash";
@@ -7,7 +7,6 @@ import {
   UncontrolledDropdown,
   DropdownToggle,
   DropdownMenu,
-  DropdownItem,
 } from "reactstrap";
 import {
   fetchCities,
@@ -18,8 +17,10 @@ import {
 
 export default function Header({ isAdmin, toggleModal }) {
   const router = useRouter();
+  const aboutDropdownRef = useRef(null);
   const [showPropertyDetailsTab1, setShowTab1] = useState(false);
   const [showPropertyDetailsTab2, setShowTab2] = useState(false);
+  const [showAboutDropdown, setShowAboutDropdown] = useState(false);
 
   const [showMenu, setShowMobileMenu] = useState(false);
   const [headerNavigationMenu] = useState([
@@ -27,18 +28,6 @@ export default function Header({ isAdmin, toggleModal }) {
       name: "Home",
       link: "/",
     },
-    // {
-    //   name: "Properties by Location",
-    //   link: "#0",
-    //   showDropdown: true,
-    //   id: 1
-    // },
-    // {
-    //   name: "Properties by Developers",
-    //   link: "#0",
-    //   showDropdown: true,
-    //   id: 2
-    // },
     {
       name: "Properties for Sale",
       link: "/property-for-sale",
@@ -47,16 +36,10 @@ export default function Header({ isAdmin, toggleModal }) {
       name: "Properties for Rent",
       link: "/property-for-rent",
     },
-    // {
-    //   name: "About us",
-    //   link: "/about-us",
-    // },
     {
       name: "Blogs",
       link: "/blog",
     },
-    
-    
   ]);
   const [locationsArray] = useState([
     "All",
@@ -125,11 +108,33 @@ export default function Header({ isAdmin, toggleModal }) {
     handleChangeDeveloper(selectedDeveloperLabel);
   }, []);
 
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (
+        aboutDropdownRef.current &&
+        !aboutDropdownRef.current.contains(event.target)
+      ) {
+        setShowAboutDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+    document.addEventListener("touchstart", handleOutsideClick);
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+      document.removeEventListener("touchstart", handleOutsideClick);
+    };
+  }, []);
+
+  useEffect(() => {
+    setShowAboutDropdown(false);
+  }, [router.pathname]);
+
   const getCities = async () => {
     try {
       setCityLoading(true);
       let resp = await fetchCities();
-      // console.group("cities", resp);
       if (resp) {
         setCitiesList(getValue(resp, "data", []));
         getCityLocation(getValue(resp, "data[0].id", ""));
@@ -171,7 +176,6 @@ export default function Header({ isAdmin, toggleModal }) {
       };
       setLocationAreaLoading(true);
       let resp = await fetchLocationAreas(where);
-      // console.group("location", id);
 
       if (resp) {
         setCityLocationListAreas(getValue(resp, "data", []));
@@ -195,8 +199,6 @@ export default function Header({ isAdmin, toggleModal }) {
       pathname: "/search-properties",
       query: {
         location_area: slug,
-        // location: selectedLocation,
-        // city: selectedCity,
         page: 0,
         type: 1,
       },
@@ -209,8 +211,6 @@ export default function Header({ isAdmin, toggleModal }) {
       pathname: "/search-properties",
       query: {
         developer: slug,
-        // location: selectedLocation,
-        // city: selectedCity,
         page: 0,
         type: 1,
       },
@@ -232,10 +232,8 @@ export default function Header({ isAdmin, toggleModal }) {
     setSelectedDeveloperLabel(item);
 
     try {
-      // Convert item.value to an array if it's not already
       const valuesArray = Array.isArray(item.value) ? item.value : [item.value];
 
-      // Create an array of promises
       const promises = valuesArray.map(async (value) => {
         let where = {
           "filters[title][$startsWithi]": value,
@@ -244,10 +242,7 @@ export default function Header({ isAdmin, toggleModal }) {
         return resp ? getValue(resp, "data", []) : [];
       });
 
-      // Wait for all promises to resolve
       const results = await Promise.all(promises);
-
-      // Combine all results into a single array
       const combinedResults = results.flat();
 
       setDeveloperLoading(false);
@@ -314,24 +309,22 @@ export default function Header({ isAdmin, toggleModal }) {
                 eachObj.name !== "Blogs"
               ) {
                 return (
-                  <>
-                    <li key={`menu-${index + 1}`}>
-                      <Link
-                        href={eachObj.link}
-                        className={
-                          router.pathname === "/"
-                            ? eachObj.link === "/"
-                              ? "active header-main-links"
-                              : "header-main-links"
-                            : eachObj.link.includes(router.pathname)
+                  <li key={`menu-${index + 1}`}>
+                    <Link
+                      href={eachObj.link}
+                      className={
+                        router.pathname === "/"
+                          ? eachObj.link === "/"
                             ? "active header-main-links"
                             : "header-main-links"
-                        }
-                      >
-                        {eachObj.name}
-                      </Link>
-                    </li>
-                  </>
+                          : eachObj.link.includes(router.pathname)
+                          ? "active header-main-links"
+                          : "header-main-links"
+                      }
+                    >
+                      {eachObj.name}
+                    </Link>
+                  </li>
                 );
               } else if (eachObj.name !== "Properties for Rent" && eachObj.name !== "Blogs") {
                 return (
@@ -479,20 +472,18 @@ export default function Header({ isAdmin, toggleModal }) {
                 eachObj.name === "Properties for Rent"
               ) {
                 return (
-                  <>
-                    <li key={`menu-${index + 1}`}>
-                      <Link
-                        href={eachObj.link}
-                        className={
-                          eachObj.link === router.pathname
-                            ? "active header-main-links"
-                            : "header-main-links"
-                        }
-                      >
-                        {eachObj.name}
-                      </Link>
-                    </li>
-                  </>
+                  <li key={`menu-${index + 1}`}>
+                    <Link
+                      href={eachObj.link}
+                      className={
+                        eachObj.link === router.pathname
+                          ? "active header-main-links"
+                          : "header-main-links"
+                      }
+                    >
+                      {eachObj.name}
+                    </Link>
+                  </li>
                 );
               } else if (eachObj.name === "Properties for Rent") {
                 return (
@@ -509,17 +500,78 @@ export default function Header({ isAdmin, toggleModal }) {
                 );
               }
             })}
-            <li key="about-us-link">
+            <li key="about-us-dropdown" className="about-nav-item" ref={aboutDropdownRef}>
               <Link
                 href="/about-us"
                 className={
                   "/about-us" === router.pathname
-                    ? "active header-main-links"
-                    : "header-main-links"
+                    ? "about-us-link active header-main-links"
+                    : "about-us-link header-main-links"
                 }
               >
                 About us
               </Link>
+              <button
+                type="button"
+                className="about-arrow-btn"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setShowAboutDropdown((prev) => !prev);
+                }}
+                aria-label="Open About dropdown"
+                aria-haspopup="true"
+                aria-expanded={showAboutDropdown}
+              >
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M6 9L12 15L18 9"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+              {showAboutDropdown && (
+                <div className="about-dropdown-panel">
+                  <Link
+                    href="/career"
+                    className="about-dropdown-link"
+                    onClick={() => setShowAboutDropdown(false)}
+                  >
+                    {/* <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <rect
+                        x="3"
+                        y="7"
+                        width="18"
+                        height="13"
+                        rx="2"
+                        stroke="currentColor"
+                        strokeWidth="1.6"
+                      />
+                      <path
+                        d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                        stroke="currentColor"
+                        strokeWidth="1.6"
+                      />
+                    </svg> */}
+                    <span>Career</span>
+                  </Link>
+                </div>
+              )}
             </li>
             <li key="blogs-link">
               <Link
@@ -556,4 +608,3 @@ export default function Header({ isAdmin, toggleModal }) {
     </header>
   );
 }
-// Merge

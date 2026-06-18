@@ -27,8 +27,19 @@
       transform: translateX(0);
     }
     ul {
+      display: flex;
+      align-items: center;
+      @media (max-width: 1100px) {
+        flex-direction: column;
+        align-items: flex-start;
+      }
       & > li {
         display: inline-block;
+        @media (max-width: 1100px) {
+          display: block;
+          margin-bottom: 10px;
+          width: initial;
+        }
         @media (max-width: $mobile-devices-max-width+px) {
           display: block;
           margin-bottom: 10px;
@@ -55,9 +66,55 @@
             padding: 10px 0;
             width: 100%;
           }
+          @media (min-width: $tablet-devices-min+px) and (max-width: 1100px) {
+            padding: 10px 0;
+            width: 100%;
+          }
           @media (min-width: $tablet-devices-min+px) and (max-width: $tablet-devices-max+px) {
             padding: 18px 0;
           }
+        }
+      }
+      .about-nav-item {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 2px;
+        white-space: nowrap;
+        & > a.header-main-links {
+          margin-right: 2px;
+        }
+        @media (max-width: 1100px) {
+          display: inline-flex;
+        }
+      }
+      .about-arrow-btn {
+        border: 0;
+        background: transparent;
+        padding: 2px 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: inherit;
+      }
+      .about-dropdown-panel {
+        position: absolute;
+        top: calc(100% + 10px);
+        left: 16px;
+        right: auto;
+        min-width: 150px;
+        background: #fff;
+        border-radius: 4px;
+        padding: 8px;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+        z-index: 9999;
+        a {
+          display: block;
+          padding: 10px 14px;
+          border-radius: 8px;
+          color: inherit;
+          text-decoration: none;
         }
       }
       @media (min-width: $tablet-devices-min+px) and (max-width: $tablet-devices-max+px) {
