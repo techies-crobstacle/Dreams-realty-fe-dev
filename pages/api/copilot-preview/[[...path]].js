@@ -8,6 +8,7 @@ const chatPath = `chat/${clientId}`;
 const routes = new Map([
   ["widget/widget.js", { method: "GET", contentType: "application/javascript" }],
   [iconPath, { method: "GET", contentType: "image/png" }],
+  ["static/caze-logo.png", { method: "GET", contentType: "image/png" }],
   [chatPath, { method: "POST", contentType: "application/json" }],
   [`${chatPath}/config`, { method: "GET", contentType: "application/json" }],
   [`${chatPath}/closing-config`, { method: "GET", contentType: "application/json" }],
