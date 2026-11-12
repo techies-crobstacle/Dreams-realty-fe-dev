@@ -83,8 +83,11 @@ export default async function handler(req, res) {
   const route = routes.get(path);
   if (route?.method !== req.method) return res.status(404).end();
 
-  // Only the test credential is sent upstream. Vercel session cookies stay at Vercel.
+  // Forward widget credentials only on API routes. Vercel session cookies stay at Vercel.
   const headers = path.startsWith(chatPath) ? { "X-API-Key": testKey } : {};
+  if (path === chatPath && /^Bearer [A-Za-z0-9._~+\/=-]+$/.test(req.headers.authorization || "")) {
+    headers.Authorization = req.headers.authorization;
+  }
   const options = {
     method: req.method,
     headers,
@@ -106,7 +109,15 @@ export default async function handler(req, res) {
 
   try {
     const response = await axios(`${upstream}/${path}`, options);
-    if (response.status >= 400) return res.status(response.status).end();
+    if (response.status >= 400) {
+      if (path === `${chatPath}/auth/send-otp`) {
+        return res.status(response.status).json({ detail: "Failed to send OTP. Please try again." });
+      }
+      if (path === `${chatPath}/auth/verify-otp`) {
+        return res.status(response.status).json({ detail: "OTP verification failed. Check the code and try again." });
+      }
+      return res.status(response.status).end();
+    }
     if (response.status !== 200) return res.status(502).end("Unexpected widget status");
     const actualType = response.headers["content-type"]?.split(";")[0];
     if (actualType !== route.contentType) return res.status(502).end("Unexpected widget response");
