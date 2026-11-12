@@ -1,7 +1,7 @@
 import { randomBytes } from "node:crypto";
 import axios from "axios";
 
-const upstream = "http://203.9.197.21";
+const upstream = "https://chat.dreamsrealty.co.in";
 const clientId = "4a21557b-e5bd-451a-b882-bcca27e0c282";
 const iconPath = `uploads/chat-icons/${clientId}.png`;
 const chatPath = `chat/${clientId}`;
@@ -13,6 +13,8 @@ const routes = new Map([
   [`${chatPath}/config`, { method: "GET", contentType: "application/json" }],
   [`${chatPath}/closing-config`, { method: "GET", contentType: "application/json" }],
   [`${chatPath}/onboarding-starters`, { method: "POST", contentType: "application/json" }],
+  [`${chatPath}/auth/send-otp`, { method: "POST", contentType: "application/json" }],
+  [`${chatPath}/auth/verify-otp`, { method: "POST", contentType: "application/json" }],
 ]);
 const scriptIntegrity = "sha384-EKB2DeRlRxRylU3YkWhTwdszl5TzYv2tgLSarcL4/13BNWUME1Cy6yghPVQZTrnL";
 
@@ -40,7 +42,7 @@ function renderPage(res) {
 <body>
   <main>
     <h1>Dreams Realty widget test</h1>
-    <p>Open the widget and send a made-up question. Use dummy data only.</p>
+    <p>Use the approved WhatsApp test number for verification and send a made-up question.</p>
     <p id="status" role="status">Loading the widget…</p>
   </main>
   <script nonce="${nonce}">
