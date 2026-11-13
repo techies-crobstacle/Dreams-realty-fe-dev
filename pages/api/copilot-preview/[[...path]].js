@@ -1,4 +1,4 @@
-import { randomBytes } from "node:crypto";
+import { createCipheriv, createDecipheriv, createHash, randomBytes } from "node:crypto";
 import axios from "axios";
 
 const upstream = "https://chat.dreamsrealty.co.in";
@@ -17,6 +17,31 @@ const routes = new Map([
   [`${chatPath}/auth/verify-otp`, { method: "POST", contentType: "application/json" }],
 ]);
 const scriptIntegrity = "sha384-EKB2DeRlRxRylU3YkWhTwdszl5TzYv2tgLSarcL4/13BNWUME1Cy6yghPVQZTrnL";
+
+const sessionCookie = "__Host-dreams-widget-session";
+
+function sessionKey(testKey) {
+  return createHash("sha256").update("dreams-widget-session:").update(testKey).digest();
+}
+
+function sealToken(token, testKey) {
+  const iv = randomBytes(12);
+  const cipher = createCipheriv("aes-256-gcm", sessionKey(testKey), iv);
+  const encrypted = Buffer.concat([cipher.update(token, "utf8"), cipher.final()]);
+  return Buffer.concat([iv, cipher.getAuthTag(), encrypted]).toString("base64url");
+}
+
+function readToken(cookie, testKey) {
+  if (!cookie) return null;
+  try {
+    const data = Buffer.from(cookie, "base64url");
+    const decipher = createDecipheriv("aes-256-gcm", sessionKey(testKey), data.subarray(0, 12));
+    decipher.setAuthTag(data.subarray(12, 28));
+    return Buffer.concat([decipher.update(data.subarray(28)), decipher.final()]).toString("utf8");
+  } catch {
+    return null;
+  }
+}
 
 function renderPage(res) {
   const nonce = randomBytes(16).toString("base64");
@@ -74,7 +99,9 @@ export default async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
   res.setHeader("X-Content-Type-Options", "nosniff");
   const testKey = process.env.COPILOT_TEST_KEY;
-  if (process.env.VERCEL_ENV !== "preview" || !testKey) {
+  const testPhone = process.env.COPILOT_TEST_PHONE;
+  const isPreview = process.env.VERCEL_ENV === "preview";
+  if ((!isPreview && !testPhone) || !testKey) {
     return res.status(404).end();
   }
 
@@ -83,10 +110,10 @@ export default async function handler(req, res) {
   const route = routes.get(path);
   if (route?.method !== req.method) return res.status(404).end();
 
-  // Forward widget credentials only on API routes. Vercel session cookies stay at Vercel.
   const headers = path.startsWith(chatPath) ? { "X-API-Key": testKey } : {};
-  if (path === chatPath && /^Bearer [A-Za-z0-9._~+\/=-]+$/.test(req.headers.authorization || "")) {
-    headers.Authorization = req.headers.authorization;
+  if (path === chatPath) {
+    const token = readToken(req.cookies?.[sessionCookie], testKey);
+    if (token) headers.Authorization = `Bearer ${token}`;
   }
   const options = {
     method: req.method,
@@ -104,7 +131,15 @@ export default async function handler(req, res) {
 
     headers["Content-Type"] = "application/json";
     const { page_url, ...body } = req.body || {};
-    options.data = body;
+    const isOtpRequest = path === `${chatPath}/auth/send-otp` || path === `${chatPath}/auth/verify-otp`;
+    if (testPhone && isOtpRequest) {
+      if (body.phone !== testPhone) {
+        return res.status(403).json({ detail: "Use the approved WhatsApp test number." });
+      }
+      options.data = { phone: testPhone, session_id: body.session_id, ...(path.endsWith("/verify-otp") && { otp: body.otp }) };
+    } else {
+      options.data = body;
+    }
   }
 
   try {
@@ -122,6 +157,14 @@ export default async function handler(req, res) {
     const actualType = response.headers["content-type"]?.split(";")[0];
     if (actualType !== route.contentType) return res.status(502).end("Unexpected widget response");
 
+    if (path === `${chatPath}/auth/verify-otp`) {
+      const { token } = JSON.parse(Buffer.from(response.data).toString("utf8"));
+      if (typeof token !== "string" || !/^[A-Za-z0-9._~-]{1,2500}$/.test(token)) {
+        return res.status(502).json({ detail: "The provider did not return a valid verification token." });
+      }
+      const cookie = sealToken(token, testKey);
+      res.setHeader("Set-Cookie", `${sessionCookie}=${cookie}; Path=/; Secure; HttpOnly; SameSite=Lax; Max-Age=86400`);
+    }
     res.setHeader("Content-Type", route.contentType);
     res.status(200).send(Buffer.from(response.data));
   } catch {
