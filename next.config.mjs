@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   async rewrites() {
-    if (process.env.VERCEL_ENV !== "preview") return [];
+    if (process.env.VERCEL_ENV !== "preview" && !process.env.COPILOT_TEST_PHONE) return [];
 
     return [
       { source: "/widget-test", destination: "/api/copilot-preview" },
