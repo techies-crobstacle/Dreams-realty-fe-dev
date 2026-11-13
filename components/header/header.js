@@ -15,8 +15,41 @@ import {
   fetchLocations,
 } from "@services/APIs/common.service";
 
+const stagingHostname = "dreams-realty-fe-dev.vercel.app";
+const widgetScriptId = "dreams-realty-staging-chat";
+const widgetClientId = "4a21557b-e5bd-451a-b882-bcca27e0c282";
+
 export default function Header({ isAdmin, toggleModal }) {
   const router = useRouter();
+
+  useEffect(() => {
+    if (
+      isAdmin ||
+      window.location.hostname !== stagingHostname ||
+      document.getElementById(widgetScriptId)
+    ) {
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.id = widgetScriptId;
+    script.src = "/copilot-api/widget/widget.js";
+    script.integrity = "sha384-EKB2DeRlRxRylU3YkWhTwdszl5TzYv2tgLSarcL4/13BNWUME1Cy6yghPVQZTrnL";
+    Object.assign(script.dataset, {
+      clientId: widgetClientId,
+      apiKey: "preview",
+      apiUrl: window.location.origin + "/copilot-api",
+      title: "Dreams Realty",
+      position: "bottom-left",
+      welcomeMessage: "Hello! How can I help you today?",
+      primaryColor: "#3b82f6",
+      chatIcon: `/copilot-api/uploads/chat-icons/${widgetClientId}.png`,
+      disclaimerText: "Staging test",
+      enableVoice: "false",
+    });
+    script.addEventListener("error", () => script.remove(), { once: true });
+    document.head.appendChild(script);
+  }, [isAdmin]);
   const aboutDropdownRef = useRef(null);
   const [showPropertyDetailsTab1, setShowTab1] = useState(false);
   const [showPropertyDetailsTab2, setShowTab2] = useState(false);
