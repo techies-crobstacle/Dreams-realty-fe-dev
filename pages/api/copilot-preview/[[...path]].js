@@ -67,7 +67,7 @@ function renderPage(res) {
 <body>
   <main>
     <h1>Dreams Realty widget test</h1>
-    <p>Use the approved WhatsApp test number for verification and send a made-up question.</p>
+    <p>Use a WhatsApp number you can access for verification and send a made-up question.</p>
     <p id="status" role="status">Loading the widget…</p>
   </main>
   <script nonce="${nonce}">
@@ -99,9 +99,10 @@ export default async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
   res.setHeader("X-Content-Type-Options", "nosniff");
   const testKey = process.env.COPILOT_TEST_KEY;
-  const testPhone = process.env.COPILOT_TEST_PHONE;
+  // The existing setting enables the staging deployment without limiting OTP recipients.
+  const stagingEnabled = Boolean(process.env.COPILOT_TEST_PHONE);
   const isPreview = process.env.VERCEL_ENV === "preview";
-  if ((!isPreview && !testPhone) || !testKey) {
+  if ((!isPreview && !stagingEnabled) || !testKey) {
     return res.status(404).end();
   }
 
@@ -132,11 +133,15 @@ export default async function handler(req, res) {
     headers["Content-Type"] = "application/json";
     const { page_url, ...body } = req.body || {};
     const isOtpRequest = path === `${chatPath}/auth/send-otp` || path === `${chatPath}/auth/verify-otp`;
-    if (testPhone && isOtpRequest) {
-      if (body.phone !== testPhone) {
-        return res.status(403).json({ detail: "Use the approved WhatsApp test number." });
+    if (isOtpRequest) {
+      if (typeof body.phone !== "string" || !/^\+[1-9][0-9]{6,14}$/.test(body.phone)) {
+        return res.status(400).json({ detail: "Enter a valid phone number with its country code." });
       }
-      options.data = { phone: testPhone, session_id: body.session_id, ...(path.endsWith("/verify-otp") && { otp: body.otp }) };
+      options.data = {
+        phone: body.phone,
+        session_id: body.session_id,
+        ...(path.endsWith("/verify-otp") && { otp: body.otp }),
+      };
     } else {
       options.data = body;
     }
