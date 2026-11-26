@@ -16,7 +16,7 @@ const routes = new Map([
   [`${chatPath}/auth/send-otp`, { method: "POST", contentType: "application/json" }],
   [`${chatPath}/auth/verify-otp`, { method: "POST", contentType: "application/json" }],
 ]);
-const scriptIntegrity = "sha384-EKB2DeRlRxRylU3YkWhTwdszl5TzYv2tgLSarcL4/13BNWUME1Cy6yghPVQZTrnL";
+const scriptIntegrity = "sha384-qdLjEMs7ogMmn+jjtWEHGreHOe/x1n1wX+kd9eTVa+Vd2JusKT+TbEjxZ3thc2/n";
 
 const sessionCookie = "__Host-dreams-widget-session";
 
