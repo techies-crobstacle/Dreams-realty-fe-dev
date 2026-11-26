@@ -16,7 +16,6 @@ const routes = new Map([
   [`${chatPath}/auth/send-otp`, { method: "POST", contentType: "application/json" }],
   [`${chatPath}/auth/verify-otp`, { method: "POST", contentType: "application/json" }],
 ]);
-const scriptIntegrity = "sha384-qdLjEMs7ogMmn+jjtWEHGreHOe/x1n1wX+kd9eTVa+Vd2JusKT+TbEjxZ3thc2/n";
 
 const sessionCookie = "__Host-dreams-widget-session";
 
@@ -73,7 +72,6 @@ function renderPage(res) {
   <script nonce="${nonce}">
     const widget = document.createElement("script");
     widget.src = "/copilot-api/widget/widget.js";
-    widget.integrity = "${scriptIntegrity}";
     Object.assign(widget.dataset, {
       clientId: "${clientId}",
       apiKey: "preview",
