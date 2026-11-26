@@ -34,7 +34,7 @@ export default function Header({ isAdmin, toggleModal }) {
     const script = document.createElement("script");
     script.id = widgetScriptId;
     script.src = "/copilot-api/widget/widget.js";
-    script.integrity = "sha384-EKB2DeRlRxRylU3YkWhTwdszl5TzYv2tgLSarcL4/13BNWUME1Cy6yghPVQZTrnL";
+    script.integrity = "sha384-qdLjEMs7ogMmn+jjtWEHGreHOe/x1n1wX+kd9eTVa+Vd2JusKT+TbEjxZ3thc2/n";
     Object.assign(script.dataset, {
       clientId: widgetClientId,
       apiKey: "preview",
